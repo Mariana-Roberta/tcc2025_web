@@ -1,0 +1,106 @@
+<!-- div header -->
+
+<div class="main-content">
+
+    <div class="caminhao-content">
+
+        <div class="form-container">
+            <h2>Informe as dimensões do caminhão</h2>
+
+            <div class="input-group">
+                <div class="form-group">
+                    <label for="truck-altura">Altura (m)</label>
+                    <input id="truck-altura" type="text" placeholder="Ex: 2.4"/>
+                </div>
+                <div class="form-group">
+                    <label for="truck-comprimento">Comprimento (m)</label>
+                    <input id="truck-comprimento" type="text" placeholder="Ex: 5"/>
+                </div>
+                <div class="form-group">
+                    <label for="truck-largura">Largura (m)</label>
+                    <input id="truck-largura" type="text" placeholder="Ex: 2"/>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="produtos-content">
+
+        <div class="form-container">
+            <h2>Adicionar Produtos</h2>
+            <div class="input-group">
+                <!-- Botão de selecionar arquivo -->
+                <div class="file-upload">
+                    <label for="file-input" class="file-label">
+                        <span>Selecionar Arquivo</span>
+                        <input id="file-input" type="file" accept=".csv, .xlsx" hidden />
+                    </label>
+                </div>
+        
+                <!-- Texto "ou" -->
+                <div class="or-divider">
+                    <span><b>ou</b></span>
+                </div>
+        
+                <!-- Área de entrada de dados dos produtos -->
+                <div class="product-input-group">
+                    <div class="form-group">
+                        <label for="product-name">Nome do Produto</label>
+                        <input id="product-name" type="text" placeholder="Ex: Caixa de Papelão"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="product-description">Descrição</label>
+                        <textarea id="product-description" placeholder="Ex: Caixa para transporte de livros"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="product-altura">Altura (m)</label>
+                        <input id="product-altura" type="text" placeholder="Ex: 1.2"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="product-comprimento">Comprimento (m)</label>
+                        <input id="product-comprimento" type="text" placeholder="Ex: 0.8"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="product-largura">Largura (m)</label>
+                        <input id="product-largura" type="text" placeholder="Ex: 0.5"/>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="button-container">
+                <button>Adicionar</button>
+            </div>
+        
+            <!-- Tabela de Produtos -->
+            <table class="product-table">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Descrição</th>
+                        <th>Dimensões</th>
+                        <th>Endereço de Entrega</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Nome do Produto</td>
+                        <td>Descrição do Produto</td>
+                        <td>Dimensões do Produto</td>
+                        <td></td>
+                        <td>
+                            <button class="action-button delete">Excluir</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        
+            <!-- Botão de Próximo -->
+            <div class="button-container">
+                <button>Calcular</button>
+            </div>
+        </div>
+    </div>
+
+</div>
