@@ -4,11 +4,13 @@ import { HomeComponent } from './pages/home/home.component';
 import { CalculaComponent } from './pages/calcula/calcula.component';
 import { VisualizaComponent } from './pages/visualiza/visualiza.component';
 import { SobreComponent } from './pages/sobre/sobre.component';
+import { ButtonComponent } from './components/button/button.component';
 
 export const routes: Routes = [
     { path: '', component: LoginComponent },
     { path: 'home', component: HomeComponent },
     { path: 'calcula', component: CalculaComponent },
     { path: 'visualiza', component: VisualizaComponent },
-    { path: 'sobre', component: SobreComponent }
+    { path: 'sobre', component: SobreComponent },
+    { path: 'components/button', component: ButtonComponent }
 ];
