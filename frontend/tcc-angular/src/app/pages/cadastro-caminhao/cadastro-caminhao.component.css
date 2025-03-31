@@ -1,10 +1,10 @@
 /* Container geral */
-.login-container {
+.cadastro-container {
     display: flex;
     justify-content: center;
     align-items: center;
     width: 100%;
-    height: 100vh; /* Garantir que ocupe a tela toda */
+    height: calc(100% - 85px); /* Garantir que ocupe a tela toda */
     overflow: hidden;
     position: relative;
     background-color: var(--light-color); /* Cor de fundo suave */
@@ -79,31 +79,9 @@
     background-color: var(--blue-color-2); /* Efeito de hover */
   }
   
-  /* Estilo da área de registro */
-  .register {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 8px;
-    font-size: 16px;
-  }
-  
-  .register p {
-    margin: 0;
-  }
-  
-  #register-link {
-    color: var(--blue-color-2);
-    text-decoration: none;
-  }
-  
-  #register-link:hover {
-    text-decoration: underline;
-  }
-  
   /* Responsividade */
   @media (max-width: 768px) {
-    .login-container {
+    .cadastro-container {
       flex-direction: column;
     }
   

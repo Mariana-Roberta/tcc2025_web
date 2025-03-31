@@ -1,7 +1,12 @@
-<div class="login-container">
+<div class="cadastro-container">
     <div class="form-container">
-      <h2>Login</h2>
+      <h2>Cadastro</h2>
       <div class="form">
+        <div class="input-container">
+            <label for="name">Nome</label>
+            <input id="name" type="text" placeholder="Digite seu nome" required />
+          </div>
+
         <div class="input-container">
           <label for="email">Email</label>
           <input id="email" type="email" placeholder="Digite seu email" required />
@@ -11,14 +16,15 @@
           <label for="password">Senha</label>
           <input id="password" type="password" placeholder="Digite sua senha" required />
         </div>
+
+        <div class="input-container">
+            <label for="confirm-password">Confirmar Senha</label>
+            <input id="confirm-password" type="password" placeholder="Confirme sua senha" required />
+          </div>
   
-        <button class="custom-button" type="submit">Entrar</button>
+        <button class="custom-button" type="submit">Cadastrar</button>
       </div>
-  
-      <div class="register">
-        <p>Não tem conta?</p> 
-        <a id="resgister-link" href="#">Registrar</a>
-      </div>
+
     </div>
     <div class="screen__background">
         <span class="screen__background__shape screen__background__shape1"></span>

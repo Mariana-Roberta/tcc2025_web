@@ -1,0 +1,145 @@
+
+  /* Container da Home */
+  .home-container {
+    display: flex;
+    justify-content: left;
+    align-items: top;
+    width: 100%;
+    height: calc(100vh - 85px);
+    background-color: var(--light-color);
+    overflow: hidden;
+  }
+  
+  /* Conteúdo da Home */
+  .home-content {
+    z-index: 1;
+    text-align: left;
+    padding: 40px;
+    width: 100%;
+    
+    background-image: url('../../../assets/images/login_truck.png');
+    background-size: auto 100%;
+    background-position: right bottom;
+    background-repeat: no-repeat; /* Impede a repetição da imagem */
+    background-attachment: scroll; /* Evita bugs no mobile */
+  }
+  
+  .home-content h1 {
+    font-size: 28px;
+    color: var(--blue-color-1);
+    margin-bottom: 20px;
+    width: auto;
+  }
+  
+  .home-content p {
+    font-size: 18px;
+    color: var(--text-color);
+    margin-bottom: 30px;
+    width: auto;
+  }
+
+  .home-content h1,
+.home-content p {
+   display: inline-block;
+}
+
+  /* Botão customizado */
+  .custom-button {
+    padding: 12px 20px;
+    background-color: var(--blue-color-1);
+    color: white;
+    font-size: 16px;
+    border: none;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .custom-button:hover {
+    background-color: var(--blue-color-2); /* Efeito de hover */
+  }
+
+  .info {
+    padding: 18px;
+ 
+    width: 60%;
+    border-radius: 20px;
+    height: 80%;
+  }
+
+  .card-1, .card-2, .card-3 {
+    padding: 18px;
+    background-color: var(--blue-color-3);
+    color: var(--blue-color-1);
+    width: 20%;
+    border-radius: 20px;
+    margin: 20px 10px 0 0;
+    display: inline-block;
+  }
+  
+
+  h2 {
+    font-size: 20px;
+  }
+
+  @media (max-width: 768px) {
+    .home-container {
+        justify-content: center;
+    }
+    .home-content {
+        width: 100%;
+        padding: 0;
+      }
+
+      img {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+
+      .home-content h1 {
+        padding: 0 20px;
+        font-size: 20px;
+      }
+      
+      .home-content p {
+        padding: 0 20px;
+        margin: 10px 0;
+        font-size: 16px;
+      }
+
+      button {
+        align-self: center;
+        margin: 10px 20px;
+        padding: 14px;
+        width: 40%;
+      }
+
+  }
+
+   /* Container do fundo */
+.screen__background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+
+/* Formas no fundo */
+.screen__background__shape {
+  position: absolute;
+  border-radius: 48px; /* Borda arredondada */
+  opacity: 0.8; /* Transparência para mesclar as formas */
+}
+
+.screen__background__shape1 {
+  height: 650px;
+  width: 800px;
+  background: var(--blue-color-2); /* Tom de laranja/vermelho */
+  top: 150px;
+  right: -260px;
+  opacity: 0.6;
+}

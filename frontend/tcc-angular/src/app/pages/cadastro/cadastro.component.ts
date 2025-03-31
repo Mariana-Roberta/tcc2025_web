@@ -2,12 +2,11 @@ import { Component } from '@angular/core';
 import { FooterComponent } from '../../components/footer/footer.component';
 
 @Component({
-  selector: 'app-login',
-  standalone: true,
+  selector: 'app-cadastro',
   imports: [FooterComponent],
-  templateUrl: './login.component.html',
-  styleUrl: './login.component.css'
+  templateUrl: './cadastro.component.html',
+  styleUrl: './cadastro.component.css'
 })
-export class LoginComponent {
+export class CadastroComponent {
 
 }

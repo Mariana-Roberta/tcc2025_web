@@ -1,0 +1,90 @@
+/* Estilo da Navbar */
+.navbar {
+  background-color: var(--background-color);
+  padding: 12px 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky; /* Ou use 'fixed' para ficar sempre visível */
+  top: 0;
+  width: auto;
+  z-index: 1000;
+}
+
+/* Lista de navegação */
+.navbar-nav {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 20px;
+}
+
+.navbar-nav li {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-nav .nav-link {
+  text-decoration: none;
+  font-size: 16px;
+  color: var(--blue-color-1);
+  transition: color 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover {
+  color: var(--blue-color-2); /* Destaque ao passar o mouse */
+}
+
+/* Estilo do botão de alternância de tema */
+.theme-toggle {
+  cursor: pointer;
+  display: inline-block;
+  transition: transform 0.3s ease;
+  color: var(--blue-color-1);
+}
+
+.theme-toggle:hover {
+  color: var(--blue-color-2);
+  transform: scale(1.1); /* Efeito de zoom ao passar o mouse */
+}
+
+.btn-logout {
+  background-color: var(--background-color);
+  color: var(--blue-color-1);
+  font-size: 16px;
+  padding: 3px 8px;
+  margin: 10px;
+  border: 1px solid var(--blue-color-1);
+  border-radius: 10px;
+  outline: none;
+}
+
+.btn-logout:hover {
+  color: var(--blue-color-2);
+  border-color: var(--blue-color-2);
+}
+
+/* Responsividade para telas pequenas */
+@media (max-width: 768px) {
+  .navbar {
+      padding: 10px 15px;
+  }
+
+  .navbar-nav {
+      display: flex;
+      flex-wrap: wrap; /* Permite quebrar a lista para a próxima linha */
+      justify-content: center; /* Centraliza os itens */
+      gap: 10px;
+  }
+
+  .navbar-nav li {
+      margin: 5px; /* Adiciona margem entre os itens */
+  }
+
+  .navbar-nav .nav-link {
+      font-size: 14px; /* Reduz o tamanho da fonte */
+      padding: 5px; /* Reduz o padding */
+  }
+}

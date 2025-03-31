@@ -1,10 +1,10 @@
 /* Container geral */
-.login-container {
+.cadastro-container {
     display: flex;
     justify-content: center;
     align-items: center;
     width: 100%;
-    height: 100vh; /* Garantir que ocupe a tela toda */
+    height: calc(100% - 85px); /* Garantir que ocupe a tela toda */
     overflow: hidden;
     position: relative;
     background-color: var(--light-color); /* Cor de fundo suave */
@@ -12,7 +12,7 @@
   
   /* Formulário de login */
   .form-container {
-    width: 40%; /* Reduzido para mais espaço no layout */
+    width: 100%; /* Reduzido para mais espaço no layout */
     max-width: 500px;
     background-color: var(--background-color); /* Fundo branco para destacar */
     padding: 40px;
@@ -78,32 +78,18 @@
   .custom-button:hover {
     background-color: var(--blue-color-2); /* Efeito de hover */
   }
-  
-  /* Estilo da área de registro */
-  .register {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 8px;
-    font-size: 16px;
+
+  .btn-delete {
+    background-color: rgb(171, 28, 28);
   }
-  
-  .register p {
-    margin: 0;
-  }
-  
-  #register-link {
-    color: var(--blue-color-2);
-    text-decoration: none;
-  }
-  
-  #register-link:hover {
-    text-decoration: underline;
+
+  .btn-delete:hover {
+    background-color: rgb(204, 42, 42);
   }
   
   /* Responsividade */
   @media (max-width: 768px) {
-    .login-container {
+    .cadastro-container {
       flex-direction: column;
     }
   
