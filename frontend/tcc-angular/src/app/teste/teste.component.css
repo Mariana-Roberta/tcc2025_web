@@ -1,0 +1,147 @@
+/* Estrutura geral */
+:host {
+  display: block;
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+.logo-area {
+  display: flex;
+  align-items: center;
+}
+
+.logo-box {
+  background-color: var(--light-color);
+  border-radius: 12px;
+  padding: 6px 10px;
+  margin-right: 10px;
+}
+
+.logo-x {
+  font-size: 1.5rem;
+  color: var(--accent-selected-color);
+  font-weight: bold;
+}
+
+.logo-text {
+  font-size: 1.5rem;
+  color: #163e68;
+  font-weight: 600;
+  margin: 0;
+}
+
+.green-x {
+  color: var(--accent-selected-color);
+}
+
+/* Topo */
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: var(--background-color);
+  border-bottom: 1px solid #dbe4f0;
+}
+
+.logo {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.nav-links {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+/* Hero */
+.hero-section {
+  background-color: var(--blue-color-3);
+  display: flex;
+  justify-content: space-between;
+  padding: 3rem 2rem;
+  flex-wrap: wrap;
+}
+
+.hero-content {
+  max-width: 600px;
+}
+
+.hero-content h1 {
+  font-size: 1.8rem;
+  margin-bottom: 2rem;
+}
+
+.hero-content ul {
+  list-style: none;
+  padding: 0;
+  margin: 2rem 0;
+}
+
+.hero-content ul li {
+  font-size: 14px;
+  margin: 1rem 0;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  text-decoration: none;
+  font-size: 16px;
+  color: var(--blue-color-1);
+  transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+  color: var(--blue-color-2);
+  cursor: pointer;
+  transform: scale(1.005);
+}
+
+.hero-image {
+  width: 400px;
+  max-width: 100%;
+  height: auto;
+}
+
+.hero-image img {
+  width: 400px;
+  max-width: 100%;
+  transform: scaleX(-1);
+}
+
+/* Cards */
+.cards-container {
+  display: flex;
+  justify-content: space-around;
+  gap: 1rem;
+  padding: 2rem;
+  flex-wrap: wrap;
+  background-color: var(--background-color);
+}
+
+.card {
+  background-color: var(--blue-color-1);
+  color: var(--background-color);
+  width: calc((100% / 3) - 5%);
+  border-radius: 8px;
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.card .icon {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  justify-self: left;
+}
+
+h2 {
+  font-size: 48px;
+  justify-self: left;
+}
+
+p {
+  justify-self: left;
+}

@@ -1,0 +1,44 @@
+<div class="cadastro-container">
+  <div class="form-right">
+  <img src="assets/icons/truck_icon.svg" alt="Caminhão" style="height: 100px"/>
+</div>
+  <h1>Cadastrar Caminhão</h1>
+  <p class="subtitulo">Preencha os dados para adicionar um novo caminhão à frota.</p>
+
+  <form class="form-box" (ngSubmit)="cadastrarCaminhao()" #form="ngForm">
+    <div class="form-left">
+      <div class="input-container">
+        <label for="nome">Nome</label>
+        <input id="nome" name="nome" type="text" required [(ngModel)]="caminhao.nome" />
+      </div>
+
+      <div class="input-container">
+        <label for="placa">Placa</label>
+        <input id="placa" name="placa" type="text" required [(ngModel)]="caminhao.placa" />
+      </div>
+
+      <div class="input-container">
+        <label for="capacidade">Capacidade <small>(em m³)</small></label>
+        <input id="capacidade" name="capacidade" type="number" min="0" required [(ngModel)]="caminhao.capacidade" />
+      </div>
+      <div class="input-container">
+        <label for="comprimento">Comprimento <small>(em m)</small></label>
+        <input id="comprimento" name="comprimento" type="number" min="0" required [(ngModel)]="caminhao.comprimento" />
+      </div>
+
+      <div class="input-container">
+        <label for="largura">Largura <small>(em m)</small></label>
+        <input id="largura" name="largura" type="number" min="0" required [(ngModel)]="caminhao.largura" />
+      </div>
+
+      <div class="input-container">
+        <label for="altura">Altura <small>(em m)</small></label>
+        <input id="altura" name="altura" type="number" min="0" required [(ngModel)]="caminhao.altura" />
+      </div>
+
+      <button type="submit" class="custom-alert-button">Cadastrar</button>
+    </div>
+
+
+  </form>
+</div>

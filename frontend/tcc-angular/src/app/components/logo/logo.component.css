@@ -1,0 +1,29 @@
+.logo-area {
+  display: flex;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.logo-box {
+  background-color: var(--light-color);
+  border-radius: 12px;
+  padding: 10px 16px;
+  margin-right: 10px;
+}
+
+.logo-x {
+  font-size: 2rem;
+  color: var(--accent-selected-color);
+  font-weight: bold;
+}
+
+.logo-text {
+  font-size: 2rem;
+  color: #163e68;
+  font-weight: 600;
+  margin: 0;
+}
+
+.green-x {
+  color: var(--accent-selected-color);
+}

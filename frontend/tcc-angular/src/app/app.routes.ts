@@ -9,6 +9,10 @@ import { CadastroCaminhaoComponent } from './pages/cadastro-caminhao/cadastro-ca
 import { CadastroProdutosComponent } from './pages/cadastro-produtos/cadastro-produtos.component';
 import { PerfilComponent } from './pages/perfil/perfil.component';
 import {RealizaOtimizacaoComponent} from './pages/realiza-otimizacao/realiza-otimizacao.component';
+import {TesteComponent} from './teste/teste.component';
+import {TesteLoginComponent} from './teste-login/teste-login.component';
+import {TesteHomeComponent} from './teste-home/teste-home.component';
+import {TesteCaminhaoComponent} from './teste-caminhao/teste-caminhao.component';
 
 export const routes: Routes = [
     { path: '', component: LoginComponent },
@@ -21,4 +25,8 @@ export const routes: Routes = [
     { path: 'calcula', component: CalculaComponent },
     { path: 'visualiza', component: VisualizaComponent },
     { path: 'sobre', component: SobreComponent },
+    { path: 'teste', component: TesteComponent },
+    { path: 'teste-login', component: TesteLoginComponent },
+    { path: 'teste-home', component: TesteHomeComponent },
+    { path: 'teste-caminhao', component: TesteCaminhaoComponent },
 ];

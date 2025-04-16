@@ -9,6 +9,7 @@
     --blue-color-3: #A3CEF1;
     --gray-color: #8B8C89;
     --accent-color: #A3D94A;
+    --accent-selected-color: #88c620;
   }
 
   html, body {
@@ -23,54 +24,72 @@
     }
 
 .input-container {
-    margin-bottom: 20px;
-    width: 80%;
-    display: flex;
-    flex-direction: column;
-  }
+  margin-bottom: 20px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
 
-  label {
-    font-size: 14px;
-    color: var(--blue-color-1);
-    margin-bottom: 5px;
-    font-weight: bold;
+label {
+  font-size: 14px;
+  color: var(--blue-color-1);
+  font-weight: 600;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
 
-  }
+/* Ícone dentro do input (se usar) */
+.input-icon {
+  position: absolute;
+  left: 16px;
+  top: 70%;
+  transform: translateY(-50%);
+  font-size: 18px;
+  color: var(--gray-color);
+  pointer-events: none;
+}
 
+/* Input estilizado */
+input {
+  background-color: var(--background-color);
+  padding: 12px 16px 12px 44px; /* espaço para ícone à esquerda */
+  font-size: 16px;
+  border: 1px solid var(--light-color);
+  border-radius: 16px;
+  outline: none;
+  color: var(--text-color);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input:focus {
+  border-color: var(--blue-color-2);
+  box-shadow: 0 0 0 3px rgba(96, 150, 186, 0.2);
+}
+
+input::placeholder {
+  color: var(--gray-color);
+  font-size: 15px;
+}
+
+input:disabled {
+  background-color: #f5f5f5;
+  border-color: #ddd;
+  cursor: not-allowed;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
   input {
-    background-color: var(--background-color);
-    padding: 12px 15px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 16px;
-    outline: none;
-    transition: border-color 0.3s ease-in-out;
-
-    /* Adiciona sombra suave ao focar no input */
-    &:focus {
-      border-color: var(--primary-color);
-      box-shadow: 0 0 8px rgba(74, 144, 226, 0.3);
-    }
-
-    /* Adiciona espaçamento interno (padding) para os textos não ficarem colados */
-    &::placeholder {
-      color: #aaa;
-      font-size: 16px;
-    }
-
-    /* Ajuste para tamanho adequado em dispositivos móveis */
-    @media (max-width: 768px) {
-      font-size: 14px;
-      padding: 10px;
-    }
+    font-size: 14px;
+    padding: 10px 14px 10px 40px;
   }
+}
 
-  input:disabled {
-    background-color: #f5f5f5;
-    border-color: #ddd;
-  }
 
-  .custom-button {
+.custom-button {
     background-color: var(--blue-color-1);
     color: var(--background-color);
     border: none;
@@ -87,6 +106,33 @@
     background-color: var(--blue-color-2);
     transform: scale(1.005);
   }
+
+.custom-alert-button {
+  background-color: var(--accent-color);
+  color: var(--blue-color-1);
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 16px;
+  transition: transform 0.1s ease;
+
+
+}
+
+.custom-alert-button:hover {
+  background-color: var(--accent-selected-color);
+  transform: scale(1.005);
+}
+
+.link {
+  color: var(--blue-color-2);
+  text-decoration: none;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
 
   .form-container {
     background-color: var(--background-color);
