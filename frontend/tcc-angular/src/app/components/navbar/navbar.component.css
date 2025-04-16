@@ -1,4 +1,4 @@
-/* Estilo da Navbar */
+/* ---------- Navbar Base ---------- */
 .navbar {
   background-color: var(--background-color);
   padding: 12px 20px;
@@ -6,13 +6,40 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  position: sticky; /* Ou use 'fixed' para ficar sempre visível */
+  position: sticky;
   top: 0;
   width: auto;
   z-index: 1000;
+  flex-wrap: wrap;
 }
 
-/* Lista de navegação */
+/* ---------- Cabeçalho com Logo + Botão de Menu ---------- */
+.navbar-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* ---------- Logo ---------- */
+.logo {
+  color: var(--blue-color-2);
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+/* ---------- Ícone do Menu Hamburguer ---------- */
+.menu-toggle {
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  color: var(--blue-color-1);
+  cursor: pointer;
+  display: none;
+  align-items: center;
+}
+
+/* ---------- Navegação ---------- */
 .navbar-nav {
   display: flex;
   list-style: none;
@@ -21,44 +48,58 @@
   gap: 20px;
 }
 
-.navbar-nav li {
+.nav-item {
   display: flex;
   align-items: center;
 }
 
-.navbar-nav .nav-link {
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 5px;
   text-decoration: none;
   font-size: 16px;
   color: var(--blue-color-1);
   transition: color 0.3s ease;
 }
 
-.navbar-nav .nav-link:hover {
-  color: var(--blue-color-2); /* Destaque ao passar o mouse */
+.nav-link:hover {
+  color: var(--blue-color-2);
 }
 
-/* Estilo do botão de alternância de tema */
+/* ---------- Botões à direita ---------- */
+.tools {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .theme-toggle {
+  background: none;
+  border: none;
   cursor: pointer;
-  display: inline-block;
-  transition: transform 0.3s ease;
   color: var(--blue-color-1);
+  font-size: 1rem;
+  transition: transform 0.3s ease, color 0.3s ease;
 }
 
 .theme-toggle:hover {
+  transform: scale(1.1);
   color: var(--blue-color-2);
-  transform: scale(1.1); /* Efeito de zoom ao passar o mouse */
 }
 
 .btn-logout {
+  display: flex;
+  align-items: center;
+  gap: 5px;
   background-color: var(--background-color);
   color: var(--blue-color-1);
   font-size: 16px;
-  padding: 3px 8px;
-  margin: 10px;
+  padding: 5px 10px;
   border: 1px solid var(--blue-color-1);
   border-radius: 10px;
-  outline: none;
+  cursor: pointer;
+  transition: color 0.3s ease, border-color 0.3s ease;
 }
 
 .btn-logout:hover {
@@ -66,25 +107,62 @@
   border-color: var(--blue-color-2);
 }
 
-/* Responsividade para telas pequenas */
+/* ---------- Responsivo ---------- */
 @media (max-width: 768px) {
   .navbar {
-      padding: 10px 15px;
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
   }
 
-  .navbar-nav {
-      display: flex;
-      flex-wrap: wrap; /* Permite quebrar a lista para a próxima linha */
-      justify-content: center; /* Centraliza os itens */
-      gap: 10px;
+  /* Exibe o botão do menu hambúrguer */
+  .menu-toggle {
+    display: flex;
+    margin-left: auto;
   }
 
-  .navbar-nav li {
-      margin: 5px; /* Adiciona margem entre os itens */
+  /* Oculta menus por padrão */
+  .navbar-nav,
+  .tools {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    margin-top: 10px;
+    gap: 10px;
   }
 
-  .navbar-nav .nav-link {
-      font-size: 14px; /* Reduz o tamanho da fonte */
-      padding: 5px; /* Reduz o padding */
+  /* Exibe quando a classe 'aberto' estiver presente */
+  .navbar.aberto .navbar-nav,
+  .navbar.aberto .tools {
+    display: flex;
+  }
+
+  .nav-link {
+    font-size: 15px;
+    padding: 6px 12px;
+  }
+
+  .tools {
+    flex-wrap: wrap;
+  }
+
+  .theme-toggle,
+  .btn-logout {
+    font-size: 0.95rem;
+    padding: 6px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--blue-color-1);
+    color: var(--blue-color-1);
+    background-color: transparent;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .theme-toggle:hover,
+  .btn-logout:hover {
+    color: var(--blue-color-2);
+    border-color: var(--blue-color-2);
   }
 }

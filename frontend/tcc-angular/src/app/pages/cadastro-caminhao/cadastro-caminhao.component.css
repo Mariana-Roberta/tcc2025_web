@@ -1,54 +1,57 @@
 /* Container geral */
 .cadastro-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    height: calc(100% - 85px); /* Garantir que ocupe a tela toda */
-    overflow: hidden;
-    position: relative;
-    background-color: var(--light-color); /* Cor de fundo suave */
-  }
-  
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 45px 0;
+
+  gap: 30px;
+  height: 100%; /* ✅ altura mínima para cobrir a tela inteira abaixo da navbar */
+  background-color: var(--light-color);
+}
+
+
   /* Formulário de login */
-  .form-container {
-    width: 40%; /* Reduzido para mais espaço no layout */
-    max-width: 500px;
-    background-color: var(--background-color); /* Fundo branco para destacar */
-    padding: 40px;
-    border-radius: 12px; /* Bordas arredondadas */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    justify-content: center;
-    z-index: 1;
-  }
-  
+.form-container {
+  width: 40%;
+  max-width: 500px;
+  height: auto;
+  background-color: var(--background-color);
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  justify-content: center;
+  z-index: 1;
+}
+
   h2 {
     font-size: 24px;
     margin-bottom: 20px;
     text-align: center;
     color: var(--text-color);
   }
-  
+
   /* Estilo do formulário */
   .form {
     display: flex;
     flex-direction: column;
     gap: 16px;
   }
-  
+
   .input-container {
     display: flex;
     flex-direction: column;
   }
-  
+
   label {
     font-size: 14px;
     color: var(--gray-color);
   }
-  
+
   input {
     padding: 12px;
     font-size: 16px;
@@ -57,11 +60,11 @@
     outline: none;
     transition: border-color 0.3s ease;
   }
-  
+
   input:focus {
     border-color: var(--blue-color-1); /* Destaque ao focar no campo */
   }
-  
+
   /* Botão customizado */
   .custom-button {
     padding: 12px;
@@ -74,26 +77,106 @@
     transition: background-color 0.3s ease;
     width: 80%;
   }
-  
+
   .custom-button:hover {
     background-color: var(--blue-color-2); /* Efeito de hover */
   }
-  
+
+/* Container da tabela */
+.tabela-container {
+  width: 50%;
+  max-width: 700px;
+  padding: 20px;
+  background-color: var(--background-color);
+  border-radius: 12px;
+  margin-left: 30px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+/* Título da tabela */
+.tabela-titulo {
+  font-size: 20px;
+  margin-bottom: 16px;
+  color: var(--text-color);
+  font-weight: 600;
+}
+
+/* Estilo da tabela */
+.custom-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+}
+
+.custom-table thead {
+  background-color: var(--blue-color-1);
+  color: white;
+}
+
+.custom-table th,
+.custom-table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.custom-table tr:nth-child(even) {
+  background-color: var(--light-color);
+}
+
+/* Botão de exclusão */
+.btn-excluir {
+  padding: 6px 12px;
+  background-color: transparent;
+  color: var(--blue-color-1);
+  border: 1px solid var(--blue-color-1);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: 0.3s;
+}
+
+.btn-excluir:hover {
+  background-color: var(--blue-color-2);
+  color: white;
+}
+
   /* Responsividade */
   @media (max-width: 768px) {
     .cadastro-container {
       flex-direction: column;
     }
-  
+
     .background {
       display: none; /* Esconder a imagem em telas pequenas */
     }
-  
+
     .form-container {
       width: 80%; /* Aumentar o formulário em telas pequenas */
     }
+
+    .cadastro-container {
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .tabela-container {
+      width: 90%;
+      margin-left: 0;
+      margin-top: 30px;
+    }
+
+    .custom-table {
+      font-size: 14px;
+    }
+
+    .btn-excluir {
+      padding: 4px 8px;
+      font-size: 12px;
+    }
   }
-  
+
 
   /* Container do fundo */
 .screen__background {
@@ -105,14 +188,14 @@
     z-index: 0;
     overflow: hidden;
   }
-  
+
   /* Formas no fundo */
   .screen__background__shape {
     position: absolute;
     border-radius: 72px; /* Borda arredondada */
     opacity: 0.8; /* Transparência para mesclar as formas */
   }
-  
+
   .screen__background__shape1 {
     height: 650px;
     width: 650px;
@@ -120,7 +203,7 @@
     top: 120px;
     right: -260px;
   }
-  
+
   .screen__background__shape2 {
     height: 200px;
     width: 250px;
@@ -128,7 +211,7 @@
     top: 50px;
     right: 250px;
   }
-  
+
   .screen__background__shape3 {
     height: 400px;
     width: 300px;
@@ -136,7 +219,7 @@
     top: 300px;
     left: 200px;
   }
-  
+
   .screen__background__shape4 {
     height: 320px;
     width: 180px;
@@ -144,7 +227,7 @@
     top: 600px;
     right: 70px;
   }
-  
+
   .screen__background__shape5 {
     height: 500px;
     width: 350px;
@@ -152,7 +235,7 @@
     bottom: 50px;
     left: 100px;
   }
-  
+
   .screen__background__shape6 {
     height: 450px;
     width: 450px;
@@ -161,4 +244,64 @@
     right: -100px;
     opacity: 0.7; /* Transparência para dar um efeito suave */
   }
-  
+
+/* NOVO: Agrupamento horizontal para inputs */
+.input-row {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.input-row .input-container {
+  flex: 1;
+  min-width: 120px;
+}
+
+/* Ajuste do botão customizado */
+.custom-button {
+  padding: 12px;
+  background-color: var(--blue-color-1);
+  color: white;
+  font-size: 16px;
+  border: none;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+  max-width: 300px;
+  align-self: center;
+}
+
+.custom-button:hover {
+  background-color: var(--blue-color-2);
+  transform: scale(1.03);
+}
+
+/* NOVO: Input de filtro */
+.input-container input[type="text"],
+.input-container input[type="number"] {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 10px;
+  font-size: 14px;
+  transition: border-color 0.3s;
+}
+
+.input-container input:focus {
+  border-color: var(--blue-color-1);
+  outline: none;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  .input-row {
+    flex-direction: column;
+  }
+
+  .form-container,
+  .tabela-container {
+    width: 90%;
+    margin: 0 auto;
+  }
+}

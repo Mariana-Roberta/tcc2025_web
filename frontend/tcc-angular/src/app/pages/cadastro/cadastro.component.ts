@@ -16,7 +16,6 @@ export class CadastroComponent {
   pessoa: Pessoa = {
     cnpj: '',
     razaoSocial: '',
-    nomeFantasia: '',
     telefone: ''
   };
 

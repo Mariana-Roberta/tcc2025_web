@@ -1,86 +1,92 @@
 <app-navbar></app-navbar>
+
 <div class="cadastro-container">
-    <div class="form-container">
-      <h2>Cadastro de Produtos</h2>
-      <div class="adiciona-arquivo">
-        <button class="custom-button"><i class="pi pi-truck" style="font-size: 0.7rem; margin-right: 5px;"></i>Selecionar Arquivo</button>
-      </div>
+  <!-- FORMULÁRIO -->
+  <div class="form-container">
+    <h2>Cadastro de Produto</h2>
+
+    <form class="form">
+    <!-- Botão de importar CSV -->
+    <label for="csvFile" class="custom-button" style="text-align: center; margin-top: 0;">
+      <i class="pi pi-upload"></i> Importar CSV
+      <input
+        id="csvFile"
+        type="file"
+        accept=".csv"
+        (change)="importarCSV($event)"
+        style="display: none;"
+      />
+    </label>
       <p>ou</p>
-      <div class="form">
-        <div class="input-container">
-            <label for="nome">Nome</label>
-            <input id="nome" type="text" placeholder="Informe o nome do produto" required />
-          </div>
-
-        <div class="input-container">
-            <label for="comprimento">Comprimento (metros)</label>
-            <input id="comprimento" type="number" placeholder="Digite o comprimento do produto" required />
-          </div>
-
-        <div class="input-container">
-          <label for="altura">Altura (metros)</label>
-          <input id="altura" type="number" placeholder="Digite a altura do produto" required />
-        </div>
-  
-        <div class="input-container">
-          <label for="largura">Largura (metros)</label>
-          <input id="largura" type="number" placeholder="Digite a largura do produto" required />
-        </div>
-  
-        <button class="custom-button" type="submit">Adicionar</button>
+      <div class="input-container">
+        <label for="nome">Nome</label>
+        <input id="nome" type="text" placeholder="Digite o nome do produto" required />
       </div>
+      <div class="input-container">
+        <label for="peso">Peso (kg)</label>
+        <input id="peso" type="number" placeholder="Digite o peso" required />
+      </div>
+      <div class="input-container">
+        <label for="comprimento">Comprimento (metros)</label>
+        <input id="comprimento" type="number" placeholder="Digite o comprimento do caminhão" required />
+      </div>
+      <div class="input-container">
+        <label for="altura">Altura (metros)</label>
+        <input id="altura" type="number" placeholder="Digite a altura do caminhão" required />
+      </div>
+      <div class="input-container">
+        <label for="largura">Largura (metros)</label>
+        <input id="largura" type="number" placeholder="Digite a largura do caminhão" required />
+      </div>
+      <button class="custom-button" type="submit">
+        <i class="pi pi-plus-circle"></i> Cadastrar
+      </button>
+    </form>
+  </div>
+
+  <!-- TABELA -->
+  <div class="tabela-container">
+    <h3 class="tabela-titulo">Produtos Cadastrados</h3>
+    <p style="text-align: center; max-width: 70%">Para continuar o fluxo de otimização, selecione um caminhão da lista abaixo e continue para Otimização.</p>
+    <!-- Dropdown de caminhões -->
+    <div class="input-container" style="margin-bottom: 20px;">
+      <label for="caminhao">Selecionar Caminhão:</label>
+      <select id="caminhao" [(ngModel)]="caminhaoSelecionado" class="dropdown-caminhao">
+        <option value="" disabled selected>Escolha um caminhão</option>
+        <option *ngFor="let caminhao of caminhoes" [value]="caminhao.nome">
+          {{ caminhao.nome }}
+        </option>
+      </select>
     </div>
-    <div class="tabela-container">
-        <button class="custom-button" style="background-color: var(--blue-color-2);">Finalizar</button>
-        <table class="custom-table">
+    <div class="table-wrapper">
+      <table class="custom-table">
         <thead>
-            <tr>
-            <th>Nome</th>
-            <th>Comprimento (m)</th>
-            <th>Altura (m)</th>
-            <th>Largura (m)</th>
-            <th>Ações</th>
-            </tr>
+        <tr>
+          <th>Nome</th>
+          <th>Peso (kg)</th>
+          <th>Comprimento (m)</th>
+          <th>Largura (m)</th>
+          <th>Altura (m)</th>
+          <th>Ações</th>
+        </tr>
         </thead>
         <tbody>
-            <tr>
-            <td>Nome</td>
-            <td>C</td>
-            <td>A</td>
-            <td>L</td>
-            <td><button>Excluir</button></td>
-            </tr>
-            <tr>
-            <td>Nome</td>
-            <td>C</td>
-            <td>A</td>
-            <td>L</td>
-            <td><button>Excluir</button></td>
-            </tr>
-            <tr>
-            <td>Nome</td>
-            <td>C</td>
-            <td>A</td>
-            <td>L</td>
-            <td><button>Excluir</button></td>
-            </tr>
-            <tr>
-            <td>Nome</td>
-            <td>C</td>
-            <td>A</td>
-            <td>L</td>
-            <td><button>Excluir</button></td>
-            </tr>
-            <tr>
-            <td>Nome</td>
-            <td>C</td>
-            <td>A</td>
-            <td>L</td>
-            <td><button>Excluir</button></td>
-            </tr>
+        <tr *ngFor="let produto of produtos; let i = index">
+          <td>{{ produto.nome }}</td>
+          <td>{{ produto.peso }}</td>
+          <td>{{ produto.comprimento }}</td>
+          <td>{{ produto.largura }}</td>
+          <td>{{ produto.altura }}</td>
+          <td>
+            <button class="btn-excluir" (click)="excluirProduto(i)">
+              <i class="pi pi-trash"></i> Excluir
+            </button>
+          </td>
+        </tr>
         </tbody>
-        </table>
+      </table>
     </div>
-    
-    
+
+    <button class="custom-button" (click)="continuar()">Continuar para Otimização</button>
+  </div>
 </div>

@@ -28,15 +28,15 @@
     display: flex;
     flex-direction: column;
   }
-  
+
   label {
     font-size: 14px;
     color: var(--blue-color-1);
     margin-bottom: 5px;
     font-weight: bold;
-    
+
   }
-  
+
   input {
     background-color: var(--background-color);
     padding: 12px 15px;
@@ -45,26 +45,26 @@
     border-radius: 16px;
     outline: none;
     transition: border-color 0.3s ease-in-out;
-    
+
     /* Adiciona sombra suave ao focar no input */
     &:focus {
       border-color: var(--primary-color);
       box-shadow: 0 0 8px rgba(74, 144, 226, 0.3);
     }
-  
+
     /* Adiciona espaçamento interno (padding) para os textos não ficarem colados */
     &::placeholder {
       color: #aaa;
       font-size: 16px;
     }
-  
+
     /* Ajuste para tamanho adequado em dispositivos móveis */
     @media (max-width: 768px) {
       font-size: 14px;
       padding: 10px;
     }
   }
-  
+
   input:disabled {
     background-color: #f5f5f5;
     border-color: #ddd;
@@ -80,9 +80,9 @@
     font-size: 16px;
     transition: transform 0.1s ease;
 
-    
+
   }
-  
+
   .custom-button:hover {
     background-color: var(--blue-color-2);
     transform: scale(1.005);
@@ -114,7 +114,7 @@
     width: 20%;
 
   }
-  
+
 
   a {
     color: var(--blue-color-2);

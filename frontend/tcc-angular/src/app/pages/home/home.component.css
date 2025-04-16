@@ -1,145 +1,276 @@
-
-  /* Container da Home */
-  .home-container {
-    display: flex;
-    justify-content: left;
-    align-items: top;
-    width: 100%;
-    height: calc(100vh - 85px);
-    background-color: var(--light-color);
-    overflow: hidden;
-  }
-  
-  /* Conteúdo da Home */
-  .home-content {
-    z-index: 1;
-    text-align: left;
-    padding: 40px;
-    width: 100%;
-    
-    background-image: url('../../../assets/images/login_truck.png');
-    background-size: auto 100%;
-    background-position: right bottom;
-    background-repeat: no-repeat; /* Impede a repetição da imagem */
-    background-attachment: scroll; /* Evita bugs no mobile */
-  }
-  
-  .home-content h1 {
-    font-size: 28px;
-    color: var(--blue-color-1);
-    margin-bottom: 20px;
-    width: auto;
-  }
-  
-  .home-content p {
-    font-size: 18px;
-    color: var(--text-color);
-    margin-bottom: 30px;
-    width: auto;
-  }
-
-  .home-content h1,
-.home-content p {
-   display: inline-block;
+/* --------- Container Principal --------- */
+.home-container {
+  display: flex;
+  width: 100%;
+  height: 100vh;
+  background-color: var(--light-color);
+  overflow: hidden;
+  position: relative;
 }
 
-  /* Botão customizado */
-  .custom-button {
-    padding: 12px 20px;
-    background-color: var(--blue-color-1);
-    color: white;
-    font-size: 16px;
-    border: none;
-    border-radius: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .custom-button:hover {
-    background-color: var(--blue-color-2); /* Efeito de hover */
-  }
+/* ----------- Sidebar (Desktop) ----------- */
+.sidebar {
+  width: 250px;
+  height: 100%;
+  background-color: var(--blue-color-3);
+  padding: 40px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 30px;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  position: relative;
+  z-index: 2;
+}
 
-  .info {
-    padding: 18px;
- 
-    width: 60%;
-    border-radius: 20px;
-    height: 80%;
-  }
+.sidebar-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: var(--blue-color-1);
+  text-align: center;
+  margin: 20px 0;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
 
-  .card-1, .card-2, .card-3 {
-    padding: 18px;
-    background-color: var(--blue-color-3);
-    color: var(--blue-color-1);
-    width: 20%;
-    border-radius: 20px;
-    margin: 20px 10px 0 0;
-    display: inline-block;
-  }
-  
+.sidebar-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
 
-  h2 {
-    font-size: 20px;
-  }
+.item-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 16px;
+  color: var(--blue-color-1);
+  text-decoration: none;
+  padding: 10px 15px;
+  border-radius: 12px;
+  transition: background-color 0.2s, color 0.3s;
+}
 
-  @media (max-width: 768px) {
-    .home-container {
-        justify-content: center;
-    }
-    .home-content {
-        width: 100%;
-        padding: 0;
-      }
+.item-link:hover {
+  background-color: var(--blue-color-2);
+  color: white;
+}
 
-      img {
-        display: block;
-        width: 100%;
-        height: auto;
-      }
+.item-link i {
+  font-size: 1.2rem;
+}
 
-      .home-content h1 {
-        padding: 0 20px;
-        font-size: 20px;
-      }
-      
-      .home-content p {
-        padding: 0 20px;
-        margin: 10px 0;
-        font-size: 16px;
-      }
+/* ---------- Conteúdo Principal ---------- */
+.info {
+  flex-grow: 1;
+  padding: 40px;
+  z-index: 1;
+  background-image: url('../../../assets/images/login_truck.png');
+  background-size: auto 100%;
+  background-position: right bottom;
+  background-repeat: no-repeat;
+  background-color: var(--background-color);
+}
 
-      button {
-        align-self: center;
-        margin: 10px 20px;
-        padding: 14px;
-        width: 40%;
-      }
+.info h1 {
+  font-size: 2rem;
+  color: var(--blue-color-1);
+  margin-bottom: 20px;
+  font-weight: bold;
+}
 
-  }
+.info p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 30px;
+  color: var(--text-color);
+  max-width: 60%;
+}
 
-   /* Container do fundo */
+/* Lista de benefícios */
+.info-benefits {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 30px;
+}
+
+.info-benefits li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1rem;
+  margin-bottom: 12px;
+  color: var(--blue-color-1);
+}
+
+.info-benefits i {
+  color: var(--blue-color-2);
+  font-size: 1.1rem;
+}
+
+/* Botão principal */
+.primary-button {
+  background-color: var(--blue-color-1);
+  color: white;
+  font-size: 1rem;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.primary-button:hover {
+  background-color: var(--blue-color-2);
+}
+
+/* Botão genérico */
+.custom-button {
+  padding: 10px 20px;
+  background-color: var(--blue-color-1);
+  color: white;
+  font-size: 16px;
+  border: none;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 10px;
+}
+
+.custom-button:hover {
+  background-color: var(--blue-color-2);
+}
+
+/* Plano de fundo */
 .screen__background {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
   z-index: 0;
   overflow: hidden;
-}
-
-/* Formas no fundo */
-.screen__background__shape {
-  position: absolute;
-  border-radius: 48px; /* Borda arredondada */
-  opacity: 0.8; /* Transparência para mesclar as formas */
 }
 
 .screen__background__shape1 {
   height: 650px;
   width: 800px;
-  background: var(--blue-color-2); /* Tom de laranja/vermelho */
+  background: var(--blue-color-2);
   top: 150px;
   right: -260px;
   opacity: 0.6;
+  border-radius: 48px;
+}
+
+/* ---------- Responsivo ---------- */
+@media (max-width: 768px) {
+  .home-container {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    height: auto;
+    padding: 10px;
+    flex-direction: row;
+    justify-content: center;
+    gap: 15px;
+    box-shadow: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    background-color: var(--blue-color-3);
+  }
+
+  .sidebar-content {
+    flex-direction: row;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .item-link span {
+    display: none;
+  }
+
+  .item-link {
+    justify-content: center;
+    padding: 10px;
+  }
+
+  .item-link i {
+    font-size: 1.4rem;
+  }
+
+  .info {
+    position: relative;
+    flex-grow: 1;
+    padding: 40px 20px;
+    z-index: 1;
+    background-image: url('../../../assets/images/login_truck.png');
+    background-size: contain;
+    background-position: bottom center;
+    background-repeat: no-repeat;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    overflow: hidden;
+    background-color: var(--background-color);
+  }
+
+  .info::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.8);
+    z-index: 0;
+  }
+
+  .info > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .info h1 {
+    font-size: 1.4rem;
+    margin-bottom: 16px;
+    max-width: 90%;
+  }
+
+  .info p {
+    font-size: 1rem;
+    margin-bottom: 24px;
+    max-width: 90%;
+  }
+
+  .info-benefits {
+    margin-bottom: 24px;
+    padding: 0;
+    width: 100%;
+    max-width: 400px;
+  }
+
+  .info-benefits li {
+    font-size: 0.95rem;
+    text-align: left;
+    padding: 8px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+
+  .info-benefits i {
+    font-size: 1rem;
+    margin-right: 10px;
+    color: var(--blue-color-2);
+  }
+
+  .primary-button {
+    font-size: 0.95rem;
+    padding: 12px 24px;
+    width: auto;
+    max-width: 300px;
+    margin-bottom: 40px;
+    z-index: 2;
+  }
 }

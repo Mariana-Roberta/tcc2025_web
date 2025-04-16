@@ -8,6 +8,7 @@ import { CadastroComponent } from './pages/cadastro/cadastro.component';
 import { CadastroCaminhaoComponent } from './pages/cadastro-caminhao/cadastro-caminhao.component';
 import { CadastroProdutosComponent } from './pages/cadastro-produtos/cadastro-produtos.component';
 import { PerfilComponent } from './pages/perfil/perfil.component';
+import {RealizaOtimizacaoComponent} from './pages/realiza-otimizacao/realiza-otimizacao.component';
 
 export const routes: Routes = [
     { path: '', component: LoginComponent },
@@ -16,6 +17,7 @@ export const routes: Routes = [
     { path: 'perfil', component: PerfilComponent },
     { path: 'cadastro-caminhao', component: CadastroCaminhaoComponent },
     { path: 'cadastro-produtos', component: CadastroProdutosComponent },
+    { path: 'realiza-otimizacao', component: RealizaOtimizacaoComponent },
     { path: 'calcula', component: CalculaComponent },
     { path: 'visualiza', component: VisualizaComponent },
     { path: 'sobre', component: SobreComponent },
