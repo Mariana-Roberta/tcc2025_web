@@ -1,54 +1,7 @@
-
-.logo-area {
-  display: flex;
-  align-items: center;
-}
-
-.logo-box {
-  background-color: var(--light-color);
-  border-radius: 12px;
-  padding: 6px 10px;
-  margin-right: 10px;
-}
-
-.logo-x {
-  font-size: 1.5rem;
-  color: var(--accent-selected-color);
-  font-weight: bold;
-}
-
-.logo-text {
-  font-size: 1.5rem;
-  color: #163e68;
-  font-weight: 600;
-  margin: 0;
-}
-
-.green-x {
-  color: var(--accent-selected-color);
-}
-
 .home-container {
-  background-color: var(--background-color);
   min-height: 100vh;
   padding: 0 1rem;
   font-family: 'Segoe UI', sans-serif;
-}
-
-.top-bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1.5rem 0;
-}
-
-
-.user-section {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  color: var(--text-color);
-  font-weight: 500;
 }
 
 .welcome {

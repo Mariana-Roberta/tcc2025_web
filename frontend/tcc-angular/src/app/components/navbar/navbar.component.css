@@ -1,168 +1,64 @@
-/* ---------- Navbar Base ---------- */
-.navbar {
-  background-color: var(--background-color);
-  padding: 12px 20px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  position: sticky;
-  top: 0;
-  width: auto;
-  z-index: 1000;
-  flex-wrap: wrap;
-}
-
-/* ---------- Cabeçalho com Logo + Botão de Menu ---------- */
-.navbar-header {
+.logo-area {
   display: flex;
   align-items: center;
-  gap: 12px;
 }
 
-/* ---------- Logo ---------- */
-.logo {
-  color: var(--blue-color-2);
+.logo-box {
+  background-color: var(--light-color);
+  border-radius: 12px;
+  padding: 6px 10px;
+  margin-right: 10px;
+}
+
+.logo-x {
   font-size: 1.5rem;
+  color: var(--accent-selected-color);
+  font-weight: bold;
+}
+
+.logo-text {
+  font-size: 1.5rem;
+  color: #163e68;
   font-weight: 600;
   margin: 0;
 }
 
-/* ---------- Ícone do Menu Hamburguer ---------- */
-.menu-toggle {
-  background: none;
-  border: none;
-  font-size: 1.8rem;
-  color: var(--blue-color-1);
-  cursor: pointer;
-  display: none;
-  align-items: center;
+.green-x {
+  color: var(--accent-selected-color);
 }
 
-/* ---------- Navegação ---------- */
-.navbar-nav {
+
+.top-bar {
   display: flex;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  gap: 20px;
-}
-
-.nav-item {
-  display: flex;
+  justify-content: space-between;
   align-items: center;
+  padding: 1.5rem 2rem;
 }
 
-.nav-link {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  text-decoration: none;
-  font-size: 16px;
-  color: var(--blue-color-1);
-  transition: color 0.3s ease;
-}
-
-.nav-link:hover {
-  color: var(--blue-color-2);
-}
-
-/* ---------- Botões à direita ---------- */
-.tools {
+.user-section {
   display: flex;
   align-items: center;
   gap: 10px;
+  color: var(--text-color);
+  font-weight: 500;
 }
 
-.theme-toggle {
-  background: none;
+.btn-otimizar {
+  background: linear-gradient(135deg, var(--accent-selected-color), #0dd98c);
   border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  color: white;
+  font-size: 0.95rem;
   cursor: pointer;
-  color: var(--blue-color-1);
-  font-size: 1rem;
-  transition: transform 0.3s ease, color 0.3s ease;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(16, 198, 111, 0.3);
+  margin-right: 20px;
 }
 
-.theme-toggle:hover {
-  transform: scale(1.1);
-  color: var(--blue-color-2);
+.btn-otimizar:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 14px rgba(16, 198, 111, 0.4);
 }
 
-.btn-logout {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  background-color: var(--background-color);
-  color: var(--blue-color-1);
-  font-size: 16px;
-  padding: 5px 10px;
-  border: 1px solid var(--blue-color-1);
-  border-radius: 10px;
-  cursor: pointer;
-  transition: color 0.3s ease, border-color 0.3s ease;
-}
-
-.btn-logout:hover {
-  color: var(--blue-color-2);
-  border-color: var(--blue-color-2);
-}
-
-/* ---------- Responsivo ---------- */
-@media (max-width: 768px) {
-  .navbar {
-    flex-direction: column;
-    align-items: stretch;
-    text-align: center;
-  }
-
-  /* Exibe o botão do menu hambúrguer */
-  .menu-toggle {
-    display: flex;
-    margin-left: auto;
-  }
-
-  /* Oculta menus por padrão */
-  .navbar-nav,
-  .tools {
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    margin-top: 10px;
-    gap: 10px;
-  }
-
-  /* Exibe quando a classe 'aberto' estiver presente */
-  .navbar.aberto .navbar-nav,
-  .navbar.aberto .tools {
-    display: flex;
-  }
-
-  .nav-link {
-    font-size: 15px;
-    padding: 6px 12px;
-  }
-
-  .tools {
-    flex-wrap: wrap;
-  }
-
-  .theme-toggle,
-  .btn-logout {
-    font-size: 0.95rem;
-    padding: 6px 12px;
-    border-radius: 20px;
-    border: 1px solid var(--blue-color-1);
-    color: var(--blue-color-1);
-    background-color: transparent;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .theme-toggle:hover,
-  .btn-logout:hover {
-    color: var(--blue-color-2);
-    border-color: var(--blue-color-2);
-  }
-}

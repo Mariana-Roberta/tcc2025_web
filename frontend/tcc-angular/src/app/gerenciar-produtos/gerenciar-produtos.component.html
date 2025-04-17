@@ -1,0 +1,59 @@
+<app-navbar></app-navbar>
+<div class="container-gerenciar">
+  <div class="background">
+  <div class="top-bar">
+    <h1>Gerenciar Produtos</h1>
+    <button class="btn-adicionar" (click)="exibirFormulario()">+ Adicionar Produto</button>
+  </div>
+
+  <div *ngIf="mostrarFormulario" class="form-container">
+    <form (ngSubmit)="adicionarOuEditarProduto()" #form="ngForm">
+      <div class="input-container">
+        <input type="text" name="nome" [(ngModel)]="novoProduto.nome" placeholder="Nome do Produto" required />
+      </div>
+
+      <div class="input-container">
+        <input type="text" name="codigo" [(ngModel)]="novoProduto.codigo" placeholder="Código" required />
+      </div>
+
+      <div class="input-container">
+        <select name="caminhaoPlaca" [(ngModel)]="novoProduto.caminhaoPlaca" required>
+          <option value="" disabled selected>Selecione um caminhão</option>
+          <option *ngFor="let caminhao of caminhoes" [value]="caminhao.placa">
+            {{ caminhao.modelo }} - {{ caminhao.placa }}
+          </option>
+        </select>
+      </div>
+
+      <button type="submit" [disabled]="form.invalid">
+        {{ modoEdicao ? 'Salvar Alterações' : 'Salvar' }}
+      </button>
+      <button type="button" (click)="cancelar()">Cancelar</button>
+    </form>
+  </div>
+
+  <h2>Lista de Produtos</h2>
+  <table class="tabela-produtos">
+    <thead>
+    <tr>
+      <th>Nome</th>
+      <th>Código</th>
+      <th>Caminhão</th>
+      <th>Ações</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let produto of produtos; let i = index">
+      <td>{{ produto.nome }}</td>
+      <td>{{ produto.codigo }}</td>
+      <td>{{ produto.caminhaoPlaca }}</td>
+      <td>
+        <button (click)="editarProduto(produto, i)">Editar</button>
+        <button (click)="excluirProduto(produto)">Excluir</button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+</div>
+<app-screen-background></app-screen-background>

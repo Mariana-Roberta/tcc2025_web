@@ -8,8 +8,5 @@ import { Component } from '@angular/core';
   styleUrl: './navbar.component.css'
 })
 export class NavbarComponent {
-  menuAberto: boolean = false;
-
-  constructor() {}
 }
 

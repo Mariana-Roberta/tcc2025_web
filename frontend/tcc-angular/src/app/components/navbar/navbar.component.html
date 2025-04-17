@@ -1,20 +1,12 @@
-<nav class="navbar" [class.aberto]="menuAberto">
-  <div class="navbar-header">
-    <h3 class="logo">GerencieX</h3>
-    <button class="menu-toggle" (click)="menuAberto = !menuAberto">
-      <i class="pi pi-list"></i>
-    </button>
+<div class="top-bar">
+  <div class="logo-area">
+    <div class="logo-box">
+      <span class="logo-x">X</span>
+    </div>
+    <h1 class="logo-text">Gerencie<span class="green-x">X</span></h1>
   </div>
-
-
-  <ul class="navbar-nav">
-    <li class="nav-item"><a class="nav-link"><i class="pi pi-info-circle"></i> Sobre</a></li>
-    <li class="nav-item"><a class="nav-link"><i class="pi pi-id-card"></i> Contato</a></li>
-    <li class="nav-item"><a class="nav-link"><i class="pi pi-user"></i> Perfil</a></li>
-  </ul>
-
-  <div class="tools">
-    <button class="theme-toggle"><i class="pi pi-moon"></i></button>
-    <button class="btn-logout"><i class="pi pi-power-off"></i> Sair</button>
+  <div class="user-section">
+    <button class="btn-otimizar">Otimizar</button>
+    <span class="username">João</span>
   </div>
-</nav>
+</div>

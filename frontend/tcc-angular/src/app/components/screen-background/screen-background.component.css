@@ -1,0 +1,82 @@
+/* Container do fundo */
+.screen__background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* Formas no fundo */
+.screen__background__shape {
+  position: absolute;
+  border-radius: 72px;
+  opacity: 0.8;
+  animation: float 8s ease-in-out infinite;
+}
+
+/* Responsivo com unidades relativas */
+
+.screen__background__shape1 {
+  width: 60vw;
+  height: 60vw;
+  max-width: 650px;
+  max-height: 650px;
+  background: var(--accent-color);
+  top: 10vh;
+  right: -25vw;
+}
+
+.screen__background__shape2 {
+  width: 20vw;
+  height: 16vw;
+  max-width: 250px;
+  max-height: 200px;
+  background: var(--blue-color-2);
+  top: 5vh;
+  right: 20vw;
+}
+
+.screen__background__shape3 {
+  width: 25vw;
+  height: 30vh;
+  max-width: 300px;
+  max-height: 400px;
+  background: var(--accent-color);
+  top: 35vh;
+  left: 10vw;
+}
+
+.screen__background__shape4 {
+  width: 16vw;
+  height: 30vh;
+  max-width: 180px;
+  max-height: 320px;
+  background: var(--blue-color-1);
+  top: 65vh;
+  right: 8vw;
+}
+
+.screen__background__shape5 {
+  width: 30vw;
+  height: 50vh;
+  max-width: 350px;
+  max-height: 500px;
+  background: var(--blue-color-1);
+  bottom: 6vh;
+  left: 4vw;
+}
+
+.screen__background__shape6 {
+  width: 35vw;
+  height: 35vw;
+  max-width: 450px;
+  max-height: 450px;
+  background: var(--blue-color-2);
+  bottom: 10vh;
+  right: -10vw;
+  opacity: 0.7;
+}

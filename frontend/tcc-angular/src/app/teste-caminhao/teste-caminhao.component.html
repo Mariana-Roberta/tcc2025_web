@@ -1,44 +1,59 @@
-<div class="cadastro-container">
-  <div class="form-right">
-  <img src="assets/icons/truck_icon.svg" alt="Caminhão" style="height: 100px"/>
-</div>
-  <h1>Cadastrar Caminhão</h1>
-  <p class="subtitulo">Preencha os dados para adicionar um novo caminhão à frota.</p>
+<app-navbar></app-navbar>
+<div class="container-gerenciar">
+<div class="background">
+  <h1 class="titulo">Gerenciar Caminhões</h1>
+  <button class="custom-alert-button" (click)="exibirFormulario()" style="font-weight: 600">+ Adicionar Caminhão</button>
 
-  <form class="form-box" (ngSubmit)="cadastrarCaminhao()" #form="ngForm">
-    <div class="form-left">
-      <div class="input-container">
-        <label for="nome">Nome</label>
-        <input id="nome" name="nome" type="text" required [(ngModel)]="caminhao.nome" />
-      </div>
+  <div *ngIf="mostrarFormulario" class="form-container">
+    <form (ngSubmit)="adicionarOuEditarCaminhao()" #form="ngForm">
+      <input type="text" name="modelo" [(ngModel)]="novoCaminhao.modelo" placeholder="Modelo" required />
+      <input type="text" name="placa" [(ngModel)]="novoCaminhao.placa" placeholder="Placa" required />
+      <input type="number" name="ano" [(ngModel)]="novoCaminhao.ano" placeholder="Ano" required />
 
-      <div class="input-container">
-        <label for="placa">Placa</label>
-        <input id="placa" name="placa" type="text" required [(ngModel)]="caminhao.placa" />
+      <div class="botoes-formulario">
+        <button type="submit" class="btn-salvar" [disabled]="form.invalid">
+          {{ modoEdicao ? 'Salvar Alterações' : 'Salvar' }}
+        </button>
+        <button type="button" class="btn-cancelar" (click)="cancelarAdicao()">Cancelar</button>
       </div>
+    </form>
+  </div>
 
-      <div class="input-container">
-        <label for="capacidade">Capacidade <small>(em m³)</small></label>
-        <input id="capacidade" name="capacidade" type="number" min="0" required [(ngModel)]="caminhao.capacidade" />
-      </div>
-      <div class="input-container">
-        <label for="comprimento">Comprimento <small>(em m)</small></label>
-        <input id="comprimento" name="comprimento" type="number" min="0" required [(ngModel)]="caminhao.comprimento" />
-      </div>
+  <h2 class="subtitulo">Lista de Caminhões</h2>
+  <table class="tabela-caminhoes">
+    <thead>
+    <tr>
+      <th>Modelo</th>
+      <th>Placa</th>
+      <th>Ano</th>
+      <th>Ações</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let caminhao of caminhoesPaginados; let i = index">
+      <td data-label="Modelo">{{ caminhao.modelo }}</td>
+      <td data-label="Placa">{{ caminhao.placa }}</td>
+      <td data-label="Ano">{{ caminhao.ano }}</td>
+      <td data-label="Ações">
+        <div style="display: flex; gap: 10px">
+          <button class="acao-link" (click)="editarCaminhao(caminhao, i)">Editar</button>
+          <button class="acao-link excluir" (click)="excluirCaminhao(caminhao)">Excluir</button>
+        </div>
+      </td>
+    </tr>
+    </tbody>
 
-      <div class="input-container">
-        <label for="largura">Largura <small>(em m)</small></label>
-        <input id="largura" name="largura" type="number" min="0" required [(ngModel)]="caminhao.largura" />
-      </div>
-
-      <div class="input-container">
-        <label for="altura">Altura <small>(em m)</small></label>
-        <input id="altura" name="altura" type="number" min="0" required [(ngModel)]="caminhao.altura" />
-      </div>
-
-      <button type="submit" class="custom-alert-button">Cadastrar</button>
+  </table>
+    <div class="paginacao">
+      <button
+        *ngFor="let pagina of [].constructor(totalPaginas); let i = index"
+        (click)="mudarPagina(i + 1)"
+        [class.ativa]="paginaAtual === i + 1"
+      >
+        {{ i + 1 }}
+      </button>
     </div>
-
-
-  </form>
 </div>
+</div>
+
+<app-screen-background></app-screen-background>
