@@ -14,6 +14,7 @@ import {TesteLoginComponent} from './teste-login/teste-login.component';
 import {TesteHomeComponent} from './teste-home/teste-home.component';
 import {TesteCaminhaoComponent} from './teste-caminhao/teste-caminhao.component';
 import {GerenciarProdutosComponent} from './gerenciar-produtos/gerenciar-produtos.component';
+import { TesteLandingPageComponent } from './teste-landing-page/teste-landing-page.component';
 
 export const routes: Routes = [
     { path: '', component: LoginComponent },
@@ -30,5 +31,6 @@ export const routes: Routes = [
     { path: 'teste-login', component: TesteLoginComponent },
     { path: 'teste-home', component: TesteHomeComponent },
     { path: 'teste-caminhao', component: TesteCaminhaoComponent },
+    { path: 'teste-landing-page', component: TesteLandingPageComponent },
     { path: 'gerenciar-produtos', component: GerenciarProdutosComponent },
 ];
