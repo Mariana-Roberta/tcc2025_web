@@ -1,34 +1,28 @@
-<div class="login-container">
-    <div class="form-container">
+<div class="page-container">
+  <div class="form-container">
     <app-logo></app-logo>
-      <h2>Login</h2>
-      <div class="form">
-        <div class="input-container">
-          <label for="email">Email</label>
-          <input id="email" type="email" placeholder="Digite seu email" required />
-        </div>
 
-        <div class="input-container">
-          <label for="password">Senha</label>
-          <input id="password" type="password" placeholder="Digite sua senha" required />
-        </div>
+    <h2>Login</h2>
 
-        <button class="custom-button" type="submit">Entrar</button>
+    <form class="form">
+      <div class="input-container">
+        <label for="email">Email</label>
+        <input id="email" type="email" placeholder="Digite seu email" required />
       </div>
 
-      <div class="register">
-        <p>Não tem conta?</p>
-        <a id="resgister-link" href="#">Registrar</a>
+      <div class="input-container">
+        <label for="password">Senha</label>
+        <input id="password" type="password" placeholder="Digite sua senha" required />
       </div>
-    </div>
-    <div class="screen__background">
-        <span class="screen__background__shape screen__background__shape1"></span>
-        <span class="screen__background__shape screen__background__shape2"></span>
-        <span class="screen__background__shape screen__background__shape3"></span>
-        <span class="screen__background__shape screen__background__shape4"></span>
-        <span class="screen__background__shape screen__background__shape5"></span>
-        <span class="screen__background__shape screen__background__shape6"></span>
-    </div>
 
+      <button class="btn-primario" type="submit">Entrar</button>
+    </form>
+
+    <div class="register">
+      <p>Não tem conta? <a class="register-link">Registre-se aqui</a></p>
+    </div>
+  </div>
 </div>
+
 <app-footer></app-footer>
+<app-screen-background></app-screen-background>

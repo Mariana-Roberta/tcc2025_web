@@ -1,41 +1,97 @@
 <app-navbar></app-navbar>
-<div class="cadastro-container">
-    <div class="form-container">
-      <h2>Perfil</h2>
-      <p style="margin: 0; color: var(--gray-color);">Para atualizar seus dados substitua o texto dos campos abaixo</p>
-      <div class="form">
-        <div class="input-container">
-            <label for="name">Nome</label>
-            <input id="name" type="text" placeholder="Digite seu nome" required />
-          </div>
 
-        <div class="input-container">
-          <label for="email">Email</label>
-          <input id="email" type="email" placeholder="Digite seu email" required />
-        </div>
-  
-        <div class="input-container">
-          <label for="password">Senha</label>
-          <input id="password" type="password" placeholder="Digite sua senha" required />
-        </div>
+<div class="page-container">
+  <div class="perfil-card">
 
-        <div class="input-container">
-            <label for="confirm-password">Confirmar Senha</label>
-            <input id="confirm-password" type="password" placeholder="Confirme sua senha" required />
-          </div>
-  
-        <button class="custom-button" type="submit">Atualizar</button>
-        <button class="custom-button btn-delete" type="submit"><i class="pi pi-info-circle" style="font-size: 1rem; margin-right: 5px;"></i>Excluir Conta</button>
+    <!-- HEADER -->
+    <div class="perfil-header" *ngIf="modoAtual === 'perfil'">
+      <div class="perfil-avatar">
+        <i class="pi pi-user"></i>
+      </div>
+      <div class="perfil-info">
+        <h2>João da Silva</h2>
+        <p>Empresa: Transporte Rápido LTDA</p>
+        <p>Email: joao&#64;empresa.com.br</p>
+        <p>Telefone: (11) 91234-5678</p>
+      </div>
+    </div>
+
+    <!-- VISUALIZAR PERFIL -->
+    <div class="perfil-detalhes" *ngIf="modoAtual === 'perfil'">
+      <h3>Dados da Conta</h3>
+      <ul>
+        <li><strong>CNPJ:</strong> 12.345.678/0001-90</li>
+        <li><strong>Razão Social:</strong> Transporte Rápido LTDA</li>
+        <li><strong>Email:</strong> joao&#64;empresa.com.br</li>
+        <li><strong>Telefone:</strong> (11) 91234-5678</li>
+      </ul>
+    </div>
+
+    <!-- EDITAR PERFIL -->
+    <form class="form" *ngIf="modoAtual === 'editar'">
+      <h3>Editar Perfil</h3>
+
+      <div class="input-container">
+        <label for="razao">Razão Social</label>
+        <input id="razao" type="text" placeholder="Digite sua razão social" [(ngModel)]="usuario.razaoSocial" name="razao" />
       </div>
 
+      <div class="input-container">
+        <label for="email">Email</label>
+        <input id="email" type="email" placeholder="Digite seu email" [(ngModel)]="usuario.email" name="email" />
+      </div>
+
+      <div class="input-container">
+        <label for="telefone">Telefone</label>
+        <input id="telefone" type="text" placeholder="Digite seu telefone" [(ngModel)]="usuario.telefone" name="telefone" />
+      </div>
+
+      <div class="perfil-actions">
+        <button class="btn-sucesso" type="button" (click)="salvarEdicao()">Salvar</button>
+        <button class="btn-secundario" type="button" (click)="cancelar()">Cancelar</button>
+      </div>
+    </form>
+
+    <!-- ALTERAR SENHA -->
+    <form class="form" *ngIf="modoAtual === 'senha'">
+      <h3>Alterar Senha</h3>
+
+      <div class="input-container">
+        <label for="senhaAtual">Senha Atual</label>
+        <input id="senhaAtual" type="password" placeholder="Digite sua senha atual" name="senhaAtual" />
+      </div>
+
+      <div class="input-container">
+        <label for="novaSenha">Nova Senha</label>
+        <input id="novaSenha" type="password" placeholder="Digite a nova senha" name="novaSenha" />
+      </div>
+
+      <div class="input-container">
+        <label for="confirmaSenha">Confirmar Nova Senha</label>
+        <input id="confirmaSenha" type="password" placeholder="Confirme a nova senha" name="confirmaSenha" />
+      </div>
+
+      <div class="perfil-actions">
+        <button class="btn-sucesso" type="button" (click)="salvarSenha()">Salvar Senha</button>
+        <button class="btn-secundario" type="button" (click)="cancelar()">Cancelar</button>
+      </div>
+    </form>
+
+    <!-- AÇÕES GERAIS -->
+    <div class="perfil-actions" *ngIf="modoAtual === 'perfil'">
+      <button class="btn-primario" (click)="modoAtual = 'editar'">
+        <i class="pi pi-user-edit"></i> Editar Perfil
+      </button>
+      <button class="btn-secundario" (click)="modoAtual = 'senha'">
+        <i class="pi pi-lock"></i> Alterar Senha
+      </button>
+      <button class="btn-danger" (click)="sairConta()">
+        <i class="pi pi-sign-out"></i> Sair da Conta
+      </button>
     </div>
-    <div class="screen__background">
-        <span class="screen__background__shape screen__background__shape1"></span>
-        <span class="screen__background__shape screen__background__shape2"></span>
-        <span class="screen__background__shape screen__background__shape3"></span>
-        <span class="screen__background__shape screen__background__shape4"></span>
-        <span class="screen__background__shape screen__background__shape5"></span>
-        <span class="screen__background__shape screen__background__shape6"></span>
-    </div>
-    
+
+  </div>
 </div>
+
+<app-footer></app-footer>
+<app-screen-background></app-screen-background>

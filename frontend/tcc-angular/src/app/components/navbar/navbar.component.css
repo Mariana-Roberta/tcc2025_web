@@ -3,6 +3,19 @@
   align-items: center;
 }
 
+.logo-clickable {
+  display: flex;
+  align-items: center;
+  text-decoration: none; /* Garante que não haja sublinhado */
+  color: inherit; /* Mantém a cor padrão do texto */
+  cursor: pointer;
+}
+
+.logo-clickable:hover {
+  opacity: 0.8;
+}
+
+
 .logo-box {
   background-color: var(--light-color);
   border-radius: 12px;
@@ -42,23 +55,3 @@
   color: var(--text-color);
   font-weight: 500;
 }
-
-.btn-otimizar {
-  background: linear-gradient(135deg, var(--accent-selected-color), #0dd98c);
-  border: none;
-  padding: 8px 16px;
-  border-radius: 8px;
-  font-weight: 600;
-  color: white;
-  font-size: 0.95rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 10px rgba(16, 198, 111, 0.3);
-  margin-right: 20px;
-}
-
-.btn-otimizar:hover {
-  transform: scale(1.05);
-  box-shadow: 0 6px 14px rgba(16, 198, 111, 0.4);
-}
-

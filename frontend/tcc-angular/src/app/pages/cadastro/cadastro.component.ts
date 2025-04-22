@@ -1,37 +1,29 @@
 import { Component } from '@angular/core';
 import { FooterComponent } from '../../components/footer/footer.component';
-import {Pessoa} from '../../model/pessoa.model';
 import {Usuario} from '../../model/usuario.model';
 import {FormsModule} from '@angular/forms';
 import {UsuarioService} from '../../services/usuario.service';
-import {setMaxIdleHTTPParsers} from 'node:http';
+import {ScreenBackgroundComponent} from '../../components/screen-background/screen-background.component';
+import {LogoComponent} from '../../components/logo/logo.component';
 
 @Component({
   selector: 'app-cadastro',
-  imports: [FooterComponent, FormsModule],
+  imports: [FooterComponent, FormsModule, ScreenBackgroundComponent, LogoComponent],
   templateUrl: './cadastro.component.html',
   styleUrl: './cadastro.component.css'
 })
 export class CadastroComponent {
-  pessoa: Pessoa = {
-    cnpj: '',
-    razaoSocial: '',
-    telefone: ''
-  };
-
   usuario: Usuario = {
-    email: '',
-    password: '',
-    status: true,
-    perfil: 'CLIENTE', // valor inicial
-    idPessoa: 0 // será preenchido após cadastro de Pessoa
+    cnpj: '09.530.778/0001-01',
+    razaoSocial: 'Transporte Rápido LTDA',
+    telefone: '(11) 91234-5678',
+    email: 'joao@empresa.com.br',
+    password: '123'
   };
 
   constructor(private usuarioService: UsuarioService) {}
 
   salvar() {
-
-      this.usuario.idPessoa = 10;
 
     console.log(this.usuario)
     this.usuarioService.cadastrarUsuario(this.usuario).subscribe({

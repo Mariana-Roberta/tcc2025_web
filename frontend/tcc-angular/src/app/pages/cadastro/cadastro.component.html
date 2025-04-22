@@ -1,50 +1,59 @@
-<div class="cadastro-container">
+<div class="page-container">
   <div class="form-container">
+    <app-logo></app-logo>
+
     <h2>Cadastro</h2>
+
+    <div class="scroll-hint">
+      <i class="pi pi-angle-double-down"></i>
+      <span>Role para baixo para preencher o formulário</span>
+    </div>
+
     <form class="form" (ngSubmit)="salvar()">
+      <!-- DADOS DA EMPRESA -->
+      <fieldset class="form-section">
+        <legend>Dados da Empresa</legend>
 
-      <div class="input-container">
-        <label for="cnpj">CNPJ</label>
-        <input id="cnpj" name="cnpj" type="text" placeholder="Digite seu cnpj" required [(ngModel)]="pessoa.cnpj" />
-      </div>
+        <div class="input-container">
+          <label for="cnpj">CNPJ</label>
+          <input id="cnpj" name="cnpj" type="text" placeholder="Digite seu CNPJ" required [(ngModel)]="usuario.cnpj" />
+        </div>
 
-      <div class="input-container">
-        <label for="razao">Razão Social</label>
-        <input id="razao" name="razaoSocial" type="text" placeholder="Digite sua razão social" required [(ngModel)]="pessoa.razaoSocial" />
-      </div>
+        <div class="input-container">
+          <label for="razao">Razão Social</label>
+          <input id="razao" name="razaoSocial" type="text" placeholder="Digite sua razão social" required [(ngModel)]="usuario.razaoSocial" />
+        </div>
 
-      <div class="input-container">
-        <label for="telefone">Telefone</label>
-        <input id="telefone" name="telefone" type="text" placeholder="Digite seu telefone" required [(ngModel)]="pessoa.telefone" />
-      </div>
+        <div class="input-container">
+          <label for="telefone">Telefone</label>
+          <input id="telefone" name="telefone" type="text" placeholder="Digite seu telefone" required [(ngModel)]="usuario.telefone" />
+        </div>
+      </fieldset>
 
-      <div class="input-container">
-        <label for="email">Email</label>
-        <input id="email" name="email" type="email" placeholder="Digite seu email" required [(ngModel)]="usuario.email" />
-      </div>
+      <!-- DADOS DO USUÁRIO -->
+      <fieldset class="form-section">
+        <legend>Conta de Acesso</legend>
 
-      <div class="input-container">
-        <label for="senha">Senha</label>
-        <input id="senha" name="password" type="password" placeholder="Digite sua senha" required [(ngModel)]="usuario.password" />
-      </div>
+        <div class="input-container">
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" placeholder="Digite seu email" required [(ngModel)]="usuario.email" />
+        </div>
 
-      <div class="input-container">
-        <label for="confirm-password">Confirmar Senha</label>
-        <input id="confirm-password" name="confirmarSenha" type="password" placeholder="Confirme sua senha" required />
-      </div>
+        <div class="input-container">
+          <label for="senha">Senha</label>
+          <input id="senha" name="password" type="password" placeholder="Digite sua senha" required [(ngModel)]="usuario.password" />
+        </div>
 
-      <button class="custom-button" type="submit">Cadastrar</button>
+        <div class="input-container">
+          <label for="confirm-password">Confirmar Senha</label>
+          <input id="confirm-password" name="confirmarSenha" type="password" placeholder="Confirme sua senha" required />
+        </div>
+      </fieldset>
+
+      <button class="btn-primario" type="submit">Cadastrar</button>
     </form>
-  </div>
-
-  <div class="screen__background">
-    <span class="screen__background__shape screen__background__shape1"></span>
-    <span class="screen__background__shape screen__background__shape2"></span>
-    <span class="screen__background__shape screen__background__shape3"></span>
-    <span class="screen__background__shape screen__background__shape4"></span>
-    <span class="screen__background__shape screen__background__shape5"></span>
-    <span class="screen__background__shape screen__background__shape6"></span>
   </div>
 </div>
 
 <app-footer></app-footer>
+<app-screen-background></app-screen-background>

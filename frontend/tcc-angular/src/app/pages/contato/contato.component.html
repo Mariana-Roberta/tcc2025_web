@@ -1,0 +1,22 @@
+<app-navbar></app-navbar>
+
+<div class="page-container">
+  <div class="contato-card">
+    <h2>Desenvolvedores</h2>
+    <p>Entre em contato com os alunos responsáveis pelo projeto.</p>
+
+    <div class="cards-container">
+      <div class="card-dev" *ngFor="let dev of desenvolvedores">
+        <div class="dev-header">
+          <i class="pi pi-user icon-user"></i>
+          <h3>{{ dev.nome }}</h3>
+        </div>
+        <p><i class="pi pi-envelope"></i> <a [href]="'mailto:' + dev.email">{{ dev.email }}</a></p>
+        <p><i class="pi pi-github"></i> <a [href]="dev.github" target="_blank">{{ dev.github }}</a></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-footer></app-footer>
+<app-screen-background></app-screen-background>

@@ -1,164 +1,28 @@
-/* Container geral */
-.cadastro-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    height: 100vh; /* Garantir que ocupe a tela toda */
-    overflow: hidden;
-    position: relative;
-    background-color: var(--light-color); /* Cor de fundo suave */
-  }
-  
-  /* Formulário de login */
-  .form-container {
-    width: 40%; /* Reduzido para mais espaço no layout */
-    max-width: 500px;
-    background-color: var(--background-color); /* Fundo branco para destacar */
-    padding: 40px;
-    border-radius: 12px; /* Bordas arredondadas */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    justify-content: center;
-    z-index: 1;
-  }
-  
-  h2 {
-    font-size: 24px;
-    margin-bottom: 20px;
-    text-align: center;
-    color: var(--text-color);
-  }
-  
-  /* Estilo do formulário */
-  .form {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-  }
-  
-  .input-container {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  label {
-    font-size: 14px;
-    color: var(--gray-color);
-  }
-  
-  input {
-    padding: 12px;
-    font-size: 16px;
-    border: 1px solid #ddd;
-    border-radius: 16px;
-    outline: none;
-    transition: border-color 0.3s ease;
-  }
-  
-  input:focus {
-    border-color: var(--blue-color-1); /* Destaque ao focar no campo */
-  }
-  
-  /* Botão customizado */
-  .custom-button {
-    padding: 12px;
-    background-color: var(--blue-color-1);
-    color: white;
-    font-size: 16px;
-    border: none;
-    border-radius: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    width: 80%;
-  }
-  
-  .custom-button:hover {
-    background-color: var(--blue-color-2); /* Efeito de hover */
-  }
-  
-  /* Responsividade */
-  @media (max-width: 768px) {
-    .cadastro-container {
-      flex-direction: column;
-    }
-  
-    .background {
-      display: none; /* Esconder a imagem em telas pequenas */
-    }
-  
-    .form-container {
-      width: 80%; /* Aumentar o formulário em telas pequenas */
-    }
-  }
-  
+.form-section {
+  border: none;
+  padding: 0;
+  margin-bottom: 20px;
+  border: none;
+}
 
-  /* Container do fundo */
-.screen__background {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 0;
-    overflow: hidden;
-  }
-  
-  /* Formas no fundo */
-  .screen__background__shape {
-    position: absolute;
-    border-radius: 72px; /* Borda arredondada */
-    opacity: 0.8; /* Transparência para mesclar as formas */
-  }
-  
-  .screen__background__shape1 {
-    height: 650px;
-    width: 650px;
-    background: var(--accent-color); /* Tom de laranja/vermelho */
-    top: 120px;
-    right: -260px;
-  }
-  
-  .screen__background__shape2 {
-    height: 200px;
-    width: 250px;
-    background: var(--blue-color-2); /* Tom de roxo */
-    top: 50px;
-    right: 250px;
-  }
-  
-  .screen__background__shape3 {
-    height: 400px;
-    width: 300px;
-    background: var(--accent-color); /* Tom de laranja/vermelho */
-    top: 300px;
-    left: 200px;
-  }
-  
-  .screen__background__shape4 {
-    height: 320px;
-    width: 180px;
-    background: var(--blue-color-1); /* Tom de azul */
-    top: 600px;
-    right: 70px;
-  }
-  
-  .screen__background__shape5 {
-    height: 500px;
-    width: 350px;
-    background: var(--blue-color-1); /* Tom de verde */
-    bottom: 50px;
-    left: 100px;
-  }
-  
-  .screen__background__shape6 {
-    height: 450px;
-    width: 450px;
-    background: var(--blue-color-2); /* Tom de roxo */
-    bottom: 100px;
-    right: -100px;
-    opacity: 0.7; /* Transparência para dar um efeito suave */
-  }
-  
+.form-section legend {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--blue-color-1);
+  margin-bottom: 12px;
+}
+
+.scroll-hint {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 14px;
+  color: var(--gray-color);
+  margin-bottom: 12px;
+  animation: fadeScrollHint 1.6s ease-in-out infinite;
+}
+
+.scroll-hint i {
+  font-size: 22px;
+  margin-bottom: 4px;
+}

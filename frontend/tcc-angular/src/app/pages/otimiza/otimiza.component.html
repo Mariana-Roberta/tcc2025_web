@@ -1,0 +1,78 @@
+<app-navbar></app-navbar>
+
+<div class="page-container">
+  <div class="container">
+    <h1>Otimização</h1>
+    <p class="intro-text">
+      <strong>Passo 1:</strong> Selecione um caminhão da lista. <br />
+      <strong>Passo 2:</strong> Escolha os produtos que deseja transportar.
+    </p>
+
+    <div class="section-container">
+      <!-- Caminhões -->
+      <section class="card selecao-card">
+        <h3><i class="pi pi-truck"></i> Escolha um Caminhão</h3>
+        <div class="caminhoes-lista">
+          <div
+            class="caminhao-card horizontal"
+            *ngFor="let caminhao of caminhoes"
+            [class.ativo]="caminhaoSelecionado?.placa === caminhao.placa"
+            (click)="selecionarCaminhao(caminhao)"
+          >
+            <div class="card-left">
+              <i class="pi pi-truck"></i>
+              <strong>{{ caminhao.modelo }}</strong>
+            </div>
+            <div class="card-right">
+              <span class="badge">{{ caminhao.placa }}</span>
+              <span class="badge">{{ caminhao.comprimento }}m × {{ caminhao.largura }}m × {{ caminhao.altura }}m</span>
+              <span class="badge">{{ caminhao.pesoLimite / 1000 }}t</span>
+              <i class="pi pi-check" *ngIf="caminhaoSelecionado?.placa === caminhao.placa"></i>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- Produtos -->
+      <section class="card selecao-card">
+        <h3><i class="pi pi-box"></i> Produtos Disponíveis</h3>
+        <p class="contador-produtos">
+          Produtos selecionados: {{ produtosSelecionados.length }}
+        </p>
+        <div class="produtos-lista">
+          <div
+            class="produto-card horizontal"
+            *ngFor="let produto of produtos"
+            [class.ativo]="produtosSelecionados.includes(produto)"
+            (click)="toggleProduto(produto)"
+          >
+            <div class="card-left">
+              <i class="pi pi-box"></i>
+              <strong>{{ produto.nome }}</strong>
+            </div>
+            <div class="card-right">
+              <span class="badge">{{ produto.comprimento }}m × {{ produto.largura }}m × {{ produto.altura }}m</span>
+              <span class="badge">{{ produto.peso }}kg</span>
+              <i class="pi pi-check" *ngIf="produtosSelecionados.includes(produto)"></i>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Ação -->
+      <section class="card confirmacao-card">
+        <h3><i class="pi pi-check-circle"></i> Confirmação</h3>
+        <p *ngIf="!caminhaoSelecionado">Selecione um caminhão para continuar</p>
+        <p *ngIf="caminhaoSelecionado && produtosSelecionados.length === 0">Selecione pelo menos um produto</p>
+        <button
+          class="btn-continuar"
+          [disabled]="!caminhaoSelecionado || produtosSelecionados.length === 0"
+          (click)="irParaVisualizacao()">
+          Continuar
+        </button>
+      </section>
+    </div>
+  </div>
+</div>
+<app-screen-background></app-screen-background>

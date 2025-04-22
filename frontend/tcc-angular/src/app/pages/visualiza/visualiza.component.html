@@ -1,1 +1,56 @@
-<p>visualiza works!</p>
+<app-navbar></app-navbar>
+
+<div class="layout-container">
+  <!-- Coluna esquerda: Info do caminhão + produtos -->
+  <aside class="card info-card">
+    <section class="truck-card" *ngIf="caminhaoSelecionado">
+      <header class="truck-header">
+        <i class="pi pi-truck truck-icon"></i>
+        <h3>Caminhão Selecionado</h3>
+      </header>
+      <div class="truck-info">
+        <div class="info-line"><span class="label">Modelo:</span><span class="value">{{ caminhaoSelecionado.modelo }}</span></div>
+        <div class="info-line"><span class="label">Placa:</span><span class="value">{{ caminhaoSelecionado.placa }}</span></div>
+        <div class="info-line"><span class="label">Dimensões:</span><span class="value">{{ caminhaoSelecionado.comprimento }}m × {{ caminhaoSelecionado.largura }}m × {{ caminhaoSelecionado.altura }}m</span></div>
+        <div class="info-line"><span class="label">Peso Limite:</span><span class="value">{{ caminhaoSelecionado.pesoLimite }} kg</span></div>
+      </div>
+    </section>
+
+    <section class="produtos-section" *ngIf="produtosSelecionados.length > 0">
+      <h4>Produtos Selecionados</h4>
+      <ul class="produtos-lista">
+        <li class="produto-card horizontal ativo" *ngFor="let produto of produtosSelecionados">
+          <div class="card-left">
+            <strong>{{ produto.nome }}</strong>
+          </div>
+          <div class="card-right">
+            <span class="badge">{{ produto.comprimento }}m × {{ produto.largura }}m × {{ produto.altura }}m</span>
+            <span class="badge">{{ produto.peso }}kg</span>
+          </div>
+        </li>
+      </ul>
+    </section>
+  </aside>
+
+  <!-- Centro: Canvas 3D -->
+  <main class="canvas-container">
+    <app-three-d-view></app-three-d-view>
+  </main>
+
+  <!-- Coluna direita: Passo a passo -->
+  <aside class="card passo-card">
+    <h3><i class="pi pi-list"></i> Passo a Passo</h3>
+
+    <div class="passo-dinamico">
+      <p class="passo-indicador">Passo {{ passoAtual + 1 }} de {{ passos.length }}</p>
+      <p class="passo-texto">{{ passos[passoAtual] }}</p>
+    </div>
+
+    <div class="passo-botoes">
+      <button class="passo-btn" [disabled]="passoAtual === 0" (click)="voltarPasso()">Anterior</button>
+      <button class="passo-btn" [disabled]="passoAtual === passos.length - 1" (click)="avancarPasso()">Próximo</button>
+    </div>
+
+    <button class="confirmar-button" *ngIf="passoAtual === passos.length - 1" (click)="confirmar()">Confirmar carregamento</button>
+  </aside>
+</div>

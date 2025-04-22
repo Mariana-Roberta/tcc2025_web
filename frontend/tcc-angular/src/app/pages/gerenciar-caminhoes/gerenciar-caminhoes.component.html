@@ -1,0 +1,67 @@
+<app-navbar></app-navbar>
+<div class="page-container">
+  <div class="container">
+    <h1>Gerenciar Caminhões</h1>
+    <button class="btn-sucesso" *ngIf="!mostrarFormulario" (click)="exibirFormulario()">+ Adicionar Caminhão</button>
+
+    <div *ngIf="mostrarFormulario" class="form-container">
+      <form class="form" (ngSubmit)="adicionarOuEditarCaminhao()" #form="ngForm">
+        <div class="input-container">
+          <input type="text" name="modelo" [(ngModel)]="novoCaminhao.modelo" placeholder="Modelo" required />
+        </div>
+        <div class="input-container">
+          <input type="text" name="placa" [(ngModel)]="novoCaminhao.placa" placeholder="Placa" required />
+        </div>
+        <div class="input-container">
+          <input type="number" name="ano" [(ngModel)]="novoCaminhao.ano" placeholder="Ano" required />
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn-sucesso" [disabled]="form.invalid">
+            {{ modoEdicao ? 'Salvar Alterações' : 'Salvar' }}
+          </button>
+          <button type="button" class="btn-secundario" (click)="cancelarAdicao()">Cancelar</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="tabela-container">
+        <h2>Lista de Caminhões</h2>
+        <table class="custom-table">
+          <thead>
+          <tr>
+            <th>Modelo</th>
+            <th>Placa</th>
+            <th>Ano</th>
+            <th>Ações</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let caminhao of caminhoesPaginados; let i = index">
+            <td data-label="Modelo">{{ caminhao.modelo }}</td>
+            <td data-label="Placa">{{ caminhao.placa }}</td>
+            <td data-label="Ano">{{ caminhao.ano }}</td>
+            <td data-label="Ações">
+              <div style="display: flex; gap: 10px">
+                <button class="btn-primario" (click)="editarCaminhao(caminhao, i)">Editar</button>
+                <button class="btn-danger" (click)="excluirCaminhao(caminhao)">Excluir</button>
+              </div>
+            </td>
+          </tr>
+          </tbody>
+
+        </table>
+        <div class="paginacao">
+          <button
+                  *ngFor="let pagina of [].constructor(totalPaginas); let i = index"
+                  (click)="mudarPagina(i + 1)"
+                  [class.ativa]="paginaAtual === i + 1"
+          >
+            {{ i + 1 }}
+          </button>
+        </div>
+    </div>
+  </div>
+</div>
+
+<app-screen-background></app-screen-background>

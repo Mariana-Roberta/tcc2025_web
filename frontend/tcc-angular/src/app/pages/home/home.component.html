@@ -1,45 +1,25 @@
 <app-navbar></app-navbar>
+<div class="page-container">
+  <div class="home-container">
+    <div class="welcome">
+      <h1>Olá, João!</h1>
+      <p>Bem-vindo de volta ao GerencieX</p>
+      <button class="btn-gradient" (click)="otimizar()">Otimizar agora</button>
+    </div>
 
-<div class="home-container">
-  <!-- Barra lateral -->
-  <aside class="sidebar">
-    <nav class="sidebar-content">
-      <h2 class="sidebar-title">Menu</h2>
+    <div class="card-container">
+      <div class="card" (click)="gerenciarCaminhoes()">
+        <i class="pi pi-truck icon"></i>
+        <h2>Gerenciar Caminhão</h2>
+        <p>Gerencie seus caminhões</p>
+      </div>
 
-      <a class="item-link" (click)="cadastroCaminhao()">
-        <i class="pi pi-truck"></i> <span>Cadastrar Caminhão</span>
-      </a>
-      <a class="item-link" (click)="cadastroProdutos()">
-        <i class="pi pi-box"></i> <span>Cadastrar Produtos</span>
-      </a>
-      <a class="item-link" (click)="realizaOtimizacao()">
-        <i class="pi pi-calculator"></i> <span>Realizar Otimização</span>
-      </a>
-    </nav>
-  </aside>
-
-  <!-- Conteúdo principal -->
-  <section class="info">
-    <h1>Otimize suas entregas com eficiência!</h1>
-    <p>
-      O <strong>GerencieX</strong> é a sua ferramenta inteligente para calcular a melhor forma de alocar produtos no caminhão,
-      reduzindo o tempo de carregamento, o risco de danos e maximizando o espaço.
-    </p>
-
-    <ul class="info-benefits">
-      <li><i class="pi pi-check-circle"></i> Cálculo automático de posicionamento ideal</li>
-      <li><i class="pi pi-check-circle"></i> Cadastro rápido de caminhões e produtos</li>
-      <li><i class="pi pi-check-circle"></i> Otimização prática em poucos cliques</li>
-    </ul>
-
-    <button class="custom-button primary-button" routerLink="/caminhao">
-      <i class="pi pi-play"></i> Começar agora
-    </button>
-  </section>
-
-  <!-- Plano de fundo -->
-  <div class="screen__background">
-    <span class="screen__background__shape screen__background__shape1"></span>
-    <!-- Outras formas -->
+      <div class="card" (click)="gerenciarProdutos()">
+        <i class="pi pi-box icon"></i>
+        <h2>Gerenciar Produtos</h2>
+        <p>Vincule um produto a um caminhão</p>
+      </div>
+    </div>
   </div>
 </div>
+<app-screen-background></app-screen-background>

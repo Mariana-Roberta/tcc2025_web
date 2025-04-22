@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
 import { NavbarComponent } from '../../components/navbar/navbar.component';
 import {Router} from '@angular/router';
+import {ScreenBackgroundComponent} from "../../components/screen-background/screen-background.component";
 
 @Component({
   selector: 'app-home',
-  imports: [NavbarComponent],
+    imports: [NavbarComponent, ScreenBackgroundComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
@@ -13,15 +14,15 @@ export class HomeComponent {
   constructor(private _router: Router) {
   }
 
-  cadastroCaminhao() {
-    this._router.navigate(['/cadastro-caminhao']);
+  gerenciarCaminhoes() {
+    this._router.navigate(['/gerenciar-caminhoes']);
   }
 
-  cadastroProdutos() {
-    this._router.navigate(['/cadastro-produtos']);
+  gerenciarProdutos() {
+    this._router.navigate(['/gerenciar-produtos']);
   }
 
-  realizaOtimizacao(){
-    this._router.navigate(['/realiza-otimizacao']);
+  otimizar() {
+    this._router.navigate(['/otimiza']);
   }
 }

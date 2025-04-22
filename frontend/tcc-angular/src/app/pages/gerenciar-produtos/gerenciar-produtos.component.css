@@ -1,0 +1,8 @@
+.container {
+  height: auto;
+  width: 80%;
+  background-color: var(--background-color);
+  padding: 20px 40px;
+  border-radius: 12px;
+  overflow: hidden;
+}

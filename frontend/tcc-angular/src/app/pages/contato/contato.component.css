@@ -1,0 +1,105 @@
+.contato-card {
+  background-color: var(--background-color);
+  width: 80%;
+  padding: 32px 24px;
+  border-radius: 16px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  overflow: auto;
+  text-align: center;
+}
+
+.cards-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  justify-content: center;
+}
+
+.card-dev {
+  background: #ffffff;
+  padding: 24px 20px;
+  border-radius: 16px;
+  width: 360px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+  text-align: left;
+}
+
+.card-dev h3 {
+  font-size: 20px;
+  margin-bottom: 20px;
+  color: var(--blue-color-1);
+}
+
+.card-dev p {
+  margin: 8px 0;
+  font-size: 16px;
+  color: var(--text-color);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.card-dev a {
+  color: var(--blue-color-2);
+  text-decoration: none;
+  font-weight: 500;
+  word-break: break-all;
+}
+
+.card-dev a:hover {
+  text-decoration: underline;
+}
+
+/* Ícones */
+.icon-user{
+  color: var(--blue-color-2);
+  font-size: 20px;
+}
+
+.pi-envelope,
+.pi-github {
+  color: var(--blue-color-2);
+  font-size: 18px;
+}
+
+.dev-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+@media (max-width: 768px) {
+  .cards-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .card-dev {
+    width: 100%;
+    max-width: 90%;
+  }
+}
+
+.card-dev a {
+  color: var(--blue-color-2);
+  text-decoration: none;
+}
+
+.card-dev a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .contato-wrapper {
+    padding: 24px;
+  }
+
+  .titulo {
+    font-size: 24px;
+  }
+
+  .card-dev {
+    width: 100%;
+  }
+}

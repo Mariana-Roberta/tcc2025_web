@@ -1,12 +1,14 @@
 <div class="top-bar">
   <div class="logo-area">
-    <div class="logo-box">
-      <span class="logo-x">X</span>
+    <div class="logo-clickable" (click)="home()">
+      <div class="logo-box">
+        <span class="logo-x">X</span>
+      </div>
+      <h1 class="logo-text">Gerencie<span class="green-x">X</span></h1>
     </div>
-    <h1 class="logo-text">Gerencie<span class="green-x">X</span></h1>
   </div>
   <div class="user-section">
-    <button class="btn-otimizar">Otimizar</button>
+    <button class="btn-gradient" (click)="otimizar()">Otimizar</button>
     <span class="username">João</span>
   </div>
 </div>
