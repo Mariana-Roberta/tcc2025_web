@@ -7,8 +7,16 @@
       <h1 class="logo-text">Gerencie<span class="green-x">X</span></h1>
     </div>
   </div>
-  <div class="user-section">
-    <button class="btn-gradient" (click)="otimizar()">Otimizar</button>
-    <span class="username">João</span>
+
+  <div class="user-section" (mouseleave)="mostrarMenu = false">
+    <button *ngIf="isLoggedIn()" class="btn-gradient" (click)="otimizar()">Otimizar</button>
+
+    <div class="username-wrapper" (click)="toggleMenu()" tabindex="0">
+      <span class="username">{{ nomeUsuario }} <i class="pi pi-angle-down" style="font-size: .8rem"></i></span>
+      <div class="user-popup" *ngIf="mostrarMenu">
+        <button (click)="irParaPerfil()">Perfil</button>
+        <button (click)="logout()">Sair</button>
+      </div>
+    </div>
   </div>
 </div>

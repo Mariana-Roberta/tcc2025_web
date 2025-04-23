@@ -9,10 +9,10 @@
         <i class="pi pi-user"></i>
       </div>
       <div class="perfil-info">
-        <h2>João da Silva</h2>
-        <p>Empresa: Transporte Rápido LTDA</p>
-        <p>Email: joao&#64;empresa.com.br</p>
-        <p>Telefone: (11) 91234-5678</p>
+        <h2>{{ usuario.razaoSocial || usuario.email }}</h2>
+        <p><strong>Empresa:</strong> {{ usuario.razaoSocial }}</p>
+        <p><strong>Email:</strong> {{ usuario.email }}</p>
+        <p><strong>Telefone:</strong> {{ usuario.telefone }}</p>
       </div>
     </div>
 
@@ -20,15 +20,15 @@
     <div class="perfil-detalhes" *ngIf="modoAtual === 'perfil'">
       <h3>Dados da Conta</h3>
       <ul>
-        <li><strong>CNPJ:</strong> 12.345.678/0001-90</li>
-        <li><strong>Razão Social:</strong> Transporte Rápido LTDA</li>
-        <li><strong>Email:</strong> joao&#64;empresa.com.br</li>
-        <li><strong>Telefone:</strong> (11) 91234-5678</li>
+        <li><strong>CNPJ:</strong> {{ usuario.cnpj }}</li>
+        <li><strong>Razão Social:</strong> {{ usuario.razaoSocial }}</li>
+        <li><strong>Email:</strong> {{ usuario.email }}</li>
+        <li><strong>Telefone:</strong> {{ usuario.telefone }}</li>
       </ul>
     </div>
 
     <!-- EDITAR PERFIL -->
-    <form class="form" *ngIf="modoAtual === 'editar'">
+    <form class="form" *ngIf="modoAtual === 'editar'" (ngSubmit)="salvarEdicao()">
       <h3>Editar Perfil</h3>
 
       <div class="input-container">
@@ -47,13 +47,13 @@
       </div>
 
       <div class="perfil-actions">
-        <button class="btn-sucesso" type="button" (click)="salvarEdicao()">Salvar</button>
+        <button class="btn-sucesso" type="submit">Salvar</button>
         <button class="btn-secundario" type="button" (click)="cancelar()">Cancelar</button>
       </div>
     </form>
 
     <!-- ALTERAR SENHA -->
-    <form class="form" *ngIf="modoAtual === 'senha'">
+    <form class="form" *ngIf="modoAtual === 'senha'" (ngSubmit)="salvarSenha()">
       <h3>Alterar Senha</h3>
 
       <div class="input-container">
@@ -72,7 +72,7 @@
       </div>
 
       <div class="perfil-actions">
-        <button class="btn-sucesso" type="button" (click)="salvarSenha()">Salvar Senha</button>
+        <button class="btn-sucesso" type="submit">Salvar Senha</button>
         <button class="btn-secundario" type="button" (click)="cancelar()">Cancelar</button>
       </div>
     </form>

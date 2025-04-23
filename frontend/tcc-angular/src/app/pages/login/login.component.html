@@ -4,22 +4,56 @@
 
     <h2>Login</h2>
 
-    <form class="form">
+    <form class="form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+
+      <!-- Email -->
       <div class="input-container">
         <label for="email">Email</label>
-        <input id="email" type="email" placeholder="Digite seu email" required />
+        <input
+          id="email"
+          type="email"
+          placeholder="Digite seu email"
+          formControlName="email"
+          [class.input-error]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched"
+        />
+        <small *ngIf="loginForm.get('email')?.hasError('required') && loginForm.get('email')?.touched">
+          Email é obrigatório.
+        </small>
+        <small *ngIf="loginForm.get('email')?.hasError('email') && loginForm.get('email')?.touched">
+          Email inválido.
+        </small>
       </div>
 
+      <!-- Senha -->
       <div class="input-container">
         <label for="password">Senha</label>
-        <input id="password" type="password" placeholder="Digite sua senha" required />
+        <input
+          id="password"
+          type="password"
+          placeholder="Digite sua senha"
+          formControlName="password"
+          [class.input-error]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
+        />
+        <small *ngIf="loginForm.get('password')?.hasError('required') && loginForm.get('password')?.touched">
+          Senha é obrigatória.
+        </small>
       </div>
 
-      <button class="btn-primario" type="submit">Entrar</button>
+      <!-- Erro geral -->
+      <div *ngIf="loginErro" class="erro-msg">
+        {{ loginErro }}
+      </div>
+
+      <!-- Botão -->
+      <button class="btn-primario" type="submit" [disabled]="loginForm.invalid">
+        Entrar
+      </button>
     </form>
 
     <div class="register">
-      <p>Não tem conta? <a class="register-link">Registre-se aqui</a></p>
+      <p>Não tem conta?
+        <a class="register-link" (click)="irParaRegistro()">Registre-se aqui</a>
+      </p>
     </div>
   </div>
 </div>
