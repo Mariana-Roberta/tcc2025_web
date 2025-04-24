@@ -19,11 +19,13 @@ export class PerfilComponent implements OnInit {
   modoAtual: 'perfil' | 'editar' | 'senha' = 'perfil';
 
   usuario: Usuario = {
+    email: '',
+    password: '',
+    status: true,
+    perfil: 'CLIENTE',
     cnpj: '',
     razaoSocial: '',
     telefone: '',
-    email: '',
-    password: ''
   };
 
   constructor(private router: Router, private authService: AuthService) {}

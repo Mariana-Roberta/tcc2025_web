@@ -4,16 +4,67 @@
     <h1>Gerenciar Caminhões</h1>
     <button class="btn-sucesso" *ngIf="!mostrarFormulario" (click)="exibirFormulario()">+ Adicionar Caminhão</button>
 
+    <!-- FORMULÁRIO -->
     <div *ngIf="mostrarFormulario" class="form-container">
       <form class="form" (ngSubmit)="adicionarOuEditarCaminhao()" #form="ngForm">
         <div class="input-container">
-          <input type="text" name="modelo" [(ngModel)]="novoCaminhao.modelo" placeholder="Modelo" required />
+          <label for="modelo">Modelo</label>
+          <input
+            type="text"
+            name="modelo"
+            id="modelo"
+            [(ngModel)]="novoCaminhao.nome"
+            placeholder="Modelo do caminhão"
+            required
+          />
         </div>
         <div class="input-container">
-          <input type="text" name="placa" [(ngModel)]="novoCaminhao.placa" placeholder="Placa" required />
+          <label for="comprimento">Comprimento (m)</label>
+          <input
+            type="number"
+            name="comprimento"
+            id="comprimento"
+            [(ngModel)]="novoCaminhao.comprimento"
+            placeholder="Comprimento (m)"
+            required
+            min="1"
+          />
         </div>
         <div class="input-container">
-          <input type="number" name="ano" [(ngModel)]="novoCaminhao.ano" placeholder="Ano" required />
+          <label for="largura">Largura (m)</label>
+          <input
+            type="number"
+            name="largura"
+            id="largura"
+            [(ngModel)]="novoCaminhao.largura"
+            placeholder="Largura (m)"
+            required
+            min="1"
+          />
+        </div>
+        <div class="input-container">
+          <label for="altura">Altura (m)</label>
+          <input
+            type="number"
+            name="altura"
+            id="altura"
+            [(ngModel)]="novoCaminhao.altura"
+            placeholder="Altura (m)"
+            required
+            min="1"
+          />
+        </div>
+        <div class="input-container">
+          <label for="pesoLimite">Peso limite (kg)</label>
+          <input
+            type="number"
+            name="pesoLimite"
+            id="pesoLimite"
+            [(ngModel)]="novoCaminhao.pesoLimite"
+            placeholder="Peso limite (kg)"
+            required
+            min="1"
+          />
         </div>
 
         <div class="form-actions">
@@ -25,41 +76,46 @@
       </form>
     </div>
 
+    <!-- LISTAGEM -->
     <div class="tabela-container">
-        <h2>Lista de Caminhões</h2>
-        <table class="custom-table">
-          <thead>
-          <tr>
-            <th>Modelo</th>
-            <th>Placa</th>
-            <th>Ano</th>
-            <th>Ações</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr *ngFor="let caminhao of caminhoesPaginados; let i = index">
-            <td data-label="Modelo">{{ caminhao.modelo }}</td>
-            <td data-label="Placa">{{ caminhao.placa }}</td>
-            <td data-label="Ano">{{ caminhao.ano }}</td>
-            <td data-label="Ações">
-              <div style="display: flex; gap: 10px">
-                <button class="btn-primario" (click)="editarCaminhao(caminhao, i)">Editar</button>
-                <button class="btn-danger" (click)="excluirCaminhao(caminhao)">Excluir</button>
-              </div>
-            </td>
-          </tr>
-          </tbody>
+      <h2>Lista de Caminhões</h2>
+      <table class="custom-table">
+        <thead>
+        <tr>
+          <th>Modelo</th>
+          <th>Comprimento</th>
+          <th>Largura</th>
+          <th>Altura</th>
+          <th>Peso Limite</th>
+          <th>Ações</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let caminhao of caminhoesPaginados; let i = index">
+          <td data-label="Modelo">{{ caminhao.nome }}</td>
+          <td data-label="Comprimento">{{ caminhao.comprimento }} m</td>
+          <td data-label="Largura">{{ caminhao.largura }} m</td>
+          <td data-label="Altura">{{ caminhao.altura }} m</td>
+          <td data-label="Peso Limite">{{ caminhao.pesoLimite }} kg</td>
+          <td data-label="Ações">
+            <div style="display: flex; gap: 10px">
+              <button class="btn-primario" (click)="editarCaminhao(caminhao, i)">Editar</button>
+              <button class="btn-danger" (click)="excluirCaminhao(caminhao)">Excluir</button>
+            </div>
+          </td>
+        </tr>
+        </tbody>
+      </table>
 
-        </table>
-        <div class="paginacao">
-          <button
-                  *ngFor="let pagina of [].constructor(totalPaginas); let i = index"
-                  (click)="mudarPagina(i + 1)"
-                  [class.ativa]="paginaAtual === i + 1"
-          >
-            {{ i + 1 }}
-          </button>
-        </div>
+      <div class="paginacao">
+        <button
+          *ngFor="let pagina of [].constructor(totalPaginas); let i = index"
+          (click)="mudarPagina(i + 1)"
+          [class.ativa]="paginaAtual === i + 1"
+        >
+          {{ i + 1 }}
+        </button>
+      </div>
     </div>
   </div>
 </div>

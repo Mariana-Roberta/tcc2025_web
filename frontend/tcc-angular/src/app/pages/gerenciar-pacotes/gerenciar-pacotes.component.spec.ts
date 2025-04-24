@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { GerenciarProdutosComponent } from './gerenciar-produtos.component';
+import { GerenciarProdutosComponent } from './gerenciar-pacotes.component';
 
 describe('GerenciarProdutosComponent', () => {
   let component: GerenciarProdutosComponent;

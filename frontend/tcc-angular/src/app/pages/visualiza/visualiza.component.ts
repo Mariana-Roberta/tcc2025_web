@@ -4,7 +4,6 @@ import { NavbarComponent } from '../../components/navbar/navbar.component';
 import { NgIf, NgForOf } from '@angular/common';
 import { ThreeDViewComponent } from '../three-d-view/three-d-view.component';
 import { Caminhao } from '../../model/caminhao.model';
-import { Produto } from '../../model/produto.model';
 
 @Component({
   selector: 'app-visualiza',
@@ -19,6 +18,7 @@ import { Produto } from '../../model/produto.model';
   styleUrl: './visualiza.component.css'
 })
 export class VisualizaComponent {
+  /*
   passos: string[] = [
     'Escolha o caminhão',
     'Selecione o produto',
@@ -58,5 +58,5 @@ export class VisualizaComponent {
 
   confirmar() {
     alert('Carregamento confirmado!');
-  }
+  }*/
 }

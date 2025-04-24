@@ -1,7 +1,6 @@
 <app-navbar></app-navbar>
-
+<!--
 <div class="layout-container">
-  <!-- Coluna esquerda: Info do caminhão + produtos -->
   <aside class="card info-card">
     <section class="truck-card" *ngIf="caminhaoSelecionado">
       <header class="truck-header">
@@ -32,12 +31,10 @@
     </section>
   </aside>
 
-  <!-- Centro: Canvas 3D -->
   <main class="canvas-container">
     <app-three-d-view></app-three-d-view>
   </main>
 
-  <!-- Coluna direita: Passo a passo -->
   <aside class="card passo-card">
     <h3><i class="pi pi-list"></i> Passo a Passo</h3>
 
@@ -53,4 +50,4 @@
 
     <button class="confirmar-button" *ngIf="passoAtual === passos.length - 1" (click)="confirmar()">Confirmar carregamento</button>
   </aside>
-</div>
+</div>-->

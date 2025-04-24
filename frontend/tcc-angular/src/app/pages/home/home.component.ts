@@ -26,8 +26,8 @@ export class HomeComponent implements OnInit {
     this._router.navigate(['/gerenciar-caminhoes']);
   }
 
-  gerenciarProdutos() {
-    this._router.navigate(['/gerenciar-produtos']);
+  gerenciarPacotes() {
+    this._router.navigate(['/gerenciar-pacotes']);
   }
 
   otimizar() {

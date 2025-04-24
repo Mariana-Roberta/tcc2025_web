@@ -10,26 +10,16 @@
       </div>
       <div class="perfil-info">
         <h2>{{ usuario.razaoSocial || usuario.email }}</h2>
-        <p><strong>Empresa:</strong> {{ usuario.razaoSocial }}</p>
-        <p><strong>Email:</strong> {{ usuario.email }}</p>
-        <p><strong>Telefone:</strong> {{ usuario.telefone }}</p>
+        <p><i class="pi pi-id-card"></i> {{ usuario.cnpj }}</p>
+        <p><i class="pi pi-envelope"></i> {{ usuario.email }}</p>
+        <p><i class="pi pi-phone"></i> {{ usuario.telefone }}</p>
+        <p><i class="pi pi-building"></i> {{ usuario.razaoSocial }}</p>
       </div>
     </div>
 
-    <!-- VISUALIZAR PERFIL -->
-    <div class="perfil-detalhes" *ngIf="modoAtual === 'perfil'">
-      <h3>Dados da Conta</h3>
-      <ul>
-        <li><strong>CNPJ:</strong> {{ usuario.cnpj }}</li>
-        <li><strong>Razão Social:</strong> {{ usuario.razaoSocial }}</li>
-        <li><strong>Email:</strong> {{ usuario.email }}</li>
-        <li><strong>Telefone:</strong> {{ usuario.telefone }}</li>
-      </ul>
-    </div>
-
-    <!-- EDITAR PERFIL -->
+    <!-- FORMULÁRIO DE EDIÇÃO -->
     <form class="form" *ngIf="modoAtual === 'editar'" (ngSubmit)="salvarEdicao()">
-      <h3>Editar Perfil</h3>
+      <h3><i class="pi pi-user-edit"></i> Editar Perfil</h3>
 
       <div class="input-container">
         <label for="razao">Razão Social</label>
@@ -47,47 +37,41 @@
       </div>
 
       <div class="perfil-actions">
-        <button class="btn-sucesso" type="submit">Salvar</button>
-        <button class="btn-secundario" type="button" (click)="cancelar()">Cancelar</button>
+        <button class="btn-sucesso" type="submit"><i class="pi pi-check"></i> Salvar</button>
+        <button class="btn-secundario" type="button" (click)="cancelar()"><i class="pi pi-times"></i> Cancelar</button>
       </div>
     </form>
 
     <!-- ALTERAR SENHA -->
     <form class="form" *ngIf="modoAtual === 'senha'" (ngSubmit)="salvarSenha()">
-      <h3>Alterar Senha</h3>
+      <h3><i class="pi pi-lock"></i> Alterar Senha</h3>
 
       <div class="input-container">
         <label for="senhaAtual">Senha Atual</label>
-        <input id="senhaAtual" type="password" placeholder="Digite sua senha atual" name="senhaAtual" />
+        <input id="senhaAtual" type="password" name="senhaAtual" placeholder="Digite sua senha atual" />
       </div>
 
       <div class="input-container">
         <label for="novaSenha">Nova Senha</label>
-        <input id="novaSenha" type="password" placeholder="Digite a nova senha" name="novaSenha" />
+        <input id="novaSenha" type="password" name="novaSenha" placeholder="Digite a nova senha" />
       </div>
 
       <div class="input-container">
         <label for="confirmaSenha">Confirmar Nova Senha</label>
-        <input id="confirmaSenha" type="password" placeholder="Confirme a nova senha" name="confirmaSenha" />
+        <input id="confirmaSenha" type="password" name="confirmaSenha" placeholder="Confirme a nova senha" />
       </div>
 
       <div class="perfil-actions">
-        <button class="btn-sucesso" type="submit">Salvar Senha</button>
-        <button class="btn-secundario" type="button" (click)="cancelar()">Cancelar</button>
+        <button class="btn-sucesso" type="submit"><i class="pi pi-check"></i> Salvar Senha</button>
+        <button class="btn-secundario" type="button" (click)="cancelar()"><i class="pi pi-times"></i> Cancelar</button>
       </div>
     </form>
 
-    <!-- AÇÕES GERAIS -->
+    <!-- AÇÕES -->
     <div class="perfil-actions" *ngIf="modoAtual === 'perfil'">
-      <button class="btn-primario" (click)="modoAtual = 'editar'">
-        <i class="pi pi-user-edit"></i> Editar Perfil
-      </button>
-      <button class="btn-secundario" (click)="modoAtual = 'senha'">
-        <i class="pi pi-lock"></i> Alterar Senha
-      </button>
-      <button class="btn-danger" (click)="sairConta()">
-        <i class="pi pi-sign-out"></i> Sair da Conta
-      </button>
+      <button class="btn-primario" (click)="modoAtual = 'editar'"><i class="pi pi-user-edit"></i> Editar Perfil</button>
+      <button class="btn-secundario" (click)="modoAtual = 'senha'"><i class="pi pi-lock"></i> Alterar Senha</button>
+      <button class="btn-danger" (click)="sairConta()"><i class="pi pi-sign-out"></i> Sair da Conta</button>
     </div>
 
   </div>

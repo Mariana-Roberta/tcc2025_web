@@ -1,10 +1,15 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {NavbarComponent} from "../../components/navbar/navbar.component";
 import {NgForOf, NgIf} from "@angular/common";
 import {Caminhao} from '../../model/caminhao.model';
-import {Produto} from '../../model/produto.model';
 import {Router} from '@angular/router';
 import {ScreenBackgroundComponent} from '../../components/screen-background/screen-background.component';
+import {CaminhaoService} from '../../services/caminhao.service';
+import {AuthService} from '../../services/auth.service';
+import {PacoteService} from '../../services/pacote.service';
+import {Pacote} from '../../model/pacote.model';
+import {FormsModule} from '@angular/forms';
+import {CarregamentoPacote} from '../../model/carregamento-pacote.model';
 
 @Component({
   selector: 'app-otimiza',
@@ -12,129 +17,93 @@ import {ScreenBackgroundComponent} from '../../components/screen-background/scre
     NavbarComponent,
     NgForOf,
     NgIf,
-    ScreenBackgroundComponent
+    ScreenBackgroundComponent,
+    FormsModule
   ],
   templateUrl: './otimiza.component.html',
   styleUrl: './otimiza.component.css'
 })
-export class OtimizaComponent {
+export class OtimizaComponent implements OnInit {
   caminhoes: Caminhao[] = [];
+  pacotes: Pacote[] = [];
+
   caminhaoSelecionado: Caminhao | null = null;
+  pacotesSelecionados: Pacote[] = [];
+  quantidadesSelecionadas: { [pacoteId: number]: number } = {};
 
-  produtos: Produto[] = [];
-  produtosSelecionados: Produto[] = [];
+  carregamentoPacote: CarregamentoPacote[] = [];
 
-  constructor(private _router: Router) {
-  }
+  constructor(private caminhaoService: CaminhaoService, private pacoteService: PacoteService, private authService: AuthService) {}
 
   ngOnInit() {
-    this.caminhoes = [
-      {
-        modelo: 'Volvo FH 540',
-        placa: 'ABC1234',
-        comprimento: 12.5,
-        largura: 2.5,
-        altura: 3.9,
-        pesoLimite: 28000 // em kg
-      },
-      {
-        modelo: 'Scania R',
-        placa: 'XYZ5678',
-        comprimento: 13.0,
-        largura: 2.55,
-        altura: 4.0,
-        pesoLimite: 30000 // em kg
-      },
-      {
-        modelo: 'Scania R2',
-        placa: 'XYZ56D8',
-        comprimento: 13.0,
-        largura: 2.55,
-        altura: 4.0,
-        pesoLimite: 30000 // em kg
-      },
-      {
-        modelo: 'Scania R3',
-        placa: 'XYZ5478',
-        comprimento: 13.0,
-        largura: 2.55,
-        altura: 4.0,
-        pesoLimite: 30000 // em kg
-      }
-    ];
-
-    this.produtos = [
-      {
-        nome: 'Caixa A',
-        comprimento: 1.0,
-        largura: 1.0,
-        altura: 1.0,
-        peso: 250 // em kg
-      },
-      {
-        nome: 'Caixa B',
-        comprimento: 1.2,
-        largura: 0.8,
-        altura: 0.8,
-        peso: 180
-      },
-      {
-        nome: 'Caixa C',
-        comprimento: 0.9,
-        largura: 0.6,
-        altura: 0.6,
-        peso: 120
-      },
-      {
-        nome: 'Caixa D',
-        comprimento: 0.9,
-        largura: 0.6,
-        altura: 0.6,
-        peso: 120
-      },
-      {
-        nome: 'Caixa E',
-        comprimento: 0.9,
-        largura: 0.6,
-        altura: 0.6,
-        peso: 120
-      },
-      {
-        nome: 'Caixa F',
-        comprimento: 0.9,
-        largura: 0.6,
-        altura: 0.6,
-        peso: 120
-      },
-      {
-        nome: 'Caixa G',
-        comprimento: 0.9,
-        largura: 0.6,
-        altura: 0.6,
-        peso: 120
-      }
-    ];
-  }
-  selecionarCaminhao(c: any) {
-    this.caminhaoSelecionado = c;
-    this.produtosSelecionados = [];
+    this.carregarCaminhoes();
+    this.carregarPacotes();
   }
 
-  toggleProduto(p: any) {
-    if (this.produtosSelecionados.includes(p)) {
-      this.produtosSelecionados = this.produtosSelecionados.filter(item => item !== p);
-    } else {
-      this.produtosSelecionados.push(p);
+  carregarCaminhoes() {
+    const usuario = this.authService.getUsuario();
+    if (usuario) {
+      this.caminhaoService.listarPorUsuario(usuario.id).subscribe({
+        next: (dados: Caminhao[]) => this.caminhoes = dados,
+        error: (erro: any) => console.error('Erro ao carregar caminhões:', erro)
+      });
     }
   }
 
-  irParaVisualizacao() {
-    // Ex: navegar com router para a próxima rota
-    this._router.navigate(['/visualiza'], {
-      state: {
-        caminhao: this.caminhaoSelecionado,
-        produtos: this.produtosSelecionados
-      }
-    });
+  carregarPacotes() {
+    const usuario = this.authService.getUsuario();
+    if (usuario) {
+      this.pacoteService.listarPorUsuario(usuario.id).subscribe({
+        next: (dados: Pacote[]) => this.pacotes = dados,
+        error: (erro: any) => console.error('Erro ao carregar caminhões:', erro)
+      });
+    }
   }
+
+  selecionarCaminhao(c: any) {
+    this.caminhaoSelecionado = c;
+    this.pacotesSelecionados = [];
+  }
+
+  togglePacote(pacote: any): void {
+    const index = this.pacotesSelecionados.indexOf(pacote);
+
+    if (index >= 0) {
+      // Remove o pacote da seleção
+      this.pacotesSelecionados.splice(index, 1);
+      delete this.quantidadesSelecionadas[pacote.id];
+      delete this.quantidadesConfirmadas[pacote.id];
+      // Remove o carregamento correspondente
+      this.carregamentoPacote = this.carregamentoPacote.filter(c => c.pacote.id !== pacote.id);
+    } else {
+      // Adiciona o pacote à seleção
+      this.pacotesSelecionados.push(pacote);
+      this.quantidadesSelecionadas[pacote.id] = 1;
+      this.quantidadesConfirmadas[pacote.id] = false;
+      // Cria um novo carregamento
+      this.carregamentoPacote.push({
+        pacote: pacote,
+        quantidade: this.quantidadesSelecionadas[pacote.id]
+      });
+    }
+  }
+
+  // Adicione no seu componente:
+  quantidadesConfirmadas: { [id: number]: boolean } = {};
+
+  confirmarQuantidade(pacote: any): void {
+    const quantidade = this.quantidadesSelecionadas[pacote.id];
+    if (quantidade > 0) {
+      this.quantidadesConfirmadas[pacote.id] = true;
+    }
+  }
+
+  etapaAtual: 'caminhao' | 'pacotes' = 'caminhao';
+
+  continuarParaPacotes() {
+    if (this.caminhaoSelecionado) {
+      this.etapaAtual = 'pacotes';
+    }
+  }
+
 }

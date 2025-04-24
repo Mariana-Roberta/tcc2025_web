@@ -14,11 +14,13 @@ import {LogoComponent} from '../../components/logo/logo.component';
 })
 export class CadastroComponent {
   usuario: Usuario = {
+    email: 'joao@empresa.com.br',
+    password: '123',
+    status: true,
+    perfil: 'CLIENTE',
     cnpj: '09.530.778/0001-01',
     razaoSocial: 'Transporte Rápido LTDA',
     telefone: '(11) 91234-5678',
-    email: 'joao@empresa.com.br',
-    password: '123'
   };
 
   constructor(private usuarioService: UsuarioService) {}

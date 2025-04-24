@@ -1,11 +1,9 @@
-export interface Caminhao {
+export interface Pacote {
   id?: number;
   nome: string;
   comprimento: number;
   largura: number;
   altura: number;
-  pesoLimite: number;
-  usuario: {
-    id: number;
-  };
+  peso: number;
+  usuarioId: number;
 }

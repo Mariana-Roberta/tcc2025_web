@@ -1,0 +1,75 @@
+<app-navbar></app-navbar>
+
+<div class="page-container">
+  <div class="container">
+    <div class="top-bar">
+      <h1>Gerenciar Pacotes</h1>
+      <button class="btn-sucesso" *ngIf="!mostrarFormulario" (click)="exibirFormulario()">+ Adicionar Pacote</button>
+    </div>
+
+    <div *ngIf="mostrarFormulario" class="form-container">
+      <form class="form" (ngSubmit)="adicionarOuEditarPacote()" #form="ngForm">
+        <div class="input-container">
+          <label for="nome">Nome do Pacote</label>
+          <input type="text" name="nome" id="nome" [(ngModel)]="novoPacote.nome" placeholder="Nome do Pacote" required />
+        </div>
+
+        <div class="input-container">
+          <label for="comprimento">Comprimento (m)</label>
+          <input type="number" name="comprimento" id="comprimento" [(ngModel)]="novoPacote.comprimento" placeholder="Comprimento (m)" required />
+        </div>
+
+        <div class="input-container">
+          <label for="largura">Largura (m)</label>
+          <input type="number" name="largura" id="largura" [(ngModel)]="novoPacote.largura" placeholder="Largura (m)" required />
+        </div>
+
+        <div class="input-container">
+          <label for="altura">Altura (m)</label>
+          <input type="number" name="altura" id="altura" [(ngModel)]="novoPacote.altura" placeholder="Altura (m)" required />
+        </div>
+
+        <div class="input-container">
+          <label for="peso">Peso (kg)</label>
+          <input type="number" name="peso" id="peso" [(ngModel)]="novoPacote.peso" placeholder="Peso (kg)" required />
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn-sucesso" [disabled]="form.invalid">
+            {{ modoEdicao ? 'Salvar Alterações' : 'Salvar' }}
+          </button>
+          <button type="button" class="btn-secundario" (click)="cancelar()">Cancelar</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="tabela-container">
+      <h2>Lista de Pacotes</h2>
+      <table class="custom-table">
+        <thead>
+        <tr>
+          <th>Nome</th>
+          <th>Dimensões (C x L x A)</th>
+          <th>Peso (kg)</th>
+          <th>Ações</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let pacote of pacotes; let i = index">
+          <td>{{ pacote.nome }}</td>
+          <td>{{ pacote.comprimento }} x {{ pacote.largura }} x {{ pacote.altura }}</td>
+          <td>{{ pacote.peso }}</td>
+          <td>
+            <div style="display: flex; gap: 10px">
+              <button class="btn-primario" (click)="editarPacote(pacote, i)">Editar</button>
+              <button class="btn-danger" (click)="excluirPacote(pacote)">Excluir</button>
+            </div>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<app-screen-background></app-screen-background>
