@@ -23,7 +23,7 @@ section {
 
 /* Coluna esquerda */
 .info-card {
-  width: 22%;
+  width: 18%;
   min-width: 230px;
 }
 
@@ -83,13 +83,13 @@ section {
   color: var(--gray-color);
 }
 
-.produtos-section h4 {
+.pacotes-section h4 {
   margin-top: 20px;
   font-size: 1rem;
   color: var(--text-color);
 }
 
-.produtos-lista {
+.pacotes-lista {
   list-style: none;
   padding: 0;
   margin: 12px 0 0 0;
@@ -101,16 +101,16 @@ section {
   scrollbar-width: thin;
 }
 
-.produtos-lista::-webkit-scrollbar {
+.pacotes-lista::-webkit-scrollbar {
   width: 6px;
 }
 
-.produtos-lista::-webkit-scrollbar-thumb {
+.pacotes-lista::-webkit-scrollbar-thumb {
   background-color: #ccc;
   border-radius: 4px;
 }
 
-.produto-card {
+.pacote-card {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -125,12 +125,12 @@ section {
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
 }
 
-.icon-produto {
+.icon-pacote {
   font-size: 16px;
   color: var(--blue-color-1);
 }
 
-.produto-item {
+.pacote-item {
   background-color: var(--light-color);
   padding: 10px 14px;
   border-radius: 8px;
@@ -170,7 +170,7 @@ app-three-d-view {
 
 /* Coluna direita */
 .passo-card {
-  width: 22%;
+  width: 16%;
   min-width: 230px;
   justify-content: space-between;
   gap: 16px;

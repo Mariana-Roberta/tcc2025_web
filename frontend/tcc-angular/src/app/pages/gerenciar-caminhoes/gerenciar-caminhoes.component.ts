@@ -90,6 +90,7 @@ export class GerenciarCaminhoesComponent implements OnInit{
         this.cancelarAdicao();
       });
     } else {
+      console.log(this.novoCaminhao)
       this.caminhaoService.salvar(this.novoCaminhao).subscribe(() => {
         this.carregarCaminhoes();
         this.cancelarAdicao();

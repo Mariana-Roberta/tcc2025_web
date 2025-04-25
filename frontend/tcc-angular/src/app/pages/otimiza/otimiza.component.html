@@ -2,7 +2,7 @@
 
 <div class="page-container">
   <div class="container">
-    <h1>Otimização</h1>
+    <h1>Otimização do Carregamento</h1>
 
     <!-- Etapa 1: Caminhões -->
     <div *ngIf="etapaAtual === 'caminhao'">
@@ -86,8 +86,8 @@
         <div class="confirmacao-box" style="margin-top: 20px; text-align: center;">
           <p *ngIf="pacotesSelecionados.length === 0">Selecione pelo menos um pacote</p>
           <button class="btn-continuar"
-                  [disabled]="pacotesSelecionados.length === 0"
-                  >
+                  [disabled]="pacotesSelecionados.length === 0 || !todosPacotesConfirmados()"
+                  (click)="confirmarOtimizacao()">
             Confirmar Otimização
           </button>
         </div>

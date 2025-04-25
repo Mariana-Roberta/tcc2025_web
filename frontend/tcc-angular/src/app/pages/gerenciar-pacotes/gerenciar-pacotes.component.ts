@@ -7,6 +7,7 @@ import { CaminhaoService } from '../../services/caminhao.service';
 import { AuthService } from '../../services/auth.service';
 import {PacoteService} from '../../services/pacote.service';
 import {Pacote} from '../../model/pacote.model';
+import {Caminhao} from '../../model/caminhao.model';
 
 @Component({
   selector: 'app-gerenciar-pacotes',
@@ -19,12 +20,13 @@ export class GerenciarPacotesComponent implements OnInit {
 
   pacotes: any[] = [];
 
-  novoPacote: any = {
+  novoPacote: Pacote = {
     nome: '',
-    comprimento: null,
-    largura: null,
-    altura: null,
-    peso: null
+    comprimento: 0,
+    largura: 0,
+    altura: 0,
+    peso: 0,
+    usuario: { id: 0 }
   };
 
   mostrarFormulario = false;
@@ -37,11 +39,16 @@ export class GerenciarPacotesComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.carregarPacotes();
+  }
+
+  carregarPacotes() {
     const usuario = this.authService.getUsuario();
     if (usuario) {
       this.pacoteService.listarPorUsuario(usuario.id).subscribe({
         next: (data: Pacote[]) => {
           this.pacotes = data;
+          console.log(data);
         },
         error: (err: any) => console.error('Erro ao buscar pacotes', err)
       });
@@ -51,10 +58,11 @@ export class GerenciarPacotesComponent implements OnInit {
   exibirFormulario() {
     this.novoPacote = {
       nome: '',
-      comprimento: null,
-      largura: null,
-      altura: null,
-      peso: null,
+      comprimento: 0,
+      largura: 0,
+      altura: 0,
+      peso: 0,
+      usuario: { id: 0 }
     };
     this.mostrarFormulario = true;
     this.modoEdicao = false;
@@ -65,44 +73,50 @@ export class GerenciarPacotesComponent implements OnInit {
     this.mostrarFormulario = false;
     this.novoPacote = {
       nome: '',
-      comprimento: null,
-      largura: null,
-      altura: null,
-      peso: null,
+      comprimento: 0,
+      largura: 0,
+      altura: 0,
+      peso: 0,
+      usuario: { id: 0 }
     };
     this.modoEdicao = false;
     this.indiceEdicao = null;
   }
 
   adicionarOuEditarPacote() {
-    const usuario = this.authService.getUsuario();
-    if (!usuario) return;
+    const usuarioLogado = this.authService.getUsuario();
+    if (!usuarioLogado) {
+      console.error('Usuário não logado');
+      return;
+    }
 
-    const pacote = {
-      ...this.novoPacote,
-      usuario: { id: usuario.id }
-    };
+    // Garante o vínculo do pacote com o usuário logado
+    this.novoPacote.usuario = { id: usuarioLogado.id };
 
-    this.pacoteService.salvar(pacote).subscribe({
-      next: data => {
-        this.pacotes.push(data);
+        console.log(this.novoPacote.id )
+    if (this.modoEdicao && this.indiceEdicao !== null) {
+        console.log(this.modoEdicao)
+      this.pacoteService.atualizar(this.novoPacote.id!, this.novoPacote).subscribe(() => {
+        console.log("editar")
+        this.carregarPacotes();
         this.cancelar();
-      },
-      error: err => console.error('Erro ao salvar pacote', err)
-    });
+      });
+    } else {
+        console.log(this.modoEdicao)
+        console.log(this.novoPacote)
+        console.log("salvar")
+      this.pacoteService.salvar(this.novoPacote).subscribe(() => {
+        this.carregarPacotes();
+        this.cancelar();
+      });
+    }
   }
 
-  editarPacote(pacote: any, index: number) {
-    this.novoPacote = {
-      nome: pacote.nome,
-      comprimento: pacote.comprimento,
-      largura: pacote.largura,
-      altura: pacote.altura,
-      peso: pacote.peso,
-    };
+  editarPacote(pacote: Pacote, index: number) {
     this.mostrarFormulario = true;
     this.modoEdicao = true;
     this.indiceEdicao = index;
+    this.novoPacote = { ...pacote };
   }
 
   excluirPacote(pacote: any) {

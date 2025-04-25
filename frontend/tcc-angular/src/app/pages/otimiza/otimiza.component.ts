@@ -33,7 +33,7 @@ export class OtimizaComponent implements OnInit {
 
   carregamentoPacote: CarregamentoPacote[] = [];
 
-  constructor(private caminhaoService: CaminhaoService, private pacoteService: PacoteService, private authService: AuthService) {}
+  constructor(private caminhaoService: CaminhaoService, private pacoteService: PacoteService, private authService: AuthService, private router: Router) {}
 
   ngOnInit() {
     this.carregarCaminhoes();
@@ -105,5 +105,38 @@ export class OtimizaComponent implements OnInit {
       this.etapaAtual = 'pacotes';
     }
   }
+
+  todosPacotesConfirmados(): boolean {
+    return this.pacotesSelecionados.every(pacote =>
+      pacote.id !== undefined && this.quantidadesConfirmadas[pacote.id]
+    );
+  }
+
+  confirmarOtimizacao(): void {
+    if (!this.caminhaoSelecionado || !this.todosPacotesConfirmados()) {
+      console.warn('Caminhão ou pacotes não confirmados.');
+      return;
+    }
+
+    const pacotesFormatados = this.pacotesSelecionados.map(pacote => ({
+      id: pacote.id,
+      nome: pacote.nome,
+      comprimento: pacote.comprimento,
+      largura: pacote.largura,
+      altura: pacote.altura,
+      peso: pacote.peso,
+      quantidade: this.quantidadesSelecionadas[pacote.id!]
+    }));
+
+    const dados = {
+      caminhao: this.caminhaoSelecionado,
+      pacotes: pacotesFormatados
+    };
+
+    this.router.navigate(['/visualiza'], {
+      state: { dados }
+    });
+  }
+
 
 }
