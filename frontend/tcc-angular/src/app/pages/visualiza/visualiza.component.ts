@@ -36,7 +36,7 @@ export class VisualizaComponent {
       this.caminhao = state.dados.caminhao;
       this.pacotes = state.dados.pacotes;
       this.pacotesRecebidos = state.dados.pacotes;
-      console.log(this.pacotes)
+      console.log(this.pacotes);
       this.enviarParaOtimizar(state.dados.caminhao, state.dados.pacotes);
     }
   }
@@ -58,10 +58,10 @@ export class VisualizaComponent {
         quantidade: p.quantidade
       }))
     };
-console.log("ENVIANDO")
+    console.log("ENVIANDO");
     this.otimizarService.otimizar(body).subscribe({
       next: (dados) => {
-        console.log("RECBIDO")
+        console.log("RECEBIDO");
         this.pacotes = dados.map(d => ({
           x: d.x,
           y: d.y,
@@ -73,7 +73,7 @@ console.log("ENVIANDO")
         }));
         console.log("DADOS DO BACKEND:", JSON.stringify(this.pacotes, null, 2));
 
-        this.pacoteIds = [...new Set(this.pacotes.map(p => p.cor))];
+        this.pacoteIds = [...new Set(this.pacotes.map(p => p.cor))].sort((a, b) => a - b);
         this.pacoteAtualId = this.pacoteIds[0];
 
         this.atualizarPacotesParaMostrar();
@@ -87,8 +87,10 @@ console.log("ENVIANDO")
   }
 
   atualizarPacotesParaMostrar(): void {
-    console.log("ATUALIZAR")
-    this.pacotesParaMostrar = this.pacotes.filter(p => p.cor === this.pacoteAtualId);
+    console.log("ATUALIZAR");
+    const indexAtual = this.pacoteIds.indexOf(this.pacoteAtualId);
+    const idsParaMostrar = this.pacoteIds.slice(0, indexAtual + 1); // Pega todos os ids até o atual
+    this.pacotesParaMostrar = this.pacotes.filter(p => idsParaMostrar.includes(p.cor));
   }
 
   avancarPasso(): void {

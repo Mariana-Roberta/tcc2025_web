@@ -19,7 +19,11 @@ export class ThreeDViewComponent implements OnChanges {
   @ViewChild('container', { static: true }) containerRef!: ElementRef<HTMLDivElement>;
 
   @Input() pacotesOtimizados: ReadonlyArray<{ x: number, y: number, z: number, comprimento: number, largura: number, altura: number, cor: number }> = [];
-
+  @Input() caminhao: { comprimento: number; largura: number; altura: number } = {
+    comprimento: 0,
+    largura: 0,
+    altura: 0
+  };
   @Input() loading: boolean | undefined;
 
   private scene!: THREE.Scene;
@@ -29,14 +33,13 @@ export class ThreeDViewComponent implements OnChanges {
   private boxes: THREE.Mesh[] = [];
   private coresGeradas: Map<number, THREE.Color> = new Map();
 
-  private readonly truckSize = { width: 10, height: 5, depth: 20 };
   private readonly offset = 0.01;
 
 
 
   ngOnInit(): void {
     this.initThreeJS();
-    this.createTruck();
+    this.criarCaminhao();
     this.setupControls();
     this.animate();
     window.addEventListener('resize', () => this.onWindowResize());
@@ -85,18 +88,18 @@ export class ThreeDViewComponent implements OnChanges {
     }
   }
 
-  private createTruck(): void {
-    const geometry = new THREE.BoxGeometry(this.truckSize.width, this.truckSize.height, this.truckSize.depth);
+  private criarCaminhao(): void {
+    const geometry = new THREE.BoxGeometry(this.caminhao.comprimento, this.caminhao.altura, this.caminhao.largura);
     const material = new THREE.MeshPhongMaterial({ color: 0xbbbbbb, side: THREE.BackSide });
-    const truck = new THREE.Mesh(geometry, material);
+    const c = new THREE.Mesh(geometry, material);
 
-    truck.position.set(
-      this.truckSize.width / 2,
-      this.truckSize.height / 2,
-      this.truckSize.depth / 2
+    c.position.set(
+      this.caminhao.comprimento / 2,
+      this.caminhao.altura / 2,
+      this.caminhao.largura / 2
     );
 
-    this.scene.add(truck);
+    this.scene.add(c);
   }
 
   private criarPacotes(pacotes: ReadonlyArray<{ x: number, y: number, z: number, comprimento: number, largura: number, altura: number, cor: number }>): void {
@@ -133,10 +136,7 @@ export class ThreeDViewComponent implements OnChanges {
       this.scene.add(boxMesh);
       this.boxes.push(boxMesh);
 
-      gsap.fromTo(boxMesh.position,
-        { y: boxMesh.position.y + 5 },
-        { y: boxMesh.position.y, duration: 1, ease: "sine.out" }
-      );
+
     });
   }
 
