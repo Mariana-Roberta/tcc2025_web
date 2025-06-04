@@ -48,14 +48,14 @@ export class OtimizaComponent implements OnInit {
   }
 
   carregarCaminhoes() {
-    /*const usuario = this.authService.getUsuario();
+    const usuario = this.authService.getUsuario();
     if (usuario) {
       this.caminhaoService.listarPorUsuario(usuario.id).subscribe({
         next: (dados: Caminhao[]) => this.caminhoes = dados,
         error: (erro: any) => console.error('Erro ao carregar caminhões:', erro)
       });
-    }*/
-   this.caminhoes = [
+    }
+   /*this.caminhoes = [
   {
     id: 1,
     nome: 'Caminhão Baú',
@@ -146,19 +146,19 @@ export class OtimizaComponent implements OnInit {
     pesoLimite: 11000,
     usuario: { id: 1 }
   }
-];
+];*/
 
   }
 
   carregarPacotes() {
-    /*const usuario = this.authService.getUsuario();
+    const usuario = this.authService.getUsuario();
     if (usuario) {
       this.pacoteService.listarPorUsuario(usuario.id).subscribe({
         next: (dados: Pacote[]) => this.pacotes = dados,
         error: (erro: any) => console.error('Erro ao carregar caminhões:', erro)
       });
-    }*/
-   this.pacotes = [
+    }
+   /*this.pacotes = [
     {
       id: 1,
       nome: 'Pacote Pequeno',
@@ -166,7 +166,7 @@ export class OtimizaComponent implements OnInit {
       largura: 0.4,
       altura: 0.3,
       peso: 5,
-      fragil: true,
+      rotacao: true,
       usuario: { id: 1 }
     },
     {
@@ -176,7 +176,7 @@ export class OtimizaComponent implements OnInit {
       largura: 0.5,
       altura: 0.4,
       peso: 12,
-      fragil: false,
+      rotacao: false,
       usuario: { id: 1 }
     },
     {
@@ -186,7 +186,7 @@ export class OtimizaComponent implements OnInit {
       largura: 0.6,
       altura: 0.5,
       peso: 25,
-      fragil: false,
+      rotacao: false,
       usuario: { id: 1 }
     },
     {
@@ -196,7 +196,7 @@ export class OtimizaComponent implements OnInit {
       largura: 0.7,
       altura: 0.6,
       peso: 18,
-      fragil: false,
+      rotacao: false,
       usuario: { id: 1 }
     },
     {
@@ -206,7 +206,7 @@ export class OtimizaComponent implements OnInit {
       largura: 1.0,
       altura: 0.8,
       peso: 40,
-      fragil: false,
+      rotacao: false,
       usuario: { id: 1 }
     },
     {
@@ -216,7 +216,7 @@ export class OtimizaComponent implements OnInit {
       largura: 0.5,
       altura: 0.5,
       peso: 8,
-      fragil: true,
+      rotacao: true,
       usuario: { id: 1 }
     },
     {
@@ -226,7 +226,7 @@ export class OtimizaComponent implements OnInit {
       largura: 0.3,
       altura: 0.2,
       peso: 2,
-      fragil: false,
+      rotacao: false,
       usuario: { id: 1 }
     },
     {
@@ -236,7 +236,7 @@ export class OtimizaComponent implements OnInit {
       largura: 0.8,
       altura: 0.2,
       peso: 22,
-      fragil: true,
+      rotacao: true,
       usuario: { id: 1 }
     },
     {
@@ -246,7 +246,7 @@ export class OtimizaComponent implements OnInit {
       largura: 0.5,
       altura: 0.4,
       peso: 14,
-      fragil: false,
+      rotacao: false,
       usuario: { id: 1 }
     },
     {
@@ -256,10 +256,10 @@ export class OtimizaComponent implements OnInit {
       largura: 0.8,
       altura: 0.7,
       peso: 50,
-      fragil: false,
+      rotacao: false,
       usuario: { id: 1 }
     }
-  ];
+  ];*/
   }
 
   selecionarCaminhao(c: any) {
@@ -359,7 +359,7 @@ cancelarSelecao(pacote: Pacote): void {
         largura: p.pacote.largura,
         altura: p.pacote.altura,
         peso: p.pacote.peso,
-        fragil: p.pacote.fragil,
+        rotacao: p.pacote.rotacao,
         quantidade: p.quantidade
       }))
     }))

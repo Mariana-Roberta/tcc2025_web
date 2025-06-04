@@ -35,13 +35,13 @@
         </div>
 
         <div class="input-container toggle-switch">
-          <label for="fragil">É Frágil? <span class="fragil-indicador">{{ novoPacote.fragil ? 'Sim' : 'Não' }}</span></label>
+          <label for="fragil">É Frágil? <span class="fragil-indicador">{{ novoPacote.rotacao ? 'Sim' : 'Não' }}</span></label>
           <label class="switch">
             <input
               type="checkbox"
               id="fragil"
               name="fragil"
-              [(ngModel)]="novoPacote.fragil"
+              [(ngModel)]="novoPacote.rotacao"
             />
             <span class="slider round"></span>
           </label>
@@ -79,8 +79,8 @@
           <td>
             <span 
               class="fragil" 
-              [ngClass]="{ 'fragil-true': pacote.fragil, 'fragil-false': !pacote.fragil }">
-              {{ pacote.fragil ? 'Frágil' : 'Não Frágil' }}
+              [ngClass]="{ 'fragil-true': pacote.rotacao, 'fragil-false': !pacote.rotacao }">
+              {{ pacote.rotacao ? 'Frágil' : 'Não Frágil' }}
             </span>
           </td>
           <td>

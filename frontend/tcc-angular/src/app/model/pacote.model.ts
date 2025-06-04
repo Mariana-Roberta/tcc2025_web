@@ -5,7 +5,7 @@ export interface Pacote {
   largura: number;
   altura: number;
   peso: number;
-  fragil: boolean;
+  rotacao: boolean;
   usuario: {
     id: number;
   };
