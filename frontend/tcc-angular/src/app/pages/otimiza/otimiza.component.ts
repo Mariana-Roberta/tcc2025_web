@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {NavbarComponent} from "../../components/navbar/navbar.component";
-import {NgForOf, NgIf} from "@angular/common";
+import {NgClass, NgForOf, NgIf} from "@angular/common";
 import {Caminhao} from '../../model/caminhao.model';
 import {Router} from '@angular/router';
 import {ScreenBackgroundComponent} from '../../components/screen-background/screen-background.component';
@@ -14,8 +14,10 @@ import { Pedido } from '../../model/pedido.model';
 
 @Component({
   selector: 'app-otimiza',
+  standalone: true,
   imports: [
     NavbarComponent,
+    NgClass,
     NgForOf,
     NgIf,
     ScreenBackgroundComponent,
@@ -164,6 +166,7 @@ export class OtimizaComponent implements OnInit {
       largura: 0.4,
       altura: 0.3,
       peso: 5,
+      fragil: true,
       usuario: { id: 1 }
     },
     {
@@ -173,6 +176,7 @@ export class OtimizaComponent implements OnInit {
       largura: 0.5,
       altura: 0.4,
       peso: 12,
+      fragil: false,
       usuario: { id: 1 }
     },
     {
@@ -182,6 +186,7 @@ export class OtimizaComponent implements OnInit {
       largura: 0.6,
       altura: 0.5,
       peso: 25,
+      fragil: false,
       usuario: { id: 1 }
     },
     {
@@ -191,6 +196,7 @@ export class OtimizaComponent implements OnInit {
       largura: 0.7,
       altura: 0.6,
       peso: 18,
+      fragil: false,
       usuario: { id: 1 }
     },
     {
@@ -200,6 +206,7 @@ export class OtimizaComponent implements OnInit {
       largura: 1.0,
       altura: 0.8,
       peso: 40,
+      fragil: false,
       usuario: { id: 1 }
     },
     {
@@ -209,6 +216,7 @@ export class OtimizaComponent implements OnInit {
       largura: 0.5,
       altura: 0.5,
       peso: 8,
+      fragil: true,
       usuario: { id: 1 }
     },
     {
@@ -218,6 +226,7 @@ export class OtimizaComponent implements OnInit {
       largura: 0.3,
       altura: 0.2,
       peso: 2,
+      fragil: false,
       usuario: { id: 1 }
     },
     {
@@ -227,6 +236,7 @@ export class OtimizaComponent implements OnInit {
       largura: 0.8,
       altura: 0.2,
       peso: 22,
+      fragil: true,
       usuario: { id: 1 }
     },
     {
@@ -236,6 +246,7 @@ export class OtimizaComponent implements OnInit {
       largura: 0.5,
       altura: 0.4,
       peso: 14,
+      fragil: false,
       usuario: { id: 1 }
     },
     {
@@ -245,6 +256,7 @@ export class OtimizaComponent implements OnInit {
       largura: 0.8,
       altura: 0.7,
       peso: 50,
+      fragil: false,
       usuario: { id: 1 }
     }
   ];
@@ -347,6 +359,7 @@ cancelarSelecao(pacote: Pacote): void {
         largura: p.pacote.largura,
         altura: p.pacote.altura,
         peso: p.pacote.peso,
+        fragil: p.pacote.fragil,
         quantidade: p.quantidade
       }))
     }))

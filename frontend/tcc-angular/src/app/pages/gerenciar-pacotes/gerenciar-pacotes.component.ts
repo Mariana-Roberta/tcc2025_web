@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NgForOf, NgIf } from '@angular/common';
+import { NgClass, NgForOf, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NavbarComponent } from '../../components/navbar/navbar.component';
 import { ScreenBackgroundComponent } from '../../components/screen-background/screen-background.component';
@@ -13,7 +13,7 @@ import {Caminhao} from '../../model/caminhao.model';
   selector: 'app-gerenciar-pacotes',
   templateUrl: './gerenciar-pacotes.component.html',
   standalone: true,
-  imports: [NgForOf, FormsModule, NgIf, NavbarComponent, ScreenBackgroundComponent],
+  imports: [NgForOf, NgClass, FormsModule, NgIf, NavbarComponent, ScreenBackgroundComponent],
   styleUrls: ['./gerenciar-pacotes.component.css']
 })
 export class GerenciarPacotesComponent implements OnInit {
@@ -26,6 +26,7 @@ export class GerenciarPacotesComponent implements OnInit {
     largura: 0,
     altura: 0,
     peso: 0,
+    fragil: false,
     usuario: { id: 0 }
   };
 
@@ -62,6 +63,7 @@ export class GerenciarPacotesComponent implements OnInit {
       largura: 0,
       altura: 0,
       peso: 0,
+      fragil: false,
       usuario: { id: 0 }
     };
     this.mostrarFormulario = true;
@@ -77,6 +79,7 @@ export class GerenciarPacotesComponent implements OnInit {
       largura: 0,
       altura: 0,
       peso: 0,
+      fragil: false,
       usuario: { id: 0 }
     };
     this.modoEdicao = false;

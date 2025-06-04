@@ -34,6 +34,22 @@
           <input type="number" name="peso" id="peso" [(ngModel)]="novoPacote.peso" placeholder="Peso (kg)" required />
         </div>
 
+        <div class="input-container toggle-switch">
+          <label for="fragil">É Frágil? <span class="fragil-indicador">{{ novoPacote.fragil ? 'Sim' : 'Não' }}</span></label>
+          <label class="switch">
+            <input
+              type="checkbox"
+              id="fragil"
+              name="fragil"
+              [(ngModel)]="novoPacote.fragil"
+            />
+            <span class="slider round"></span>
+          </label>
+          
+        </div>
+
+
+
         <div class="form-actions">
           <button type="submit" class="btn-sucesso" [disabled]="form.invalid">
             {{ modoEdicao ? 'Salvar Alterações' : 'Salvar' }}
@@ -51,6 +67,7 @@
           <th>Nome</th>
           <th>Dimensões (C x L x A)</th>
           <th>Peso (kg)</th>
+          <th>Frágil</th>
           <th>Ações</th>
         </tr>
         </thead>
@@ -59,6 +76,13 @@
           <td>{{ pacote.nome }}</td>
           <td>{{ pacote.comprimento }} x {{ pacote.largura }} x {{ pacote.altura }}</td>
           <td>{{ pacote.peso }}</td>
+          <td>
+            <span 
+              class="fragil" 
+              [ngClass]="{ 'fragil-true': pacote.fragil, 'fragil-false': !pacote.fragil }">
+              {{ pacote.fragil ? 'Frágil' : 'Não Frágil' }}
+            </span>
+          </td>
           <td>
             <div style="display: flex; gap: 10px">
               <button class="btn-primario" (click)="editarPacote(pacote, i)">Editar</button>

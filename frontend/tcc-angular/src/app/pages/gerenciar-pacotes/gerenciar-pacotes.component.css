@@ -6,3 +6,86 @@
   border-radius: 12px;
   overflow: hidden;
 }
+
+.fragil-true {
+  background-color: #e0e5f3;
+  border: 1px solid #4488ff;
+  padding: 2px 6px;
+  border-radius: 8px;
+  color: #4488ff;
+  font-weight: 500;
+}
+
+.fragil-false {
+  background-color: #e1e1e1;
+  border: 1px solid #9a9a9a;
+  padding: 2px 6px;
+  border-radius: 8px;
+  color: #9a9a9a;
+}
+
+.toggle-switch {
+  display: flex;
+  align-items: left;
+  gap: 12px;
+}
+
+/* Estilo base do botão deslizante */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 46px;
+  height: 26px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* Trilho do botão */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  background-color: #ccc;
+  border-radius: 34px;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  transition: 0.4s;
+}
+
+/* Bolinha do botão */
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 20px;
+  width: 20px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+/* Quando ativado */
+input:checked + .slider {
+  background-color: #10c66f;
+}
+
+input:checked + .slider:before {
+  transform: translateX(20px);
+}
+
+/* Forma arredondada */
+.slider.round {
+  border-radius: 34px;
+}
+
+.fragil-indicador {
+  font-weight: bold;
+  color: #333;
+  min-width: 30px;
+}

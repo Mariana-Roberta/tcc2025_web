@@ -17,7 +17,7 @@ export const routes: Routes = [
 
   // protegidas por autenticação
   { path: 'home', component: HomeComponent, canActivate: [AuthGuard] },
-  { path: 'gerenciar-pacotes', component: GerenciarPacotesComponent, canActivate: [AuthGuard] },
+  { path: 'gerenciar-pacotes', component: GerenciarPacotesComponent},
   { path: 'gerenciar-caminhoes', component: GerenciarCaminhoesComponent, canActivate: [AuthGuard] },
   { path: 'perfil', component: PerfilComponent, canActivate: [AuthGuard] },
   { path: 'visualiza', component: VisualizaComponent },
