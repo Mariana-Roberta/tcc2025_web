@@ -24,6 +24,7 @@
     "gsap": "^3.12.7",
     "primeicons": "^7.0.0",
     "rxjs": "~7.8.0",
+    "tcc-angular": "file:",
     "three": "^0.175.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"

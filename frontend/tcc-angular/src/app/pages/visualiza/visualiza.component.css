@@ -96,9 +96,9 @@ section {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  max-height: 320px;
   overflow-y: auto;
   scrollbar-width: thin;
+  height: auto;
 }
 
 .pacotes-section::-webkit-scrollbar {

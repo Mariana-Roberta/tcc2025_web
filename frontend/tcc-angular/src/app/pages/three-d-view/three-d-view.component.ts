@@ -89,14 +89,14 @@ export class ThreeDViewComponent implements OnChanges {
   }
 
   private criarCaminhao(): void {
-    const geometry = new THREE.BoxGeometry(this.caminhao.comprimento, this.caminhao.altura, this.caminhao.largura);
+    const geometry = new THREE.BoxGeometry(this.caminhao.largura, this.caminhao.altura, this.caminhao.comprimento);
     const material = new THREE.MeshPhongMaterial({ color: 0xbbbbbb, side: THREE.BackSide });
     const c = new THREE.Mesh(geometry, material);
 
     c.position.set(
-      this.caminhao.comprimento / 2,
+      this.caminhao.largura / 2,
       this.caminhao.altura / 2,
-      this.caminhao.largura / 2
+      this.caminhao.comprimento / 2
     );
 
     this.scene.add(c);
@@ -114,7 +114,7 @@ export class ThreeDViewComponent implements OnChanges {
     });
 
     pacotes.forEach(pacote => {
-      const geometry = new THREE.BoxGeometry(pacote.comprimento, pacote.largura, pacote.altura);
+      const geometry = new THREE.BoxGeometry(pacote.largura, pacote.altura, pacote.comprimento);
 
       const corPacote = this.coresGeradas.get(pacote.cor) || new THREE.Color(Math.random(), Math.random(), Math.random());
 
@@ -128,9 +128,9 @@ export class ThreeDViewComponent implements OnChanges {
       const boxMesh = new THREE.Mesh(geometry, material);
 
       boxMesh.position.set(
-        pacote.x + pacote.comprimento / 2,
-        pacote.y + pacote.largura / 2,
-        pacote.z + pacote.altura / 2
+        pacote.x + pacote.largura / 2,
+        pacote.y + pacote.altura / 2,
+        pacote.z + pacote.comprimento / 2
       );
 
       this.scene.add(boxMesh);
