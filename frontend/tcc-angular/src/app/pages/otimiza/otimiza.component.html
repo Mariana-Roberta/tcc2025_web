@@ -9,21 +9,35 @@
       <section class="card selecao-card">
         <h3><i class="pi pi-truck"></i> Escolha um Caminhão</h3>
 
-        <div class="caminhoes-lista">
-          <div
-            class="caminhao-card"
-            *ngFor="let caminhao of caminhoes"
-            [class.ativo]="caminhaoSelecionado === caminhao"
-            (click)="selecionarCaminhao(caminhao)"
-          >
-            <div class="card-header">
-              <i class="pi pi-truck"></i> {{ caminhao.nome }}
-            </div>
-            <div class="card-body">
-              <span class="badge">{{ caminhao.comprimento }}m × {{ caminhao.largura }}m × {{ caminhao.altura }}m</span>
-              <span class="badge">{{ caminhao.pesoLimite / 1000 }}t</span>
-            </div>
-          </div>
+        <input
+          type="text"
+          [(ngModel)]="filtroCaminhao"
+          placeholder="Filtrar caminhões por nome, peso ou dimensões..."
+          class="filtro-input"
+        />
+
+        <div class="tabela-container">
+          <table class="custom-table">
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>Dimensões (C × L × A)</th>
+                <th>Peso Máximo</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                *ngFor="let caminhao of caminhoesFiltrados"
+                [class.ativo]="caminhaoSelecionado?.id === caminhao.id"
+                (click)="selecionarCaminhao(caminhao)"
+                style="cursor: pointer;"
+              >
+                <td><i class="pi pi-truck"></i> {{ caminhao.nome }}</td>
+                <td>{{ caminhao.comprimento }}m × {{ caminhao.largura }}m × {{ caminhao.altura }}m</td>
+                <td>{{ caminhao.pesoLimite / 1000 }}t</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
 
         <div class="confirmacao-box" style="margin-top: 20px; text-align: center;">
@@ -37,62 +51,133 @@
       </section>
     </div>
 
+
     <!-- Etapa 2: Pacotes -->
-    <div *ngIf="etapaAtual === 'pacotes'">
-      <section class="card selecao-card">
-        <h3><i class="pi pi-box"></i> Escolha os Pacotes</h3>
-        <p class="contador-produtos">
-          Pacotes selecionados: {{ pacotesSelecionados.length }}
-        </p>
+<div *ngIf="etapaAtual === 'pacotes'">
+  <section class="card selecao-card">
+    <h3><i class="pi pi-box"></i> Escolha os Pacotes</h3>
+    <p class="contador-produtos">
+      Pacotes selecionados: {{ pacotesSelecionados.length }}
+    </p>
 
-        <div class="produtos-lista">
-          <div
-            class="produto-card"
-            *ngFor="let pacote of pacotes"
-            [class.ativo]="pacotesSelecionados.includes(pacote)"
-            (click)="togglePacote(pacote)"
-          >
-            <div class="card-header">
-              <i class="pi pi-box"></i> {{ pacote.nome }}
-            </div>
-            <div class="card-body">
-              <span class="badge">{{ pacote.comprimento }}m × {{ pacote.largura }}m × {{ pacote.altura }}m</span>
-              <span class="badge">{{ pacote.peso }}kg</span>
-            </div>
+<div *ngIf="!pedidoAtual">
+  <button (click)="criarNovoPedido()" class="button btn-sucesso">+ Novo Pedido</button>
+</div>
 
-            <!-- Campo de quantidade + botão OK -->
-            <div class="input-quantidade" *ngIf="pacotesSelecionados.includes(pacote) && pacote.id !== undefined">
-              <label for="quantidade-{{ pacote.id }}" style="color: white;">Quantidade:</label>
-              <input
-                type="number"
-                min="1"
-                [(ngModel)]="quantidadesSelecionadas[pacote.id!]"
-                [disabled]="quantidadesConfirmadas[pacote.id!]"
-                id="quantidade-{{ pacote.id }}"
-                (click)="$event.stopPropagation()"
-                (keydown)="$event.stopPropagation()"
-              />
-              <button class="btn-ok"
-                      type="button"
-                      *ngIf="!quantidadesConfirmadas[pacote.id!]"
-                      (click)="confirmarQuantidade(pacote); $event.stopPropagation()">
-                OK
-              </button>
-            </div>
+<div *ngIf="pedidoAtual">
+  <h4>Pedido: {{ pedidoAtual.nome }}</h4>
+  <!-- (Aqui entra a tabela de pacotes filtrados como já temos, adaptada abaixo) -->
 
-          </div>
-        </div>
 
-        <div class="confirmacao-box" style="margin-top: 20px; text-align: center;">
-          <p *ngIf="pacotesSelecionados.length === 0">Selecione pelo menos um pacote</p>
-          <button class="btn-continuar"
-                  [disabled]="pacotesSelecionados.length === 0 || !todosPacotesConfirmados()"
-                  (click)="confirmarOtimizacao()">
-            Confirmar Otimização
+<div class="tabela-container">
+      <!-- Campo de filtro -->
+<div class="filtro-container" style="margin-bottom: 20px; text-align: center;">
+  <input
+    type="text"
+    [(ngModel)]="filtroPacote"
+    placeholder="Filtrar pacotes por nome, peso ou dimensões..."
+    class="filtro-input"
+  />
+</div>
+  <table class="custom-table">
+    <thead>
+      <tr>
+        <th>Nome</th>
+        <th>Dimensões (C × L × A)</th>
+        <th>Peso</th>
+        <th>Quantidade</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr
+        *ngFor="let pacote of pacotesFiltrados"
+        [class.ativo]="pacotesSelecionados.includes(pacote)"
+        (click)="togglePacote(pacote)"
+        style="cursor: pointer;"
+      >
+        <td><i class="pi pi-box"></i> {{ pacote.nome }}</td>
+        <td>{{ pacote.comprimento }}m × {{ pacote.largura }}m × {{ pacote.altura }}m</td>
+        <td>{{ pacote.peso }}kg</td>
+
+        <!-- Quantidade -->
+        <td *ngIf="pacotesSelecionados.includes(pacote) && pacote.id !== undefined">
+          <input
+            type="number"
+            min="1"
+            [(ngModel)]="quantidadesSelecionadas[pacote.id!]"
+            [disabled]="quantidadesConfirmadas[pacote.id!]"
+            (click)="$event.stopPropagation()"
+            (keydown)="$event.stopPropagation()"
+          />
+        </td>
+        <td *ngIf="!pacotesSelecionados.includes(pacote)">—</td>
+
+        <!-- Ações -->
+        <td *ngIf="pacotesSelecionados.includes(pacote) && pacote.id !== undefined">
+          <ng-container *ngIf="!quantidadesConfirmadas[pacote.id!]">
+            <button class="btn-ok"
+                    type="button"
+                    (click)="confirmarQuantidade(pacote); $event.stopPropagation()">
+              OK
+            </button>
+          </ng-container>
+
+          <ng-container *ngIf="quantidadesConfirmadas[pacote.id!]">
+            <button class="btn-desfazer"
+                    type="button"
+                    (click)="desfazerConfirmacao(pacote); $event.stopPropagation()">
+              Desfazer
+            </button>
+          </ng-container>
+
+          <button class="btn-cancelar"
+                  type="button"
+                  (click)="cancelarSelecao(pacote); $event.stopPropagation()">
+            Cancelar
           </button>
-        </div>
-      </section>
+        </td>
+        <td *ngIf="!pacotesSelecionados.includes(pacote)">—</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="confirmacao-box" style="margin-top: 20px; text-align: center;">
+  <p *ngIf="pacotesSelecionados.length === 0">Selecione ao menos um pacote para este pedido</p>
+  <button class="btn-continuar"
+          [disabled]="pacotesSelecionados.length === 0 || !todosPacotesConfirmados()"
+          (click)="confirmarPedido()">
+    Confirmar Pedido
+  </button>
+</div>
+</div>
+
+<div *ngIf="pedidos.length > 0" class="lista-pedidos-container">
+  <h4>📦 Pedidos adicionados ao caminhão:</h4>
+  <ul class="lista-pedidos">
+    <li *ngFor="let pedido of pedidos" class="pedido-item">
+      <div class="pedido-info">
+        <span class="pedido-nome">{{ pedido.nome }}</span>
+        <span class="pedido-detalhes">{{ pedido.pacotes.length }} tipo de pacote(s)</span>
+      </div>
+    </li>
+  </ul>
+</div>
+
+
+
+    <div class="confirmacao-box" style="margin-top: 20px; text-align: center;">
+      <p *ngIf="pacotesSelecionados.length === 0">Selecione pelo menos um pacote</p>
+      <button class="btn-continuar"
+              [disabled]="pacotesSelecionados.length === 0 || !todosPacotesConfirmados()"
+              (click)="confirmarOtimizacao()">
+        Confirmar Otimização
+      </button>
     </div>
+  </section>
+</div>
+
 
   </div>
 </div>

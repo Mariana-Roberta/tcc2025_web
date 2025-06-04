@@ -20,8 +20,8 @@ export const routes: Routes = [
   { path: 'gerenciar-pacotes', component: GerenciarPacotesComponent, canActivate: [AuthGuard] },
   { path: 'gerenciar-caminhoes', component: GerenciarCaminhoesComponent, canActivate: [AuthGuard] },
   { path: 'perfil', component: PerfilComponent, canActivate: [AuthGuard] },
-  { path: 'visualiza', component: VisualizaComponent, canActivate: [AuthGuard] },
-  { path: 'otimiza', component: OtimizaComponent, canActivate: [AuthGuard] },
+  { path: 'visualiza', component: VisualizaComponent },
+  { path: 'otimiza', component: OtimizaComponent },
   { path: 'contato', component: ContatoComponent, canActivate: [AuthGuard] },
 
   // rota fallback para erro 404

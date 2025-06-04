@@ -24,27 +24,36 @@
       </div>
     </section>
 
-    <!-- Card dos pacotes selecionados -->
-    <section class="pacotes-section" *ngIf="pacotes.length > 0">
-      <h4>Pacotes Selecionados</h4>
-      <ul class="pacotes-lista">
-        <li class="pacote-card horizontal ativo" *ngFor="let pacote of pacotesRecebidos; let i = index">
-          <div class="card-left">
-            <strong>{{ pacote.nome }}</strong><br/><br/>
-            <span class="badge">Qtd: {{ pacote.quantidade }}</span>
-          </div>
-          <div class="card-right">
-            <span class="badge">{{ pacote.comprimento }}m × {{ pacote.largura }}m × {{ pacote.altura }}m</span>
-            <span class="badge">{{ pacote.peso }}kg</span>
-          </div>
-        </li>
-      </ul>
+    <!-- Card dos pacotes agrupados por pedido -->
+    <section class="pacotes-section" *ngIf="pedidos.length > 0">
+      <h4>Pacotes por Pedido</h4>
+      <div *ngFor="let pedido of pedidos">
+        <h5 style="margin-top: 1em;">
+          <i class="pi pi-inbox" style="margin-right: 5px;"></i>
+          {{ pedido.descricao || pedido.nome || ('Pedido #' + pedido.id) }}
+        </h5>
+        <ul class="pacotes-lista">
+          <li class="pacote-card horizontal ativo" *ngFor="let pacote of pedido.pacotes">
+            <div class="card-left">
+              <strong>{{ pacote.nome }}</strong><br/><br/>
+              <span class="badge">Qtd: {{ pacote.quantidade }}</span>
+            </div>
+            <div class="card-right">
+              <span class="badge">{{ pacote.comprimento }}m × {{ pacote.largura }}m × {{ pacote.altura }}m</span>
+              <span class="badge">{{ pacote.peso }}kg</span>
+            </div>
+          </li>
+        </ul>
+      </div>
     </section>
   </aside>
 
   <!-- Canvas do Three.js -->
   <main class="canvas-container">
-    <app-three-d-view [pacotesOtimizados]="pacotesParaMostrar" [caminhao]="caminhao"></app-three-d-view>
+    <app-three-d-view
+      [pacotesOtimizados]="pacotesParaMostrar"
+      [caminhao]="caminhao"
+    ></app-three-d-view>
   </main>
 
   <!-- Card de Passo a Passo -->
@@ -52,15 +61,37 @@
     <h3><i class="pi pi-list"></i> Passo a Passo</h3>
 
     <div class="passo-dinamico">
-      <p class="passo-indicador">Pacote {{ pacoteIds.indexOf(pacoteAtualId) + 1 }} de {{ pacoteIds.length }}</p>
-      <p class="passo-texto">Visualizando pacote ID: {{ pacoteAtualId }}</p>
+      <p class="passo-indicador">
+        Pacote {{ pacotesIdsDoPedidoAtual.indexOf(pacoteAtualId) + 1 }} de {{ pacotesIdsDoPedidoAtual.length }}
+      </p>
+      <p class="passo-texto">
+        Visualizando pacote ID: {{ pacoteAtualId }}
+      </p>
     </div>
 
     <div class="passo-botoes">
-      <button class="passo-btn" (click)="voltarPasso()" [disabled]="pacoteIds.indexOf(pacoteAtualId) === 0">Anterior</button>
-      <button class="passo-btn" (click)="avancarPasso()" [disabled]="pacoteIds.indexOf(pacoteAtualId) === pacoteIds.length - 1">Próximo</button>
+      <button
+        class="passo-btn"
+        (click)="voltarPasso()"
+        [disabled]="pacotesIdsDoPedidoAtual.indexOf(pacoteAtualId) === 0"
+      >
+        Anterior
+      </button>
+      <button
+        class="passo-btn"
+        (click)="avancarPasso()"
+        [disabled]="pacotesIdsDoPedidoAtual.indexOf(pacoteAtualId) === pacotesIdsDoPedidoAtual.length - 1"
+      >
+        Próximo
+      </button>
     </div>
 
-    <button class="confirmar-button" *ngIf="pacoteIds.indexOf(pacoteAtualId) === pacoteIds.length - 1" (click)="confirmar()">Confirmar Carregamento</button>
+    <button
+      class="confirmar-button"
+      *ngIf="pacotesIdsDoPedidoAtual.indexOf(pacoteAtualId) === pacotesIdsDoPedidoAtual.length - 1"
+      (click)="confirmar()"
+    >
+      Confirmar Carregamento
+    </button>
   </aside>
 </div>

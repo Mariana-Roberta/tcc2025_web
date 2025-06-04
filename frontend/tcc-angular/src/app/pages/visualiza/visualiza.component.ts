@@ -19,12 +19,16 @@ import { OtimizarService } from '../../services/otimizar.service';
 })
 export class VisualizaComponent {
   caminhao: any;
+  pedidos: any[] = [];
   pacotes: any[] = [];
   pacotesRecebidos: any[] = [];
 
-  pacoteIds: number[] = [];
+  pedidoIds: number[] = [];
+  pedidoAtualId: number = 0;
   pacoteAtualId: number = 0;
-  pacotesParaMostrar: any[] = [];
+
+  indicePedidoAtual = 0;
+  indicePacoteAtualPorPedido: { [pedidoId: number]: number } = {};
 
   loading = true;
 
@@ -34,49 +38,63 @@ export class VisualizaComponent {
 
     if (state?.dados) {
       this.caminhao = state.dados.caminhao;
-      this.pacotes = state.dados.pacotes;
-      this.pacotesRecebidos = state.dados.pacotes;
-      console.log(this.pacotes);
-      this.enviarParaOtimizar(state.dados.caminhao, state.dados.pacotes);
+      this.pedidos = state.dados.pedidos;
+
+      this.enviarParaOtimizar(this.caminhao, this.pedidos);
     }
   }
 
-  enviarParaOtimizar(caminhao: any, pacotes: any[]): void {
+  enviarParaOtimizar(caminhao: any, pedidos: any[]): void {
     const body = {
       caminhao: {
+        id: caminhao.id,
+        nome: caminhao.nome,
         comprimento: caminhao.comprimento,
         largura: caminhao.largura,
         altura: caminhao.altura,
-        pesoLimite: caminhao.pesoLimite
+        pesoLimite: caminhao.pesoLimite,
+        usuario: {
+          id: caminhao.usuario?.id ?? 1
+        }
       },
-      pacotes: pacotes.map(p => ({
-        id: p.id,
-        comprimento: p.comprimento,
-        largura: p.largura,
-        altura: p.altura,
-        peso: p.peso,
-        quantidade: p.quantidade
+      pedidos: pedidos.map((pedido, idx) => ({
+        id: pedido.id ?? idx + 1,
+        descricao: pedido.descricao ?? pedido.nome ?? `Pedido #${idx + 1}`,
+        pacotes: pedido.pacotes.map((p: any) => ({
+          id: p.id,
+          nome: p.nome,
+          comprimento: p.comprimento,
+          largura: p.largura,
+          altura: p.altura,
+          peso: p.peso,
+          quantidade: p.quantidade
+        }))
       }))
     };
-    console.log("ENVIANDO");
+
+    console.log("ENVIANDO PARA BACKEND:", body);
+
     this.otimizarService.otimizar(body).subscribe({
       next: (dados) => {
-        console.log("RECEBIDO");
-        this.pacotes = dados.map(d => ({
+        this.pacotes = dados.map((d: any) => ({
           x: d.x,
           y: d.y,
           z: d.z,
           comprimento: d.comprimento,
           largura: d.largura,
           altura: d.altura,
-          cor: d.pacoteId
+          cor: d.pacoteId,
+          pedidoId: d.pedidoId
         }));
-        console.log("DADOS DO BACKEND:", JSON.stringify(this.pacotes, null, 2));
 
-        this.pacoteIds = [...new Set(this.pacotes.map(p => p.cor))].sort((a, b) => a - b);
-        this.pacoteAtualId = this.pacoteIds[0];
+        this.pedidoIds = [...new Set(this.pacotes.map(p => p.pedidoId))].sort((a, b) => a - b);
+        this.pedidoAtualId = this.pedidoIds[0];
 
-        this.atualizarPacotesParaMostrar();
+        const pacotesDoPedido = this.pacotes.filter(p => p.pedidoId === this.pedidoAtualId);
+        const primeirosIds = [...new Set(pacotesDoPedido.map(p => p.cor))].sort((a, b) => a - b);
+
+        this.pacoteAtualId = primeirosIds[0];
+
         this.loading = false;
       },
       error: (err) => {
@@ -86,26 +104,63 @@ export class VisualizaComponent {
     });
   }
 
-  atualizarPacotesParaMostrar(): void {
-    console.log("ATUALIZAR");
-    const indexAtual = this.pacoteIds.indexOf(this.pacoteAtualId);
-    const idsParaMostrar = this.pacoteIds.slice(0, indexAtual + 1); // Pega todos os ids até o atual
-    this.pacotesParaMostrar = this.pacotes.filter(p => idsParaMostrar.includes(p.cor));
+  get pedidoAtual() {
+    return this.pedidos[this.indicePedidoAtual];
   }
 
-  avancarPasso(): void {
-    const indexAtual = this.pacoteIds.indexOf(this.pacoteAtualId);
-    if (indexAtual < this.pacoteIds.length - 1) {
-      this.pacoteAtualId = this.pacoteIds[indexAtual + 1];
-      this.atualizarPacotesParaMostrar();
+  get pacoteIdAtual() {
+  const pedido = this.pedidoAtual;
+  const ids = [...new Set<number>(pedido.pacotes.map((p: any) => p.id))].sort((a, b) => a - b);
+  const index = this.indicePacoteAtualPorPedido[pedido.id] ?? 0;
+  return ids[index];
+}
+
+
+get pacotesParaMostrar() {
+  const pedido = this.pedidoAtual;
+  const ids = [...new Set<number>(pedido.pacotes.map((p: any) => p.id))].sort((a, b) => a - b);
+  const indexAtual = this.indicePacoteAtualPorPedido[pedido.id] ?? 0;
+  const idsParaMostrar = ids.slice(0, indexAtual + 1);
+  return this.pacotes.filter((p: any) => idsParaMostrar.includes(p.cor));
+}
+
+get pacotesIdsDoPedidoAtual(): number[] {
+  const pacotesPedidoAtual = this.pacotes.filter(p => p.pedidoId === this.pedidoAtualId);
+  return [...new Set<number>(pacotesPedidoAtual.map(p => p.cor))].sort((a, b) => a - b);
+}
+
+avancarPasso(): void {
+    const pedidoAtualPacotes = this.pacotes.filter(p => p.pedidoId === this.pedidoAtualId);
+    const pacoteIdsOrdenados = [...new Set(pedidoAtualPacotes.map(p => p.cor))].sort((a, b) => a - b);
+    const indexAtual = pacoteIdsOrdenados.indexOf(this.pacoteAtualId);
+
+    if (indexAtual < pacoteIdsOrdenados.length - 1) {
+      this.pacoteAtualId = pacoteIdsOrdenados[indexAtual + 1];
+    } else {
+      const nextPedidoIndex = this.pedidoIds.indexOf(this.pedidoAtualId) + 1;
+      if (nextPedidoIndex < this.pedidoIds.length) {
+        this.pedidoAtualId = this.pedidoIds[nextPedidoIndex];
+        const nextPacotes = this.pacotes.filter(p => p.pedidoId === this.pedidoAtualId);
+        this.pacoteAtualId = [...new Set(nextPacotes.map(p => p.cor))].sort((a, b) => a - b)[0];
+      }
     }
   }
 
   voltarPasso(): void {
-    const indexAtual = this.pacoteIds.indexOf(this.pacoteAtualId);
+    const pedidoAtualPacotes = this.pacotes.filter(p => p.pedidoId === this.pedidoAtualId);
+    const pacoteIdsOrdenados = [...new Set(pedidoAtualPacotes.map(p => p.cor))].sort((a, b) => a - b);
+    const indexAtual = pacoteIdsOrdenados.indexOf(this.pacoteAtualId);
+
     if (indexAtual > 0) {
-      this.pacoteAtualId = this.pacoteIds[indexAtual - 1];
-      this.atualizarPacotesParaMostrar();
+      this.pacoteAtualId = pacoteIdsOrdenados[indexAtual - 1];
+    } else {
+      const prevPedidoIndex = this.pedidoIds.indexOf(this.pedidoAtualId) - 1;
+      if (prevPedidoIndex >= 0) {
+        this.pedidoAtualId = this.pedidoIds[prevPedidoIndex];
+        const prevPacotes = this.pacotes.filter(p => p.pedidoId === this.pedidoAtualId);
+        const pacoteIds = [...new Set(prevPacotes.map(p => p.cor))].sort((a, b) => a - b);
+        this.pacoteAtualId = pacoteIds[pacoteIds.length - 1];
+      }
     }
   }
 

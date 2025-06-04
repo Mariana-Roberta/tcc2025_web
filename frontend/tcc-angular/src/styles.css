@@ -351,6 +351,18 @@ a:hover,
   background-color: #f9f9f9;
 }
 
+.custom-table tr.ativo {
+  background-color: #d2f3e4;
+  font-weight: bold;
+  border-left: 6px solid #10C66F;
+}
+
+.custom-table tr:hover {
+  background-color: #eef6fb;
+  transition: background-color 0.2s ease;
+}
+
+
 /* =============================
    📊 Paginação
    ============================= */
