@@ -1,0 +1,60 @@
+<app-navbar></app-navbar>
+
+<div class="container">
+  <div class="top-bar">
+    <h1>Gerenciar Carregamentos</h1>
+  </div>
+
+  <div class="tabela-container">
+    <h2>Lista de Carregamentos</h2>
+
+    <div *ngFor="let carregamento of carregamentos; let cIndex = index" class="carregamento-card">
+      <h3 (click)="toggleCaminhao(cIndex)" class="accordion-header">
+        🚚 Caminhão #{{ carregamento.caminhao.id }} - {{ carregamento.caminhao.nome }}
+        <span style="float: right; cursor: pointer; margin-left: 20px;">{{ caminhaoExpandido[cIndex] ? '▲' : '▼' }}</span>
+      </h3>
+
+      <div *ngIf="caminhaoExpandido[cIndex]">
+        <p>
+          Dimensões: {{ carregamento.caminhao.comprimento }}m × {{ carregamento.caminhao.largura }}m × {{ carregamento.caminhao.altura }}m <br />
+          Peso Limite: {{ carregamento.caminhao.pesoLimite }} kg
+        </p>
+
+        <div *ngFor="let pedido of carregamento.pedidos; let pIndex = index">
+          <h4 (click)="togglePedido(cIndex, pIndex)" class="accordion-pedido">
+            📦 Pedido: {{ pedido.descricao || 'Pedido #' + pedido.id }}
+          </h4>
+
+          <div>
+            <table class="custom-table">
+              <thead>
+                <tr>
+                  <th>Nome</th>
+                  <th>Dimensões (C x L x A)</th>
+                  <th>Peso (kg)</th>
+                  <th>Quantidade</th>
+                  <th>Frágil</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let pacote of pedido.pacotes">
+                  <td>{{ pacote.nome }}</td>
+                  <td>{{ pacote.comprimento }} x {{ pacote.largura }} x {{ pacote.altura }}</td>
+                  <td>{{ pacote.peso }}</td>
+                  <td>{{ pacote.quantidade }}</td>
+                  <td>
+                    <span class="fragil" [ngClass]="{ 'fragil-true': pacote.fragil, 'fragil-false': !pacote.fragil }">
+                      {{ pacote.fragil ? 'Frágil' : 'Não Frágil' }}
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-screen-background></app-screen-background>

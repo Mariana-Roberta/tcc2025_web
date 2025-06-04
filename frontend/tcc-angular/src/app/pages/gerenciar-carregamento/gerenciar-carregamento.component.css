@@ -1,0 +1,25 @@
+.container {
+  height: auto;
+  width: 90%;
+  background-color: var(--background-color);
+  padding: 20px 40px;
+  border-radius: 12px;
+}
+
+.fragil-true {
+  color: #d9534f;
+  font-weight: bold;
+}
+
+.fragil-false {
+  color: #5cb85c;
+  font-weight: normal;
+}
+
+.carregamento-card {
+  border: 1px solid #ccc;
+  padding: 1.5em;
+  margin-bottom: 2em;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+}

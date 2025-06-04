@@ -9,6 +9,7 @@ import { GerenciarCaminhoesComponent } from './pages/gerenciar-caminhoes/gerenci
 import { OtimizaComponent } from './pages/otimiza/otimiza.component';
 import { ContatoComponent } from './pages/contato/contato.component';
 import { AuthGuard } from './guard/auth.guard';
+import { GerenciarCarregamentoComponent } from './pages/gerenciar-carregamento/gerenciar-carregamento.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' }, // redirecionamento padrão
@@ -22,6 +23,7 @@ export const routes: Routes = [
   { path: 'perfil', component: PerfilComponent, canActivate: [AuthGuard] },
   { path: 'visualiza', component: VisualizaComponent },
   { path: 'otimiza', component: OtimizaComponent },
+  { path: 'gerenciar-carregamentos', component: GerenciarCarregamentoComponent },
   { path: 'contato', component: ContatoComponent, canActivate: [AuthGuard] },
 
   // rota fallback para erro 404
