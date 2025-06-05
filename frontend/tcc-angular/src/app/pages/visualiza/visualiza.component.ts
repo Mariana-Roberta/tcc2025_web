@@ -84,15 +84,17 @@ export class VisualizaComponent {
           comprimento: d.comprimento,
           largura: d.largura,
           altura: d.altura,
-          cor: d.pacoteId,
-          pedidoId: d.pedidoId
+          pacoteId: d.pacoteId,
+          pedidoId: d.idPedido
         }));
+        console.table(dados);
 
+        console.log("DADOS1: ",this.pacotes);
         this.pedidoIds = [...new Set(this.pacotes.map(p => p.pedidoId))].sort((a, b) => a - b);
         this.pedidoAtualId = this.pedidoIds[0];
 
         const pacotesDoPedido = this.pacotes.filter(p => p.pedidoId === this.pedidoAtualId);
-        const primeirosIds = [...new Set(pacotesDoPedido.map(p => p.cor))].sort((a, b) => a - b);
+        const primeirosIds = [...new Set(pacotesDoPedido.map(p => p.pacoteId))].sort((a, b) => a - b);
 
         this.pacoteAtualId = primeirosIds[0];
 
@@ -106,8 +108,9 @@ export class VisualizaComponent {
   }
 
   get pedidoAtual() {
-    return this.pedidos[this.indicePedidoAtual];
-  }
+  return this.pedidos.find(p => p.id === this.pedidoAtualId);
+}
+
 
   get pacoteIdAtual() {
   const pedido = this.pedidoAtual;
@@ -118,12 +121,10 @@ export class VisualizaComponent {
 
 
 get pacotesParaMostrar() {
-  const pedido = this.pedidoAtual;
-  const ids = [...new Set<number>(pedido.pacotes.map((p: any) => p.id))].sort((a, b) => a - b);
-  const indexAtual = this.indicePacoteAtualPorPedido[pedido.id] ?? 0;
-  const idsParaMostrar = ids.slice(0, indexAtual + 1);
-  return this.pacotes.filter((p: any) => idsParaMostrar.includes(p.cor));
+  return this.pacotes.filter(p => p.pedidoId === this.pedidoAtualId);
 }
+
+
 
 get pacotesIdsDoPedidoAtual(): number[] {
   const pacotesPedidoAtual = this.pacotes.filter(p => p.pedidoId === this.pedidoAtualId);
@@ -131,41 +132,20 @@ get pacotesIdsDoPedidoAtual(): number[] {
 }
 
 avancarPasso(): void {
-    const pedidoAtualPacotes = this.pacotes.filter(p => p.pedidoId === this.pedidoAtualId);
-    const pacoteIdsOrdenados = [...new Set(pedidoAtualPacotes.map(p => p.cor))].sort((a, b) => a - b);
-    const indexAtual = pacoteIdsOrdenados.indexOf(this.pacoteAtualId);
-
-    if (indexAtual < pacoteIdsOrdenados.length - 1) {
-      this.pacoteAtualId = pacoteIdsOrdenados[indexAtual + 1];
-    } else {
-      const nextPedidoIndex = this.pedidoIds.indexOf(this.pedidoAtualId) + 1;
-      if (nextPedidoIndex < this.pedidoIds.length) {
-        this.pedidoAtualId = this.pedidoIds[nextPedidoIndex];
-        const nextPacotes = this.pacotes.filter(p => p.pedidoId === this.pedidoAtualId);
-        this.pacoteAtualId = [...new Set(nextPacotes.map(p => p.cor))].sort((a, b) => a - b)[0];
-      }
-    }
+  const nextPedidoIndex = this.pedidoIds.indexOf(this.pedidoAtualId) + 1;
+  if (nextPedidoIndex < this.pedidoIds.length) {
+    this.pedidoAtualId = this.pedidoIds[nextPedidoIndex];
   }
+}
 
-  voltarPasso(): void {
-    const pedidoAtualPacotes = this.pacotes.filter(p => p.pedidoId === this.pedidoAtualId);
-    const pacoteIdsOrdenados = [...new Set(pedidoAtualPacotes.map(p => p.cor))].sort((a, b) => a - b);
-    const indexAtual = pacoteIdsOrdenados.indexOf(this.pacoteAtualId);
-
-    if (indexAtual > 0) {
-      this.pacoteAtualId = pacoteIdsOrdenados[indexAtual - 1];
-    } else {
-      const prevPedidoIndex = this.pedidoIds.indexOf(this.pedidoAtualId) - 1;
-      if (prevPedidoIndex >= 0) {
-        this.pedidoAtualId = this.pedidoIds[prevPedidoIndex];
-        const prevPacotes = this.pacotes.filter(p => p.pedidoId === this.pedidoAtualId);
-        const pacoteIds = [...new Set(prevPacotes.map(p => p.cor))].sort((a, b) => a - b);
-        this.pacoteAtualId = pacoteIds[pacoteIds.length - 1];
-      }
-    }
+voltarPasso(): void {
+  const prevPedidoIndex = this.pedidoIds.indexOf(this.pedidoAtualId) - 1;
+  if (prevPedidoIndex >= 0) {
+    this.pedidoAtualId = this.pedidoIds[prevPedidoIndex];
   }
+}
 
-  confirmar(): void {
+confirmar(): void {
     alert('Todos os pacotes carregados e confirmados!');
   }
 }

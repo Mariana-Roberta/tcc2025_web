@@ -125,4 +125,5 @@ export class GerenciarPacotesComponent implements OnInit {
   excluirPacote(pacote: any) {
     this.pacotes = this.pacotes.filter(p => p !== pacote);
   }
+
 }

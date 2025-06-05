@@ -18,7 +18,7 @@ import {NgIf} from '@angular/common';
 export class ThreeDViewComponent implements OnChanges {
   @ViewChild('container', { static: true }) containerRef!: ElementRef<HTMLDivElement>;
 
-  @Input() pacotesOtimizados: ReadonlyArray<{ x: number, y: number, z: number, comprimento: number, largura: number, altura: number, cor: number }> = [];
+  @Input() pacotesOtimizados: ReadonlyArray<{ x: number, y: number, z: number, comprimento: number, largura: number, altura: number, pacoteId: number }> = [];
   @Input() caminhao: { comprimento: number; largura: number; altura: number } = {
     comprimento: 0,
     largura: 0,
@@ -102,11 +102,11 @@ export class ThreeDViewComponent implements OnChanges {
     this.scene.add(c);
   }
 
-  private criarPacotes(pacotes: ReadonlyArray<{ x: number, y: number, z: number, comprimento: number, largura: number, altura: number, cor: number }>): void {
+  private criarPacotes(pacotes: ReadonlyArray<{ x: number, y: number, z: number, comprimento: number, largura: number, altura: number, pacoteId: number }>): void {
     this.boxes.forEach(box => this.scene.remove(box));
     this.boxes = [];
 
-    const coresUnicas = [...new Set(pacotes.map(p => p.cor))];
+    const coresUnicas = [...new Set(pacotes.map(p => p.pacoteId))];
     coresUnicas.forEach(cor => {
       if (!this.coresGeradas.has(cor)) {
         this.coresGeradas.set(cor, new THREE.Color(Math.random(), Math.random(), Math.random()));
@@ -116,7 +116,7 @@ export class ThreeDViewComponent implements OnChanges {
     pacotes.forEach(pacote => {
       const geometry = new THREE.BoxGeometry(pacote.largura, pacote.altura, pacote.comprimento);
 
-      const corPacote = this.coresGeradas.get(pacote.cor) || new THREE.Color(Math.random(), Math.random(), Math.random());
+      const corPacote = this.coresGeradas.get(pacote.pacoteId) || new THREE.Color(Math.random(), Math.random(), Math.random());
 
       const material = new THREE.MeshStandardMaterial({
         color: corPacote,
