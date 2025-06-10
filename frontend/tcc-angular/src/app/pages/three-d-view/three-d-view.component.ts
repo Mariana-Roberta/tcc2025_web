@@ -1,4 +1,4 @@
-import {Component, OnChanges, OnInit, ElementRef, ViewChild, Input} from '@angular/core';
+import {Component, OnChanges, OnInit, ElementRef, ViewChild, Input, SimpleChanges} from '@angular/core';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { gsap } from 'gsap'
@@ -15,7 +15,7 @@ import {NgIf} from '@angular/common';
   ],
   styleUrls: ['./three-d-view.component.css']
 })
-export class ThreeDViewComponent implements OnChanges {
+export class ThreeDViewComponent implements OnInit, OnChanges {
   @ViewChild('container', { static: true }) containerRef!: ElementRef<HTMLDivElement>;
 
   @Input() pacotesOtimizados: ReadonlyArray<{ x: number, y: number, z: number, comprimento: number, largura: number, altura: number, pacoteId: number }> = [];
@@ -46,11 +46,21 @@ export class ThreeDViewComponent implements OnChanges {
     setTimeout(() => this.onWindowResize(), 100);
   }
 
-  ngOnChanges(): void {
-    if (this.scene && this.pacotesOtimizados.length > 0) {
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['pacotesOtimizados'] && !this.arraysIguais(changes['pacotesOtimizados'].previousValue, changes['pacotesOtimizados'].currentValue)) {
       this.criarPacotes(this.pacotesOtimizados);
+      console.log('Pacotes otimizados atualizados:');
     }
   }
+
+  private arraysIguais(a: any[], b: any[]): boolean {
+    if (a === b) return true;
+    if (!a || !b) return false;
+    if (a.length !== b.length) return false;
+
+    return a.every((val, index) => JSON.stringify(val) === JSON.stringify(b[index]));
+  }
+
 
   private initThreeJS(): void {
     this.scene = new THREE.Scene();
@@ -121,7 +131,7 @@ export class ThreeDViewComponent implements OnChanges {
       const material = new THREE.MeshStandardMaterial({
         color: corPacote,
         transparent: true,
-        opacity: 0.6,
+        opacity: 0.7,
         depthWrite: false
       });
 

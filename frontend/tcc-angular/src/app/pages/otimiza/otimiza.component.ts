@@ -55,99 +55,6 @@ export class OtimizaComponent implements OnInit {
         error: (erro: any) => console.error('Erro ao carregar caminhões:', erro)
       });
     }
-   /*this.caminhoes = [
-  {
-    id: 1,
-    nome: 'Caminhão Baú',
-    comprimento: 6.5,
-    largura: 2.5,
-    altura: 2.8,
-    pesoLimite: 8000,
-    usuario: { id: 1 }
-  },
-  {
-    id: 2,
-    nome: 'Caminhão Toco',
-    comprimento: 7.2,
-    largura: 2.6,
-    altura: 3.0,
-    pesoLimite: 10000,
-    usuario: { id: 1 }
-  },
-  {
-    id: 3,
-    nome: 'Caminhão Truck',
-    comprimento: 9.5,
-    largura: 2.6,
-    altura: 3.2,
-    pesoLimite: 14000,
-    usuario: { id: 1 }
-  },
-  {
-    id: 4,
-    nome: 'Caminhão 3/4',
-    comprimento: 5.5,
-    largura: 2.3,
-    altura: 2.5,
-    pesoLimite: 6000,
-    usuario: { id: 1 }
-  },
-  {
-    id: 5,
-    nome: 'Caminhão Carreta',
-    comprimento: 12.0,
-    largura: 2.6,
-    altura: 3.5,
-    pesoLimite: 32000,
-    usuario: { id: 1 }
-  },
-  {
-    id: 6,
-    nome: 'Caminhão Bitrem',
-    comprimento: 14.0,
-    largura: 2.6,
-    altura: 3.6,
-    pesoLimite: 36000,
-    usuario: { id: 1 }
-  },
-  {
-    id: 7,
-    nome: 'Caminhão Cegonha',
-    comprimento: 13.5,
-    largura: 2.6,
-    altura: 4.0,
-    pesoLimite: 25000,
-    usuario: { id: 1 }
-  },
-  {
-    id: 8,
-    nome: 'Caminhão Graneleiro',
-    comprimento: 10.5,
-    largura: 2.6,
-    altura: 3.3,
-    pesoLimite: 18000,
-    usuario: { id: 1 }
-  },
-  {
-    id: 9,
-    nome: 'Caminhão Tanque',
-    comprimento: 9.0,
-    largura: 2.5,
-    altura: 3.0,
-    pesoLimite: 15000,
-    usuario: { id: 1 }
-  },
-  {
-    id: 10,
-    nome: 'Caminhão Plataforma',
-    comprimento: 8.0,
-    largura: 2.5,
-    altura: 2.7,
-    pesoLimite: 11000,
-    usuario: { id: 1 }
-  }
-];*/
-
   }
 
   carregarPacotes() {
@@ -155,111 +62,9 @@ export class OtimizaComponent implements OnInit {
     if (usuario) {
       this.pacoteService.listarPorUsuario(usuario.id).subscribe({
         next: (dados: Pacote[]) => this.pacotes = dados,
-        error: (erro: any) => console.error('Erro ao carregar caminhões:', erro)
+        error: (erro: any) => console.error('Erro ao carregar pacotes:', erro)
       });
     }
-   /*this.pacotes = [
-    {
-      id: 1,
-      nome: 'Pacote Pequeno',
-      comprimento: 0.5,
-      largura: 0.4,
-      altura: 0.3,
-      peso: 5,
-      rotacao: true,
-      usuario: { id: 1 }
-    },
-    {
-      id: 2,
-      nome: 'Caixa de Ferramentas',
-      comprimento: 0.6,
-      largura: 0.5,
-      altura: 0.4,
-      peso: 12,
-      rotacao: false,
-      usuario: { id: 1 }
-    },
-    {
-      id: 3,
-      nome: 'Pacote Médio',
-      comprimento: 1.0,
-      largura: 0.6,
-      altura: 0.5,
-      peso: 25,
-      rotacao: false,
-      usuario: { id: 1 }
-    },
-    {
-      id: 4,
-      nome: 'Equipamento Eletrônico',
-      comprimento: 0.9,
-      largura: 0.7,
-      altura: 0.6,
-      peso: 18,
-      rotacao: false,
-      usuario: { id: 1 }
-    },
-    {
-      id: 5,
-      nome: 'Caixa Grande',
-      comprimento: 1.2,
-      largura: 1.0,
-      altura: 0.8,
-      peso: 40,
-      rotacao: false,
-      usuario: { id: 1 }
-    },
-    {
-      id: 6,
-      nome: 'Caixa Térmica',
-      comprimento: 0.7,
-      largura: 0.5,
-      altura: 0.5,
-      peso: 8,
-      rotacao: true,
-      usuario: { id: 1 }
-    },
-    {
-      id: 7,
-      nome: 'Pacote Leve',
-      comprimento: 0.4,
-      largura: 0.3,
-      altura: 0.2,
-      peso: 2,
-      rotacao: false,
-      usuario: { id: 1 }
-    },
-    {
-      id: 8,
-      nome: 'TV Embalada',
-      comprimento: 1.3,
-      largura: 0.8,
-      altura: 0.2,
-      peso: 22,
-      rotacao: true,
-      usuario: { id: 1 }
-    },
-    {
-      id: 9,
-      nome: 'Micro-ondas',
-      comprimento: 0.6,
-      largura: 0.5,
-      altura: 0.4,
-      peso: 14,
-      rotacao: false,
-      usuario: { id: 1 }
-    },
-    {
-      id: 10,
-      nome: 'Pacote Pesado',
-      comprimento: 1.0,
-      largura: 0.8,
-      altura: 0.7,
-      peso: 50,
-      rotacao: false,
-      usuario: { id: 1 }
-    }
-  ];*/
   }
 
   selecionarCaminhao(c: any) {
@@ -359,6 +164,7 @@ cancelarSelecao(pacote: Pacote): void {
         largura: p.pacote.largura,
         altura: p.pacote.altura,
         peso: p.pacote.peso,
+        fragil: p.pacote.fragil,
         rotacao: p.pacote.rotacao,
         quantidade: p.quantidade
       }))

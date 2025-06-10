@@ -26,6 +26,7 @@ export class GerenciarPacotesComponent implements OnInit {
     largura: 0,
     altura: 0,
     peso: 0,
+    fragil: false,
     rotacao: false,
     usuario: { id: 0 }
   };
@@ -63,6 +64,7 @@ export class GerenciarPacotesComponent implements OnInit {
       largura: 0,
       altura: 0,
       peso: 0,
+      fragil: false,
       rotacao: false,
       usuario: { id: 0 }
     };
@@ -79,6 +81,7 @@ export class GerenciarPacotesComponent implements OnInit {
       largura: 0,
       altura: 0,
       peso: 0,
+      fragil: false,
       rotacao: false,
       usuario: { id: 0 }
     };

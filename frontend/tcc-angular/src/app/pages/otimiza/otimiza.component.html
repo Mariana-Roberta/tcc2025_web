@@ -85,7 +85,7 @@
         <th>Nome</th>
         <th>Dimensões (C × L × A)</th>
         <th>Peso</th>
-        <th>Frágil</th>
+        <th>Rotaciona</th>
         <th>Quantidade</th>
         <th>Ações</th>
       </tr>
@@ -102,9 +102,9 @@
         <td>{{ pacote.peso }}kg</td>
         <td>
   <span 
-    class="fragil" 
-    [ngClass]="{ 'fragil-true': pacote.rotacao, 'fragil-false': !pacote.rotacao }">
-    {{ pacote.rotacao ? 'Frágil' : 'Não Frágil' }}
+    class="rotacao" 
+    [ngClass]="{ 'rotaca-true': pacote.rotacao, 'rotaca-false': !pacote.rotacao }">
+    {{ pacote.rotacao ? 'Sim' : 'Não' }}
   </span>
 </td>
 

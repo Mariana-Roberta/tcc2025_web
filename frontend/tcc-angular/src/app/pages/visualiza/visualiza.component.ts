@@ -67,6 +67,7 @@ export class VisualizaComponent {
           largura: p.largura,
           altura: p.altura,
           peso: p.peso,
+          rotacao: p.rotacao,
           fragil: p.fragil,
           quantidade: p.quantidade
         }))
