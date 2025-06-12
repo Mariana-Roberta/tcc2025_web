@@ -15,18 +15,24 @@ export class UsuarioService {
 
   cadastrarUsuario(usuario: Usuario): Observable<Usuario> {
     return this.http.post<Usuario>(this.apiUrl, usuario).pipe(
-      catchError(this.handleError)
+      catchError(this.tratarRespostaErro)
     );
   }
 
-  private handleError(error: HttpErrorResponse) {
-    // Aqui você pode customizar a mensagem de erro
-    if (error.status === 0) {
-      console.error('Erro de rede ou servidor fora do ar:', error.error);
-    } else {
-      console.error(`Erro do backend (${error.status}):`, error.error);
-    }
-    return throwError(() => new Error('Erro ao processar a requisição. Tente novamente mais tarde.'));
+  private tratarRespostaErro(error: HttpErrorResponse): Observable<never> {
+    const mensagem = error?.error?.message || 'Erro inesperado no servidor.';
+    return throwError(() => new Error(mensagem));
   }
 
+  private handleError(error: HttpErrorResponse) {
+    let errorMessage = 'Ocorreu um erro desconhecido.';
+    if (error.error instanceof ErrorEvent) {
+      // Erro do lado do cliente
+      errorMessage = `Erro: ${error.error.message}`;
+    } else {
+      // Erro do lado do servidor
+      errorMessage = error.error.message; // A mensagem do Spring Boot será recebida aqui
+    }
+    return throwError(() => errorMessage);
+  }
 }

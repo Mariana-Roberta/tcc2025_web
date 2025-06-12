@@ -1,20 +1,23 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FooterComponent } from '../../components/footer/footer.component';
 import {LogoComponent} from '../../components/logo/logo.component';
 import {ScreenBackgroundComponent} from '../../components/screen-background/screen-background.component';
 import {AuthService} from '../../services/auth.service';
 import {Router} from '@angular/router';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
-import {NgIf} from '@angular/common';
+import {CommonModule} from '@angular/common';
+import { PopupService } from '../../services/popup.service';
+import { PopupComponent } from '../../components/popup/popup.component';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FooterComponent, LogoComponent, ScreenBackgroundComponent, ReactiveFormsModule, NgIf],
+  imports: [FooterComponent, LogoComponent, ScreenBackgroundComponent, ReactiveFormsModule, PopupComponent, CommonModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
 export class LoginComponent {
+  mensagem: { mensagem: string, tipo: 'sucesso' | 'erro' } | null = null;
 
   loginForm: FormGroup;
   loginErro: string | null = null;
@@ -22,7 +25,8 @@ export class LoginComponent {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private popupService: PopupService
   ) {
     // Inicializa o formulário com validações
     this.loginForm = this.fb.group({
@@ -36,9 +40,9 @@ export class LoginComponent {
     if (this.loginForm.invalid) {
       return;
     }
-
+    
     const { email, password } = this.loginForm.value;
-
+    
     this.authService.login({ email, password }).subscribe({
       next: (res) => {
         localStorage.setItem('token', res.token);

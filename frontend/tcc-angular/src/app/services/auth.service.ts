@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable, tap } from 'rxjs';
-import {Usuario} from '../model/usuario.model';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Observable, tap, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { Usuario } from '../model/usuario.model';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -21,7 +22,8 @@ export class AuthService {
           telefone: response.telefone,
           perfil: response.perfil
         }));
-      })
+      }),
+      catchError(this.tratarRespostaErro)
     );
   }
 
@@ -47,4 +49,20 @@ export class AuthService {
     localStorage.setItem('usuario', JSON.stringify(usuario));
   }
 
+  private tratarRespostaErro(error: HttpErrorResponse): Observable<never> {
+    const mensagem = error?.error?.message || 'Falha ao fazer login.';
+    return throwError(() => new Error(mensagem));
+  }
+
+  private handleError(error: HttpErrorResponse) {
+    let errorMessage = 'Ocorreu um erro desconhecido.';
+    if (error.error instanceof ErrorEvent) {
+      // Erro do lado do cliente
+      errorMessage = `Erro: ${error.error.message}`;
+    } else {
+      // Erro do lado do servidor
+      errorMessage = error.error.message; // A mensagem do Spring Boot será recebida aqui
+    }
+    return throwError(() => errorMessage);
+  }
 }

@@ -8,6 +8,7 @@ import { AuthService } from '../../services/auth.service';
 import {PacoteService} from '../../services/pacote.service';
 import {Pacote} from '../../model/pacote.model';
 import {Caminhao} from '../../model/caminhao.model';
+import { PopupService } from '../../services/popup.service';
 
 @Component({
   selector: 'app-gerenciar-pacotes',
@@ -37,7 +38,8 @@ export class GerenciarPacotesComponent implements OnInit {
 
   constructor(
     private pacoteService: PacoteService,
-    private authService: AuthService
+    private authService: AuthService,
+    private popupService: PopupService
   ) {}
 
   ngOnInit(): void {
@@ -50,9 +52,9 @@ export class GerenciarPacotesComponent implements OnInit {
       this.pacoteService.listarPorUsuario(usuario.id).subscribe({
         next: (data: Pacote[]) => {
           this.pacotes = data;
-          console.log(data);
+          
         },
-        error: (err: any) => console.error('Erro ao buscar pacotes', err)
+        error: (err: any) => this.popupService.erro('Erro ao carregar os pacotes')
       });
     }
   }
@@ -99,19 +101,15 @@ export class GerenciarPacotesComponent implements OnInit {
     // Garante o vínculo do pacote com o usuário logado
     this.novoPacote.usuario = { id: usuarioLogado.id };
 
-        console.log(this.novoPacote.id )
     if (this.modoEdicao && this.indiceEdicao !== null) {
-        console.log(this.modoEdicao)
       this.pacoteService.atualizar(this.novoPacote.id!, this.novoPacote).subscribe(() => {
-        console.log("editar")
+        this.popupService.sucesso('Pacote atualizado com sucesso!');
         this.carregarPacotes();
         this.cancelar();
       });
     } else {
-        console.log(this.modoEdicao)
-        console.log(this.novoPacote)
-        console.log("salvar")
       this.pacoteService.salvar(this.novoPacote).subscribe(() => {
+        this.popupService.sucesso('Pacote salvo com sucesso!');
         this.carregarPacotes();
         this.cancelar();
       });

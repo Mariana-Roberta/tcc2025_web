@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { Caminhao } from '../model/caminhao.model';
 import { AuthService } from './auth.service';
 
@@ -20,35 +21,51 @@ export class CaminhaoService {
     });
   }
 
-  // Buscar todos os caminhões (se usado)
   listarTodos(): Observable<Caminhao[]> {
-    return this.http.get<Caminhao[]>(this.baseUrl, { headers: this.getAuthHeaders() });
+    return this.http.get<Caminhao[]>(this.baseUrl, { headers: this.getAuthHeaders() })
+      .pipe(catchError(this.tratarRespostaErro));
   }
 
-  // Buscar caminhões por ID do usuário
   listarPorUsuario(idUsuario: number): Observable<Caminhao[]> {
     return this.http.get<Caminhao[]>(`${this.baseUrl}/usuario/${idUsuario}`, {
       headers: this.getAuthHeaders()
-    });
+    }).pipe(catchError(this.tratarRespostaErro));
   }
 
-  // Buscar caminhão por ID
   buscarPorId(id: number): Observable<Caminhao> {
-    return this.http.get<Caminhao>(`${this.baseUrl}/${id}`, { headers: this.getAuthHeaders() });
+    return this.http.get<Caminhao>(`${this.baseUrl}/${id}`, { headers: this.getAuthHeaders() })
+      .pipe(catchError(this.tratarRespostaErro));
   }
 
-  // Criar novo caminhão
   salvar(caminhao: Caminhao): Observable<Caminhao> {
-    return this.http.post<Caminhao>(this.baseUrl, caminhao, { headers: this.getAuthHeaders() });
+    return this.http.post<Caminhao>(this.baseUrl, caminhao, { headers: this.getAuthHeaders() })
+      .pipe(catchError(this.tratarRespostaErro));
   }
 
-  // Atualizar caminhão existente
   atualizar(id: number, caminhao: Caminhao): Observable<Caminhao> {
-    return this.http.put<Caminhao>(`${this.baseUrl}/${id}`, caminhao, { headers: this.getAuthHeaders() });
+    return this.http.put<Caminhao>(`${this.baseUrl}/${id}`, caminhao, { headers: this.getAuthHeaders() })
+      .pipe(catchError(this.tratarRespostaErro));
   }
 
-  // Excluir caminhão
   excluir(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.baseUrl}/${id}`, { headers: this.getAuthHeaders() });
+    return this.http.delete<void>(`${this.baseUrl}/${id}`, { headers: this.getAuthHeaders() })
+      .pipe(catchError(this.tratarRespostaErro));
+  }
+
+  private tratarRespostaErro(error: HttpErrorResponse): Observable<never> {
+    const mensagem = error?.error?.message || 'Erro inesperado ao processar o caminhão.';
+    return throwError(() => new Error(mensagem));
+  }
+
+  private handleError(error: HttpErrorResponse) {
+    let errorMessage = 'Ocorreu um erro desconhecido.';
+    if (error.error instanceof ErrorEvent) {
+      // Erro do lado do cliente
+      errorMessage = `Erro: ${error.error.message}`;
+    } else {
+      // Erro do lado do servidor
+      errorMessage = error.error.message; // A mensagem do Spring Boot será recebida aqui
+    }
+    return throwError(() => errorMessage);
   }
 }
