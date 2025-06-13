@@ -9,12 +9,13 @@ import {PacoteService} from '../../services/pacote.service';
 import {Pacote} from '../../model/pacote.model';
 import {Caminhao} from '../../model/caminhao.model';
 import { PopupService } from '../../services/popup.service';
+import { PopupComponent } from "../../components/popup/popup.component";
 
 @Component({
   selector: 'app-gerenciar-pacotes',
   templateUrl: './gerenciar-pacotes.component.html',
   standalone: true,
-  imports: [NgForOf, NgClass, FormsModule, NgIf, NavbarComponent, ScreenBackgroundComponent],
+  imports: [NgForOf, NgClass, FormsModule, NgIf, NavbarComponent, ScreenBackgroundComponent, PopupComponent],
   styleUrls: ['./gerenciar-pacotes.component.css']
 })
 export class GerenciarPacotesComponent implements OnInit {

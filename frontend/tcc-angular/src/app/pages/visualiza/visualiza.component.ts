@@ -122,10 +122,10 @@ export class VisualizaComponent {
 
 
 get pacotesParaMostrar() {
-  return this.pacotes.filter(p => p.pedidoId === this.pedidoAtualId);
+  const indexAtual = this.pedidoIds.indexOf(this.pedidoAtualId);
+  const pedidosAteAtual = this.pedidoIds.slice(0, indexAtual + 1);
+  return this.pacotes.filter(p => pedidosAteAtual.includes(p.pedidoId));
 }
-
-
 
 get pacotesIdsDoPedidoAtual(): number[] {
   const pacotesPedidoAtual = this.pacotes.filter(p => p.pedidoId === this.pedidoAtualId);
@@ -133,16 +133,20 @@ get pacotesIdsDoPedidoAtual(): number[] {
 }
 
 avancarPasso(): void {
-  const nextPedidoIndex = this.pedidoIds.indexOf(this.pedidoAtualId) + 1;
-  if (nextPedidoIndex < this.pedidoIds.length) {
-    this.pedidoAtualId = this.pedidoIds[nextPedidoIndex];
+  const indexAtual = this.pedidoIds.indexOf(this.pedidoAtualId);
+  const proximoIndex = indexAtual + 1;
+
+  if (proximoIndex < this.pedidoIds.length) {
+    this.pedidoAtualId = this.pedidoIds[proximoIndex];
   }
 }
 
 voltarPasso(): void {
-  const prevPedidoIndex = this.pedidoIds.indexOf(this.pedidoAtualId) - 1;
-  if (prevPedidoIndex >= 0) {
-    this.pedidoAtualId = this.pedidoIds[prevPedidoIndex];
+  const indexAtual = this.pedidoIds.indexOf(this.pedidoAtualId);
+  const anteriorIndex = indexAtual - 1;
+
+  if (anteriorIndex >= 0) {
+    this.pedidoAtualId = this.pedidoIds[anteriorIndex];
   }
 }
 
