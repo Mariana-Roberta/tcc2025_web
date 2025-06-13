@@ -125,7 +125,10 @@ export class GerenciarPacotesComponent implements OnInit {
   }
 
   excluirPacote(pacote: any) {
-    this.pacotes = this.pacotes.filter(p => p !== pacote);
+    this.pacoteService.excluir(pacote.id).subscribe(() => {
+        this.popupService.sucesso('Pacote excluído com sucesso!');
+        this.carregarPacotes();
+      });
   }
 
 }

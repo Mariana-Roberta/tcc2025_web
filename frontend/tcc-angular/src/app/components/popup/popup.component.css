@@ -29,3 +29,27 @@ button {
   cursor: pointer;
   margin-left: 1rem;
 }
+
+.barra-progresso {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 4px;
+  background-color: rgba(255, 255, 255, 0.8);
+  width: 100%;
+  border-radius: 0 0 5px 5px;
+}
+
+/* Animação só é aplicada quando essa classe é adicionada */
+.barra-progresso.animar {
+  animation: diminuir 5s linear forwards;
+}
+
+@keyframes diminuir {
+  from {
+    width: 100%;
+  }
+  to {
+    width: 0%;
+  }
+}

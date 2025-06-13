@@ -12,6 +12,9 @@ export class PopupComponent implements OnInit {
   visivel = false;
   mensagem: string = '';
   tipo: 'sucesso' | 'erro' = 'sucesso';
+  progresso = 100;
+
+  private timeoutId: any = null;
 
   constructor(private popupService: PopupService) {}
 
@@ -26,11 +29,37 @@ export class PopupComponent implements OnInit {
   }
 
   exibir(): void {
+    // Fecha popup anterior se ainda estiver ativo
+    if (this.timeoutId) {
+      clearTimeout(this.timeoutId);
+    }
+
     this.visivel = true;
-    setTimeout(() => this.fechar(), 5000);
+    this.progresso = 100;
+
+    // Reinicia animação da barra
+    setTimeout(() => {
+      const barra = document.querySelector('.barra-progresso') as HTMLElement;
+      if (barra) {
+        barra.classList.remove('animar');  // remove animação anterior
+        void barra.offsetWidth;            // força reflow
+        barra.classList.add('animar');     // reaplica animação
+      }
+    }, 0);
+
+    // Novo timeout
+    this.timeoutId = setTimeout(() => {
+      this.fechar();
+    }, 5000);
   }
 
   fechar(): void {
     this.visivel = false;
+    this.progresso = 0;
+
+    if (this.timeoutId) {
+      clearTimeout(this.timeoutId);
+      this.timeoutId = null;
+    }
   }
 }

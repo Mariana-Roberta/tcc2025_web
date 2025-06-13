@@ -1,4 +1,5 @@
 <div *ngIf="visivel" class="popup" [ngClass]="tipo">
   <span>{{ mensagem }}</span>
   <button (click)="fechar()">×</button>
+  <div class="barra-progresso" [style.width.%]="progresso"></div>
 </div>

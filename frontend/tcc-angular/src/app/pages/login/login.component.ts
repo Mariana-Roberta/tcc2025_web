@@ -50,7 +50,7 @@ export class LoginComponent {
         this.router.navigate(['/home']);
       },
       error: () => {
-        this.loginErro = 'Email ou senha inválidos.';
+        this.popupService.erro('Email ou senha inválidos.');
       }
     });
   }

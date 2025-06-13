@@ -247,6 +247,22 @@ a:hover,
   text-decoration: underline;
 }
 
+.link-voltar {
+  color: #333; /* cor mais neutra */
+  font-weight: 500;
+  background-color: #f9f9f9;
+  padding: 6px 12px;
+  border-radius: 4px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  display: inline-block;
+  transition: background-color 0.2s ease;
+}
+
+.link-voltar:hover {
+  background-color: #e0e0e0;
+  text-decoration: none; /* para sobrescrever underline se desejar */
+}
+
 /* =============================
    🧾 Formulários
    ============================= */

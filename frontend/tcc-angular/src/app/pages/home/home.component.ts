@@ -3,22 +3,25 @@ import { NavbarComponent } from '../../components/navbar/navbar.component';
 import {Router} from '@angular/router';
 import {ScreenBackgroundComponent} from "../../components/screen-background/screen-background.component";
 import {AuthService} from '../../services/auth.service';
+import { PopupService } from '../../services/popup.service';
+import { PopupComponent } from '../../components/popup/popup.component';
 
 @Component({
   selector: 'app-home',
-    imports: [NavbarComponent, ScreenBackgroundComponent],
+    imports: [NavbarComponent, ScreenBackgroundComponent, PopupComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
 export class HomeComponent implements OnInit {
   nomeUsuario: string = '';
 
-  constructor(private _router: Router, private authService: AuthService) {}
+  constructor(private _router: Router, private authService: AuthService, private popupService: PopupService) {}
 
   ngOnInit(): void {
     const usuario = this.authService.getUsuario();
     if (usuario) {
       this.nomeUsuario = usuario.razaoSocial || usuario.email;
+      this.popupService.sucesso('Usuário logado com sucesso!');
     }
   }
 

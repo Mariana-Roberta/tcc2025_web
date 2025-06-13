@@ -15,4 +15,8 @@ export class PopupService {
   erro(mensagem: string) {
     this.mensagemSubject.next({ mensagem, tipo: 'erro' });
   }
+
+  limpar() {
+    this.mensagemSubject.next(null); // limpa qualquer mensagem ativa
+  }
 }

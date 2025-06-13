@@ -3,12 +3,13 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, tap, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Usuario } from '../model/usuario.model';
+import { PopupService } from './popup.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly apiUrl = 'http://localhost:8080/api/auth';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private popupService: PopupService) {}
 
   login(credentials: { email: string; password: string }): Observable<any> {
     return this.http.post<any>(this.apiUrl, credentials).pipe(
@@ -28,6 +29,7 @@ export class AuthService {
   }
 
   logout(): void {
+    this.popupService.limpar();
     localStorage.removeItem('token');
     localStorage.removeItem('usuario');
   }
