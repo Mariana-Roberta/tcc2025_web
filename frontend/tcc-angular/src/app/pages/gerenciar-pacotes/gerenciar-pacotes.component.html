@@ -157,7 +157,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let pacote of pacotes; let i = index">
+          <tr *ngFor="let pacote of pacotesPaginados; let i = index">
             <td>{{ pacote.nome }}</td>
             <td>{{ pacote.comprimento }} x {{ pacote.largura }} x {{ pacote.altura }}</td>
             <td>{{ pacote.peso }}</td>
@@ -178,6 +178,16 @@
           </tr>
         </tbody>
       </table>
+      <div class="paginacao">
+  <button
+    *ngFor="let pagina of [].constructor(totalPaginas); let i = index"
+    (click)="mudarPagina(i + 1)"
+    [class.ativa]="paginaAtual === i + 1"
+  >
+    {{ i + 1 }}
+  </button>
+</div>
+
     </div>
   </div>
 </div>

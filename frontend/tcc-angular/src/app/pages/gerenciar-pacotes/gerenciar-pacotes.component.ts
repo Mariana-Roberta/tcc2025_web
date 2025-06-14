@@ -157,4 +157,22 @@ export class GerenciarPacotesComponent implements OnInit {
       }
     });
   }
+
+  paginaAtual: number = 1;
+itensPorPagina: number = 5;
+
+get totalPaginas(): number {
+  return Math.ceil(this.pacotes.length / this.itensPorPagina);
+}
+
+get pacotesPaginados() {
+  const inicio = (this.paginaAtual - 1) * this.itensPorPagina;
+  const fim = inicio + this.itensPorPagina;
+  return this.pacotes.slice(inicio, fim);
+}
+
+mudarPagina(pagina: number) {
+  this.paginaAtual = pagina;
+}
+
 }
