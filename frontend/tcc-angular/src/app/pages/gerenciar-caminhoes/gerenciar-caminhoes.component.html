@@ -38,13 +38,13 @@
         [(ngModel)]="novoCaminhao.comprimento"
         placeholder="Comprimento (m)"
         required
-        min="1"
+        min="0.0000001"
         #comprimento="ngModel"
         (focus)="campoFocado = 'comprimento'"
         (blur)="campoFocado = null"
       />
       <span class="erro-campo" *ngIf="campoFocado === 'comprimento' && comprimento.errors">
-        O valor mínimo é 1.
+        O campo deve ser preenchido com um valor maior que 0.
       </span>
     </div>
 
@@ -58,13 +58,13 @@
         [(ngModel)]="novoCaminhao.largura"
         placeholder="Largura (m)"
         required
-        min="1"
+        min="0.0000001"
         #largura="ngModel"
         (focus)="campoFocado = 'largura'"
         (blur)="campoFocado = null"
       />
       <span class="erro-campo" *ngIf="campoFocado === 'largura' && largura.errors">
-        O valor mínimo é 1.
+        O campo deve ser preenchido com um valor maior que 0.
       </span>
     </div>
 
@@ -78,13 +78,13 @@
         [(ngModel)]="novoCaminhao.altura"
         placeholder="Altura (m)"
         required
-        min="1"
+        min="0.0000001"
         #altura="ngModel"
         (focus)="campoFocado = 'altura'"
         (blur)="campoFocado = null"
       />
       <span class="erro-campo" *ngIf="campoFocado === 'altura' && altura.errors">
-        O valor mínimo é 1.
+        O campo deve ser preenchido com um valor maior que 0.
       </span>
     </div>
 
@@ -104,7 +104,7 @@
         (blur)="campoFocado = null"
       />
       <span class="erro-campo" *ngIf="campoFocado === 'pesoLimite' && pesoLimite.errors">
-        O valor mínimo é 1.
+        O campo deve ser preenchido com um valor maior que 0.
       </span>
     </div>
 

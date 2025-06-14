@@ -41,7 +41,8 @@ export class CadastroComponent {
         this.popupService.sucesso('Cadastro de usuário realizado com sucesso!');
       },
       error: (err) => {
-        this.popupService.erro(err.message);
+        const mensagem = err.error?.mensagem || err.message;
+        this.popupService.erro(mensagem);
       }
     });
   }

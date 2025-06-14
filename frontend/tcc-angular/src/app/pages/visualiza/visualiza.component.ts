@@ -108,7 +108,7 @@ export class VisualizaComponent {
       },
       error: (err) => {
         console.error('Erro ao otimizar pacotes:', err);
-        this.popupService.erro('Erro ao otimizar pacotes. Verifique os dados e tente novamente.');
+        this.popupService.erro(err.message);
         this.loading = false;
       }
     });
