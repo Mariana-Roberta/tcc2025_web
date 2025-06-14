@@ -156,11 +156,31 @@ export class GerenciarCaminhoesComponent implements OnInit {
   itensPorPagina = 5;
   paginaAtual = 1;
 
-  get caminhoesPaginados(): Caminhao[] {
-    const inicio = (this.paginaAtual - 1) * this.itensPorPagina;
-    const fim = inicio + this.itensPorPagina;
-    return this.caminhoes.slice(inicio, fim);
-  }
+  filtroCaminhao: string = '';
+
+get caminhoesFiltrados(): any[] {
+  const filtro = this.filtroCaminhao.trim().toLowerCase();
+  if (!filtro) return this.caminhoes;
+
+  return this.caminhoes.filter(c => {
+    const nome = c.nome?.toLowerCase() || '';
+    const peso = c.pesoLimite?.toString() || '';
+    const dimensoes = `${c.comprimento}x${c.largura}x${c.altura}`.toLowerCase();
+
+    return (
+      nome.includes(filtro) ||
+      peso.includes(filtro) ||
+      dimensoes.includes(filtro)
+    );
+  });
+}
+
+get caminhoesPaginados(): any[] {
+  const inicio = (this.paginaAtual - 1) * this.itensPorPagina;
+  const fim = inicio + this.itensPorPagina;
+  return this.caminhoesFiltrados.slice(inicio, fim);
+}
+
 
   get totalPaginas(): number {
     return Math.ceil(this.caminhoes.length / this.itensPorPagina);

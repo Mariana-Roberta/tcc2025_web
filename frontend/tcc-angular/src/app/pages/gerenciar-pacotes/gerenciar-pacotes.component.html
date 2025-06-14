@@ -146,6 +146,18 @@
     <!-- LISTAGEM -->
     <div class="tabela-container">
       <h2>Lista de Pacotes</h2>
+      <div class="filtro-bar"  style="display: flex; gap: 10px; justify-content: center;">
+        <input
+          type="text"
+          [(ngModel)]="filtroPacote"
+          placeholder="Filtrar por nome, peso ou dimensões"
+          class="input-filtro"
+        />
+        <button type="button" class="btn-secundario" (click)="filtroPacote = ''">
+          Limpar
+        </button>
+      </div>
+
       <table class="custom-table">
         <thead>
           <tr>

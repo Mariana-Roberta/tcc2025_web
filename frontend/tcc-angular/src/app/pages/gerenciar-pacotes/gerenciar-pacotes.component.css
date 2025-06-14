@@ -97,3 +97,17 @@ input:checked + .slider:before {
   display: block;
 }
 
+.filtro-bar {
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.input-filtro {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 300px;
+  font-size: 0.95rem;
+}

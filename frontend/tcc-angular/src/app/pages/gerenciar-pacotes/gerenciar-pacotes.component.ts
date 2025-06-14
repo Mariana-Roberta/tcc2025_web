@@ -165,11 +165,31 @@ get totalPaginas(): number {
   return Math.ceil(this.pacotes.length / this.itensPorPagina);
 }
 
+filtroPacote: string = '';
+
+get pacotesFiltrados(): any[] {
+  const filtro = this.filtroPacote.trim().toLowerCase();
+  if (!filtro) return this.pacotes;
+
+  return this.pacotes.filter(p => {
+    const nome = p.nome?.toLowerCase() || '';
+    const peso = p.peso?.toString() || '';
+    const dimensoes = `${p.comprimento}x${p.largura}x${p.altura}`.toLowerCase();
+
+    return (
+      nome.includes(filtro) ||
+      peso.includes(filtro) ||
+      dimensoes.includes(filtro)
+    );
+  });
+}
+
 get pacotesPaginados() {
   const inicio = (this.paginaAtual - 1) * this.itensPorPagina;
   const fim = inicio + this.itensPorPagina;
-  return this.pacotes.slice(inicio, fim);
+  return this.pacotesFiltrados.slice(inicio, fim);
 }
+
 
 mudarPagina(pagina: number) {
   this.paginaAtual = pagina;
