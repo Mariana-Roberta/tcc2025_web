@@ -8,15 +8,12 @@
     </div>
   </div>
 
-  <div class="user-section" (mouseleave)="mostrarMenu = false">
-    <button *ngIf="isLoggedIn()" class="btn-gradient" (click)="otimizar()">Otimizar</button>
 
-    <div class="username-wrapper" (click)="toggleMenu()" tabindex="0">
-      <span class="username">{{ nomeUsuario }} <i class="pi pi-angle-down" style="font-size: .8rem"></i></span>
-      <div class="user-popup" *ngIf="mostrarMenu">
-        <button (click)="irParaPerfil()">Perfil</button>
-        <button (click)="logout()">Sair</button>
-      </div>
+  <div class="user-section">
+    <button *ngIf="isLoggedIn()" class="btn-gradient" (click)="otimizar()">Otimizar</button>
+    <button *ngIf="isLoggedIn()" class="btn-danger" (click)="logout()">Sair</button>
+    <div class="username-wrapper">
+      <span class="username">{{ nomeUsuario }}</span>
     </div>
   </div>
 </div>

@@ -1,41 +1,38 @@
-import {Component, OnChanges, OnInit, ElementRef, ViewChild, Input, SimpleChanges} from '@angular/core';
+import { Component, OnChanges, OnInit, ElementRef, ViewChild, Input, SimpleChanges, Output, EventEmitter } from '@angular/core';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import { gsap } from 'gsap'
-
-import { OtimizarService } from '../../services/otimizar.service';
-import {NgIf} from '@angular/common';
+import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-three-d-view',
   standalone: true,
   templateUrl: './three-d-view.component.html',
-  imports: [
-    NgIf
-  ],
   styleUrls: ['./three-d-view.component.css']
 })
 export class ThreeDViewComponent implements OnInit, OnChanges {
   @ViewChild('container', { static: true }) containerRef!: ElementRef<HTMLDivElement>;
 
-  @Input() pacotesOtimizados: ReadonlyArray<{ x: number, y: number, z: number, comprimento: number, largura: number, altura: number, pacoteId: number }> = [];
+  @Input() pacotesOtimizados: ReadonlyArray<{
+    x: number, y: number, z: number,
+    comprimento: number, largura: number, altura: number,
+    pacoteId: number, pedidoId: number
+  }> = [];
+
   @Input() caminhao: { comprimento: number; largura: number; altura: number } = {
     comprimento: 0,
     largura: 0,
     altura: 0
   };
+
   @Input() loading: boolean | undefined;
+  @Output() coresGeradasChange = new EventEmitter<Map<string, string>>(); // key: "pedidoId|pacoteId"
 
   private scene!: THREE.Scene;
   private camera!: THREE.PerspectiveCamera;
   private renderer!: THREE.WebGLRenderer;
   private controls!: OrbitControls;
   private boxes: THREE.Mesh[] = [];
-  private coresGeradas: Map<number, THREE.Color> = new Map();
-
-  private readonly offset = 0.01;
-
-
+  private coresGeradas: Map<string, THREE.Color> = new Map();
 
   ngOnInit(): void {
     this.initThreeJS();
@@ -47,20 +44,19 @@ export class ThreeDViewComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['pacotesOtimizados'] && !this.arraysIguais(changes['pacotesOtimizados'].previousValue, changes['pacotesOtimizados'].currentValue)) {
+    if (
+      changes['pacotesOtimizados'] &&
+      !this.arraysIguais(changes['pacotesOtimizados'].previousValue, changes['pacotesOtimizados'].currentValue)
+    ) {
       this.criarPacotes(this.pacotesOtimizados);
-      console.log('Pacotes otimizados atualizados:');
     }
   }
 
   private arraysIguais(a: any[], b: any[]): boolean {
     if (a === b) return true;
-    if (!a || !b) return false;
-    if (a.length !== b.length) return false;
-
+    if (!a || !b || a.length !== b.length) return false;
     return a.every((val, index) => JSON.stringify(val) === JSON.stringify(b[index]));
   }
-
 
   private initThreeJS(): void {
     this.scene = new THREE.Scene();
@@ -112,21 +108,27 @@ export class ThreeDViewComponent implements OnInit, OnChanges {
     this.scene.add(c);
   }
 
-  private criarPacotes(pacotes: ReadonlyArray<{ x: number, y: number, z: number, comprimento: number, largura: number, altura: number, pacoteId: number }>): void {
+  private criarPacotes(pacotes: ReadonlyArray<{
+    x: number, y: number, z: number,
+    comprimento: number, largura: number, altura: number,
+    pacoteId: number, pedidoId: number
+  }>): void {
     this.boxes.forEach(box => this.scene.remove(box));
     this.boxes = [];
 
-    const coresUnicas = [...new Set(pacotes.map(p => p.pacoteId))];
-    coresUnicas.forEach(cor => {
-      if (!this.coresGeradas.has(cor)) {
-        this.coresGeradas.set(cor, new THREE.Color(Math.random(), Math.random(), Math.random()));
+    // Gerar cor por chave composta "pedidoId|pacoteId"
+    const chaves = [...new Set(pacotes.map(p => `${p.pedidoId}|${p.pacoteId}`))];
+    chaves.forEach(chave => {
+      if (!this.coresGeradas.has(chave)) {
+        const cor = new THREE.Color(Math.random(), Math.random(), Math.random());
+        this.coresGeradas.set(chave, cor);
       }
     });
 
     pacotes.forEach(pacote => {
       const geometry = new THREE.BoxGeometry(pacote.largura, pacote.altura, pacote.comprimento);
-
-      const corPacote = this.coresGeradas.get(pacote.pacoteId) || new THREE.Color(Math.random(), Math.random(), Math.random());
+      const chaveCor = `${pacote.pedidoId}|${pacote.pacoteId}`;
+      const corPacote = this.coresGeradas.get(chaveCor)!;
 
       const material = new THREE.MeshStandardMaterial({
         color: corPacote,
@@ -145,9 +147,15 @@ export class ThreeDViewComponent implements OnInit, OnChanges {
 
       this.scene.add(boxMesh);
       this.boxes.push(boxMesh);
-
-
     });
+
+    // Emitir cores convertidas para string hex
+    const coresFormatadas = new Map<string, string>();
+    this.coresGeradas.forEach((cor, chave) => {
+      coresFormatadas.set(chave, `#${cor.getHexString()}`);
+    });
+
+    this.coresGeradasChange.emit(coresFormatadas);
   }
 
   private setupControls(): void {

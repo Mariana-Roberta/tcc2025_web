@@ -21,7 +21,6 @@ export class HomeComponent implements OnInit {
     const usuario = this.authService.getUsuario();
     if (usuario) {
       this.nomeUsuario = usuario.razaoSocial || usuario.email;
-      this.popupService.sucesso('Usuário logado com sucesso!');
     }
   }
 

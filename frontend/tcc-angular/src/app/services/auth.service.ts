@@ -24,7 +24,7 @@ export class AuthService {
           perfil: response.perfil
         }));
       }),
-      catchError(this.tratarRespostaErro)
+      catchError(this.handleError)
     );
   }
 
@@ -51,20 +51,23 @@ export class AuthService {
     localStorage.setItem('usuario', JSON.stringify(usuario));
   }
 
-  private tratarRespostaErro(error: HttpErrorResponse): Observable<never> {
-    const mensagem = error?.error?.message || 'Falha ao fazer login.';
-    return throwError(() => new Error(mensagem));
-  }
+  private handleError(error: HttpErrorResponse): Observable<never> {
+    let errorMessage = 'Falha ao fazer login.';
 
-  private handleError(error: HttpErrorResponse) {
-    let errorMessage = 'Ocorreu um erro desconhecido.';
     if (error.error instanceof ErrorEvent) {
-      // Erro do lado do cliente
-      errorMessage = `Erro: ${error.error.message}`;
+      errorMessage = `Erro do cliente: ${error.error.message}`;
     } else {
-      // Erro do lado do servidor
-      errorMessage = error.error.message; // A mensagem do Spring Boot será recebida aqui
+      if (error.error && typeof error.error === 'object' && error.error.message) {
+        errorMessage = error.error.message;
+      } else if (typeof error.error === 'string') {
+        errorMessage = error.error;
+      } else if (error.status === 403) {
+        errorMessage = 'Acesso negado. Verifique suas credenciais.';
+      } else if (error.status === 0) {
+        errorMessage = 'Servidor indisponível ou erro de conexão.';
+      }
     }
-    return throwError(() => errorMessage);
+
+    return throwError(() => new Error(errorMessage));
   }
 }

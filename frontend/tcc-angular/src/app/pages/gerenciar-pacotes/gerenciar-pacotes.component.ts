@@ -1,26 +1,30 @@
 import { Component, OnInit } from '@angular/core';
-import { NgClass, NgForOf, NgIf } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NavbarComponent } from '../../components/navbar/navbar.component';
 import { ScreenBackgroundComponent } from '../../components/screen-background/screen-background.component';
-import { CaminhaoService } from '../../services/caminhao.service';
 import { AuthService } from '../../services/auth.service';
-import {PacoteService} from '../../services/pacote.service';
-import {Pacote} from '../../model/pacote.model';
-import {Caminhao} from '../../model/caminhao.model';
+import { PacoteService } from '../../services/pacote.service';
+import { Pacote } from '../../model/pacote.model';
 import { PopupService } from '../../services/popup.service';
-import { PopupComponent } from "../../components/popup/popup.component";
+import { PopupComponent } from '../../components/popup/popup.component';
 
 @Component({
   selector: 'app-gerenciar-pacotes',
   templateUrl: './gerenciar-pacotes.component.html',
   standalone: true,
-  imports: [NgForOf, NgClass, FormsModule, NgIf, NavbarComponent, ScreenBackgroundComponent, PopupComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    NavbarComponent,
+    ScreenBackgroundComponent,
+    PopupComponent
+  ],
   styleUrls: ['./gerenciar-pacotes.component.css']
 })
 export class GerenciarPacotesComponent implements OnInit {
 
-  pacotes: any[] = [];
+  pacotes: Pacote[] = [];
 
   novoPacote: Pacote = {
     nome: '',
@@ -36,6 +40,7 @@ export class GerenciarPacotesComponent implements OnInit {
   mostrarFormulario = false;
   modoEdicao = false;
   indiceEdicao: number | null = null;
+  campoFocado: string | null = null; // para uso no HTML caso deseje controle de foco
 
   constructor(
     private pacoteService: PacoteService,
@@ -53,31 +58,29 @@ export class GerenciarPacotesComponent implements OnInit {
       this.pacoteService.listarPorUsuario(usuario.id).subscribe({
         next: (data: Pacote[]) => {
           this.pacotes = data;
-          
         },
-        error: (err: any) => this.popupService.erro('Erro ao carregar os pacotes')
+        error: () => {
+          this.popupService.erro('Erro ao carregar os pacotes.');
+        }
       });
+    } else {
+      this.popupService.erro('Usuário não autenticado.');
     }
   }
 
   exibirFormulario() {
-    this.novoPacote = {
-      nome: '',
-      comprimento: 0,
-      largura: 0,
-      altura: 0,
-      peso: 0,
-      fragil: false,
-      rotacao: false,
-      usuario: { id: 0 }
-    };
+    this.resetarFormulario();
     this.mostrarFormulario = true;
     this.modoEdicao = false;
     this.indiceEdicao = null;
   }
 
   cancelar() {
+    this.resetarFormulario();
     this.mostrarFormulario = false;
+  }
+
+  private resetarFormulario() {
     this.novoPacote = {
       nome: '',
       comprimento: 0,
@@ -92,27 +95,45 @@ export class GerenciarPacotesComponent implements OnInit {
     this.indiceEdicao = null;
   }
 
-  adicionarOuEditarPacote() {
-    const usuarioLogado = this.authService.getUsuario();
-    if (!usuarioLogado) {
-      console.error('Usuário não logado');
+  verificarFormulario(form: any): void {
+    if (form.invalid) {
+      this.popupService.erro('Por favor, verifique os campos obrigatórios e tente novamente.');
       return;
     }
 
-    // Garante o vínculo do pacote com o usuário logado
+    this.adicionarOuEditarPacote();
+  }
+
+  adicionarOuEditarPacote() {
+    const usuarioLogado = this.authService.getUsuario();
+    if (!usuarioLogado) {
+      this.popupService.erro('Usuário não autenticado.');
+      return;
+    }
+
     this.novoPacote.usuario = { id: usuarioLogado.id };
 
     if (this.modoEdicao && this.indiceEdicao !== null) {
-      this.pacoteService.atualizar(this.novoPacote.id!, this.novoPacote).subscribe(() => {
-        this.popupService.sucesso('Pacote atualizado com sucesso!');
-        this.carregarPacotes();
-        this.cancelar();
+      this.pacoteService.atualizar(this.novoPacote.id!, this.novoPacote).subscribe({
+        next: () => {
+          this.popupService.sucesso('Pacote atualizado com sucesso!');
+          this.carregarPacotes();
+          this.cancelar();
+        },
+        error: () => {
+          this.popupService.erro('Erro ao atualizar o pacote.');
+        }
       });
     } else {
-      this.pacoteService.salvar(this.novoPacote).subscribe(() => {
-        this.popupService.sucesso('Pacote salvo com sucesso!');
-        this.carregarPacotes();
-        this.cancelar();
+      this.pacoteService.salvar(this.novoPacote).subscribe({
+        next: () => {
+          this.popupService.sucesso('Pacote salvo com sucesso!');
+          this.carregarPacotes();
+          this.cancelar();
+        },
+        error: () => {
+          this.popupService.erro('Erro ao salvar o pacote.');
+        }
       });
     }
   }
@@ -124,11 +145,15 @@ export class GerenciarPacotesComponent implements OnInit {
     this.novoPacote = { ...pacote };
   }
 
-  excluirPacote(pacote: any) {
-    this.pacoteService.excluir(pacote.id).subscribe(() => {
+  excluirPacote(pacote: Pacote) {
+    this.pacoteService.excluir(pacote.id!).subscribe({
+      next: () => {
         this.popupService.sucesso('Pacote excluído com sucesso!');
         this.carregarPacotes();
-      });
+      },
+      error: () => {
+        this.popupService.erro('Erro ao excluir o pacote.');
+      }
+    });
   }
-
 }

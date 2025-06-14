@@ -62,4 +62,12 @@ export class PerfilComponent implements OnInit {
     this.authService.logout();
     this.router.navigate(['/']);
   }
+
+  get cnpjFormatado(): string {
+  const cnpj = this.usuario.cnpj?.replace(/\D/g, ''); // remove tudo que não for número
+  if (!cnpj || cnpj.length !== 14) return this.usuario.cnpj;
+
+  return `${cnpj.slice(0, 2)}.${cnpj.slice(2, 5)}.${cnpj.slice(5, 8)}/${cnpj.slice(8, 12)}-${cnpj.slice(12)}`;
+}
+
 }

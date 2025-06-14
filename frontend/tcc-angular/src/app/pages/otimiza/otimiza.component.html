@@ -9,12 +9,18 @@
       <section class="card selecao-card">
         <h3><i class="pi pi-truck"></i> Escolha um Caminhão</h3>
 
-        <input
-          type="text"
-          [(ngModel)]="filtroCaminhao"
-          placeholder="Filtrar caminhões por nome, peso ou dimensões..."
-          class="filtro-input"
-        />
+        <div class="filtro-container" style="display: flex; gap: 10px; align-items: center;">
+          <input
+            type="text"
+            [(ngModel)]="filtroCaminhao"
+            placeholder="Filtrar caminhões por nome, peso ou dimensões..."
+            class="filtro-input"
+          />
+          <button type="button" class="btn-secundario" (click)="filtroCaminhao = ''">
+            Limpar
+          </button>
+        </div>
+
 
         <div class="tabela-container">
           <table class="custom-table">
@@ -71,14 +77,18 @@
 
 <div class="tabela-container">
       <!-- Campo de filtro -->
-<div class="filtro-container" style="margin-bottom: 20px; text-align: center;">
+<div class="filtro-container" style="display: flex; gap: 10px; justify-content: center;">
   <input
     type="text"
     [(ngModel)]="filtroPacote"
     placeholder="Filtrar pacotes por nome, peso ou dimensões..."
     class="filtro-input"
   />
+  <button type="button" class="btn-secundario" (click)="filtroPacote = ''">
+    Limpar
+  </button>
 </div>
+
   <table class="custom-table">
     <thead>
       <tr>
@@ -191,3 +201,4 @@
 </div>
 
 <app-screen-background></app-screen-background>
+<app-popup></app-popup>

@@ -11,6 +11,7 @@ interface PacoteOtimizado {
   largura: number;
   altura: number;
   pacoteId: number;
+  pedidoId?: number; // caso esteja usando em sua estrutura
 }
 
 @Injectable({
@@ -23,23 +24,28 @@ export class OtimizarService {
 
   otimizar(caminhaoPacotes: any): Observable<PacoteOtimizado[]> {
     return this.http.post<PacoteOtimizado[]>(this.apiUrl, caminhaoPacotes)
-      .pipe(catchError(this.tratarRespostaErro));
+      .pipe(catchError(this.handleError));
   }
 
-  private tratarRespostaErro(error: HttpErrorResponse): Observable<never> {
-    const mensagem = error?.error?.message || 'Erro inesperado na otimização.';
-    return throwError(() => new Error(mensagem));
-  }
+  private handleError(error: HttpErrorResponse): Observable<never> {
+    let errorMessage = 'Erro inesperado na otimização.';
 
-    private handleError(error: HttpErrorResponse) {
-    let errorMessage = 'Ocorreu um erro desconhecido.';
     if (error.error instanceof ErrorEvent) {
       // Erro do lado do cliente
-      errorMessage = `Erro: ${error.error.message}`;
+      errorMessage = `Erro do cliente: ${error.error.message}`;
     } else {
       // Erro do lado do servidor
-      errorMessage = error.error.message; // A mensagem do Spring Boot será recebida aqui
+      if (error.error && typeof error.error === 'object' && error.error.message) {
+        errorMessage = error.error.message;
+      } else if (typeof error.error === 'string') {
+        errorMessage = error.error;
+      } else if (error.status === 403) {
+        errorMessage = 'Acesso negado. Você não tem permissão para esta operação.';
+      } else if (error.status === 0) {
+        errorMessage = 'Servidor indisponível ou erro de conexão.';
+      }
     }
-    return throwError(() => errorMessage);
+
+    return throwError(() => new Error(errorMessage));
   }
 }

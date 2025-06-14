@@ -27,20 +27,20 @@
     <!-- Card dos pacotes agrupados por pedido -->
     <section class="pacotes-section" *ngIf="pedidos.length > 0">
       <h4>Pacotes por Pedido</h4>
-      <div *ngFor="let pedido of pedidos">
-        <h5 style="margin-top: 1em;">
-          <i class="pi pi-inbox" style="margin-right: 5px;"></i>
+      <div *ngFor="let pedido of pedidos" class="pedido-bloco">
+        <h5 class="pedido-titulo">
+          <i class="pi pi-inbox"></i>
           {{ pedido.descricao || pedido.nome || ('Pedido #' + pedido.id) }}
         </h5>
         <ul class="pacotes-lista">
-          <li class="pacote-card horizontal ativo" *ngFor="let pacote of pedido.pacotes">
-            <div class="card-left">
-              <strong>{{ pacote.nome }}</strong><br/><br/>
-              <span class="badge">Qtd: {{ pacote.quantidade }}</span>
-            </div>
-            <div class="card-right">
-              <span class="badge">{{ pacote.comprimento }}m × {{ pacote.largura }}m × {{ pacote.altura }}m</span>
-              <span class="badge">{{ pacote.peso }}kg</span>
+          <li class="pacote-card" *ngFor="let pacote of pedido.pacotes">
+            <div class="pacote-info">
+              <div class="pacote-nome">{{ pacote.nome }}</div>
+              <div class="pacote-badges">
+                <span class="badge qtd">Qtd: {{ pacote.quantidade }}</span>
+                <span class="badge">{{ pacote.comprimento }}m × {{ pacote.largura }}m × {{ pacote.altura }}m</span>
+                <span class="badge">{{ pacote.peso }}kg</span>
+              </div>
             </div>
           </li>
         </ul>
@@ -53,20 +53,34 @@
     <app-three-d-view
       [pacotesOtimizados]="pacotesParaMostrar"
       [caminhao]="caminhao"
+      (coresGeradasChange)="receberCoresGeradas($event)"
     ></app-three-d-view>
   </main>
 
   <!-- Card de Passo a Passo -->
   <aside class="card passo-card">
-    <h3><i class="pi pi-list"></i> Passo a Passo</h3>
+    <h3><i class="pi pi-list"></i> Instruções de Posicionamento</h3>
 
     <div class="passo-dinamico">
       <p class="passo-indicador">
-        Pacote {{ pacotesIdsDoPedidoAtual.indexOf(pacoteAtualId) + 1 }} de {{ pacotesIdsDoPedidoAtual.length }}
+        Pedido {{ pedidoIds.indexOf(pedidoAtualId) + 1 }} de {{ pedidoIds.length }}
       </p>
-      <p class="passo-texto">
-        Visualizando pacote ID: {{ pacoteAtualId }}
-      </p>
+      <div class="passo-texto" *ngIf="pedidoAtual">
+        <strong>{{ pedidoAtual.descricao || pedidoAtual.nome || ('Pedido #' + pedidoAtual.id) }}</strong><br/>
+
+        <div style="margin-top: 10px;">
+          <p>Pacotes do pedido:</p>
+
+          <ul class="lista-pacotes">
+            <li *ngFor="let p of resumoPacotesDoPedidoAtual">
+              <span class="cor-pacote" [style.backgroundColor]="coresPacotes.get(pedidoAtualId + '|' + p.id)"></span>
+              <span class="texto-pacote">
+                {{ p.nome }} — {{ p.quantidade }} unidade{{ p.quantidade > 1 ? 's' : '' }}
+              </span>
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
 
     <div class="passo-botoes">
@@ -86,12 +100,7 @@
       </button>
     </div>
 
-    <button
-      class="confirmar-button"
-      *ngIf="pacotesIdsDoPedidoAtual.indexOf(pacoteAtualId) === pacotesIdsDoPedidoAtual.length - 1"
-      (click)="confirmar()"
-    >
-      Confirmar Carregamento
-    </button>
   </aside>
 </div>
+
+<app-popup></app-popup>

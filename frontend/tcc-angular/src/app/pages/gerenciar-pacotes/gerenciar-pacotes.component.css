@@ -89,3 +89,10 @@ input:checked + .slider:before {
   color: #333;
   min-width: 30px;
 }
+
+.erro-campo {
+  color: #e74c3c;
+  font-size: 0.85rem;
+  margin-top: 4px;
+  display: block;
+}

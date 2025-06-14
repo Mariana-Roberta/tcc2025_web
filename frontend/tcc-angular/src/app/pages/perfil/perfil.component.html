@@ -1,81 +1,55 @@
 <app-navbar></app-navbar>
 
 <div class="page-container">
-  <div class="perfil-card">
 
-    <!-- HEADER -->
-    <div class="perfil-header" *ngIf="modoAtual === 'perfil'">
-      <div class="perfil-avatar">
-        <i class="pi pi-user"></i>
-      </div>
+  <div class="form-container">
+
+    <h2>{{ modoAtual === 'editar' ? 'Editar Perfil' : 'Meu Perfil' }}</h2>
+
+    <!-- VISUALIZAÇÃO DO PERFIL -->
+    <div class="perfil-visual" *ngIf="modoAtual === 'perfil'">
+  
       <div class="perfil-info">
-        <h2>{{ usuario.razaoSocial || usuario.email }}</h2>
-        <p><i class="pi pi-id-card"></i> {{ usuario.cnpj }}</p>
-        <p><i class="pi pi-envelope"></i> {{ usuario.email }}</p>
-        <p><i class="pi pi-phone"></i> {{ usuario.telefone }}</p>
-        <p><i class="pi pi-building"></i> {{ usuario.razaoSocial }}</p>
+        <p><i class="pi pi-id-card"></i><strong>CNPJ:</strong>  {{ cnpjFormatado }}</p>
+        <p><i class="pi pi-envelope"></i><strong>Email:</strong>  {{ usuario.email }}</p>
+        <p><i class="pi pi-phone"></i><strong>Telefone:</strong>  {{ usuario.telefone }}</p>
+        <p><i class="pi pi-building"></i><strong>Razão Social:</strong> {{ usuario.razaoSocial }}</p>
+      </div>
+
+      <div class="perfil-actions">
+        <button class="btn-primario" (click)="modoAtual = 'editar'">
+          <i class="pi pi-user-edit"></i> Editar Perfil
+        </button>
+        <button class="btn-danger" (click)="sairConta()">
+          <i class="pi pi-sign-out"></i> Sair da Conta
+        </button>
       </div>
     </div>
 
-    <!-- FORMULÁRIO DE EDIÇÃO -->
+    <!-- EDIÇÃO DO PERFIL -->
     <form class="form" *ngIf="modoAtual === 'editar'" (ngSubmit)="salvarEdicao()">
-      <h3><i class="pi pi-user-edit"></i> Editar Perfil</h3>
 
-      <div class="input-container">
-        <label for="razao">Razão Social</label>
-        <input id="razao" type="text" placeholder="Digite sua razão social" [(ngModel)]="usuario.razaoSocial" name="razao" />
-      </div>
+        <div class="input-container">
+          <label for="razao">Razão Social</label>
+          <input id="razao" type="text" [(ngModel)]="usuario.razaoSocial" name="razao" placeholder="Digite sua razão social" />
+        </div>
 
-      <div class="input-container">
-        <label for="email">Email</label>
-        <input id="email" type="email" placeholder="Digite seu email" [(ngModel)]="usuario.email" name="email" />
-      </div>
+        <div class="input-container">
+          <label for="email">Email</label>
+          <input id="email" type="email" [(ngModel)]="usuario.email" name="email" placeholder="Digite seu email" />
+        </div>
 
-      <div class="input-container">
-        <label for="telefone">Telefone</label>
-        <input id="telefone" type="text" placeholder="Digite seu telefone" [(ngModel)]="usuario.telefone" name="telefone" />
-      </div>
-
-      <div class="perfil-actions">
-        <button class="btn-sucesso" type="submit"><i class="pi pi-check"></i> Salvar</button>
-        <button class="btn-secundario" type="button" (click)="cancelar()"><i class="pi pi-times"></i> Cancelar</button>
-      </div>
-    </form>
-
-    <!-- ALTERAR SENHA -->
-    <form class="form" *ngIf="modoAtual === 'senha'" (ngSubmit)="salvarSenha()">
-      <h3><i class="pi pi-lock"></i> Alterar Senha</h3>
-
-      <div class="input-container">
-        <label for="senhaAtual">Senha Atual</label>
-        <input id="senhaAtual" type="password" name="senhaAtual" placeholder="Digite sua senha atual" />
-      </div>
-
-      <div class="input-container">
-        <label for="novaSenha">Nova Senha</label>
-        <input id="novaSenha" type="password" name="novaSenha" placeholder="Digite a nova senha" />
-      </div>
-
-      <div class="input-container">
-        <label for="confirmaSenha">Confirmar Nova Senha</label>
-        <input id="confirmaSenha" type="password" name="confirmaSenha" placeholder="Confirme a nova senha" />
-      </div>
+        <div class="input-container">
+          <label for="telefone">Telefone</label>
+          <input id="telefone" type="text" [(ngModel)]="usuario.telefone" name="telefone" placeholder="Digite seu telefone" />
+        </div>
 
       <div class="perfil-actions">
-        <button class="btn-sucesso" type="submit"><i class="pi pi-check"></i> Salvar Senha</button>
-        <button class="btn-secundario" type="button" (click)="cancelar()"><i class="pi pi-times"></i> Cancelar</button>
+        <button class="btn-sucesso" type="submit">Salvar</button>
+        <button class="btn-secundario" type="button" (click)="cancelar()">Cancelar</button>
       </div>
     </form>
-
-    <!-- AÇÕES -->
-    <div class="perfil-actions" *ngIf="modoAtual === 'perfil'">
-      <button class="btn-primario" (click)="modoAtual = 'editar'"><i class="pi pi-user-edit"></i> Editar Perfil</button>
-      <button class="btn-secundario" (click)="modoAtual = 'senha'"><i class="pi pi-lock"></i> Alterar Senha</button>
-      <button class="btn-danger" (click)="sairConta()"><i class="pi pi-sign-out"></i> Sair da Conta</button>
-    </div>
-
   </div>
 </div>
 
-<app-footer></app-footer>
 <app-screen-background></app-screen-background>
