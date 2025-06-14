@@ -58,6 +58,7 @@ export class OtimizaComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.popupService.limpar();
     this.carregarCaminhoes();
     this.carregarPacotes();
   }

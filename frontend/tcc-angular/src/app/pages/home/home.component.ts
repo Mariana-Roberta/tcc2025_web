@@ -18,6 +18,7 @@ export class HomeComponent implements OnInit {
   constructor(private _router: Router, private authService: AuthService, private popupService: PopupService) {}
 
   ngOnInit(): void {
+    this.popupService.limpar();
     const usuario = this.authService.getUsuario();
     if (usuario) {
       this.nomeUsuario = usuario.razaoSocial || usuario.email;

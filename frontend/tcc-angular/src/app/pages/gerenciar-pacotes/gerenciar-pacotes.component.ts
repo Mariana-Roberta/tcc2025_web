@@ -49,6 +49,7 @@ export class GerenciarPacotesComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.popupService.limpar();
     this.carregarPacotes();
   }
 

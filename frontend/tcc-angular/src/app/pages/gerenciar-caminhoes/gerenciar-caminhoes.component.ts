@@ -45,6 +45,7 @@ export class GerenciarCaminhoesComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.popupService.limpar();
     this.carregarCaminhoes();
   }
 
