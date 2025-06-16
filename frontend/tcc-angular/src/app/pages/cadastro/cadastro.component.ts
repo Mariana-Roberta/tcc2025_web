@@ -29,23 +29,33 @@ export class CadastroComponent {
   constructor(private usuarioService: UsuarioService, private popupService: PopupService, private router: Router) {}
 
   salvar() {
-    // Clona o objeto e remove a formatação
-    const usuarioLimpo: Usuario = {
-      ...this.usuario,
-      cnpj: this.usuario.cnpj.replace(/\D/g, ''), // remove pontos, barras e traços
-    };
+  // Reformatar telefone para garantir consistência
+  let telefone = this.usuario.telefone.replace(/\D/g, ''); // Só os números
 
-    this.usuarioService.cadastrarUsuario(usuarioLimpo).subscribe({
-      next: (usuario) => {
-        console.log('Usuário cadastrado com sucesso:', usuario);
-        this.popupService.sucesso('Cadastro de usuário realizado com sucesso!');
-      },
-      error: (err) => {
-        const mensagem = err.error?.mensagem || err.message;
-        this.popupService.erro(mensagem);
-      }
-    });
+  if (telefone.length === 10) {
+    telefone = telefone.replace(/^(\d{2})(\d{4})(\d{4})/, '($1) $2-$3');
+  } else if (telefone.length === 11) {
+    telefone = telefone.replace(/^(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
   }
+
+  const usuarioLimpo: Usuario = {
+    ...this.usuario,
+    cnpj: this.usuario.cnpj.replace(/\D/g, ''),
+    telefone: telefone // aqui entra formatado no padrão
+  };
+
+  this.usuarioService.cadastrarUsuario(usuarioLimpo).subscribe({
+    next: (usuario) => {
+      console.log('Usuário cadastrado com sucesso:', usuario);
+      this.popupService.sucesso('Cadastro de usuário realizado com sucesso!');
+    },
+    error: (err) => {
+      const mensagem = err.error?.mensagem || err.message;
+      this.popupService.erro(mensagem);
+    }
+  });
+}
+
 
   voltar () {
     this.router.navigate(['/login']);
