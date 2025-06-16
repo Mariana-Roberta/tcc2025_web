@@ -18,11 +18,11 @@ export const routes: Routes = [
 
   // protegidas por autenticação
   { path: 'home', component: HomeComponent, canActivate: [AuthGuard] },
-  { path: 'gerenciar-pacotes', component: GerenciarPacotesComponent},
+  { path: 'gerenciar-pacotes', component: GerenciarPacotesComponent , canActivate: [AuthGuard] },
   { path: 'gerenciar-caminhoes', component: GerenciarCaminhoesComponent, canActivate: [AuthGuard] },
   { path: 'perfil', component: PerfilComponent, canActivate: [AuthGuard] },
-  { path: 'visualiza', component: VisualizaComponent },
-  { path: 'otimiza', component: OtimizaComponent },
+  { path: 'visualiza', component: VisualizaComponent, canActivate: [AuthGuard]  },
+  { path: 'otimiza', component: OtimizaComponent, canActivate: [AuthGuard]  },
   { path: 'gerenciar-carregamentos', component: GerenciarCarregamentoComponent },
   { path: 'contato', component: ContatoComponent, canActivate: [AuthGuard] },
 
