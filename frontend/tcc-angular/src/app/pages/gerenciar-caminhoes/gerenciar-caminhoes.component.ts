@@ -126,7 +126,6 @@ export class GerenciarCaminhoesComponent implements OnInit {
         }
       });
     } else {
-      console.log('estou enviando para salvar')
       this.caminhaoService.salvar(this.novoCaminhao).subscribe({
         next: () => {
           this.popupService.sucesso('Caminhão salvo com sucesso!');

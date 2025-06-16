@@ -38,7 +38,7 @@
         [(ngModel)]="novoCaminhao.comprimento"
         placeholder="Comprimento (m)"
         required
-        min="0.0000001"
+        min="0.1"
         #comprimento="ngModel"
         (focus)="campoFocado = 'comprimento'"
         (blur)="campoFocado = null"
@@ -58,7 +58,7 @@
         [(ngModel)]="novoCaminhao.largura"
         placeholder="Largura (m)"
         required
-        min="0.0000001"
+        min="0.1"
         #largura="ngModel"
         (focus)="campoFocado = 'largura'"
         (blur)="campoFocado = null"
@@ -78,7 +78,7 @@
         [(ngModel)]="novoCaminhao.altura"
         placeholder="Altura (m)"
         required
-        min="0.0000001"
+        min="0.1"
         #altura="ngModel"
         (focus)="campoFocado = 'altura'"
         (blur)="campoFocado = null"
