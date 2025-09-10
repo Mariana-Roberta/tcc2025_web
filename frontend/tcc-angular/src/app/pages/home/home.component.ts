@@ -33,6 +33,10 @@ export class HomeComponent implements OnInit {
     this._router.navigate(['/gerenciar-pacotes']);
   }
 
+  gerenciarCarregamentos() {
+    this._router.navigate(['/gerenciar-carregamentos']);
+  }
+
   otimizar() {
     this._router.navigate(['/otimiza']);
   }

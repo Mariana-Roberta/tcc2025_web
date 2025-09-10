@@ -76,16 +76,21 @@ export class OtimizaComponent implements OnInit {
   }
 
   carregarPacotes() {
-    const usuario = this.authService.getUsuario();
-    if (usuario) {
-      this.pacoteService.listarPorUsuario(usuario.id).subscribe({
-        next: (dados) => this.pacotes = dados,
-        error: () => this.popupService.erro('Erro ao carregar pacotes.')
-      });
-    } else {
-      this.popupService.erro('Usuário não autenticado.');
-    }
+  const usuario = this.authService.getUsuario();
+  if (usuario) {
+    this.pacoteService.listarPorUsuario(usuario.id).subscribe({
+      next: (dados) => this.pacotes = dados,
+      error: (err) => {
+        console.error('Falha ao carregar pacotes:', err);
+        const msg = err?.error?.mensagem || err?.statusText || err?.message || 'Erro ao carregar pacotes.';
+        this.popupService.erro(msg);
+      }
+    });
+  } else {
+    this.popupService.erro('Usuário não autenticado.');
   }
+}
+
 
   selecionarCaminhao(c: Caminhao) {
     this.caminhaoSelecionado = c;
@@ -182,41 +187,53 @@ export class OtimizaComponent implements OnInit {
   }
 
   confirmarOtimizacao() {
-    if (!this.caminhaoSelecionado) {
-      this.popupService.erro('Selecione um caminhão para otimização.');
-      return;
-    }
-
-    if (this.pedidos.length === 0) {
-      this.popupService.erro('Adicione pelo menos um pedido antes de otimizar.');
-      return;
-    }
-
-    const dto = {
-      caminhao: {
-        ...this.caminhaoSelecionado,
-        usuario: { id: this.caminhaoSelecionado.usuario.id }
-      },
-      pedidos: this.pedidos.map((pedido, index) => ({
-        id: index,
-        descricao: pedido.nome,
-        pacotes: pedido.pacotes.map(p => ({
-          id: p.pacote.id,
-          nome: p.pacote.nome,
-          comprimento: p.pacote.comprimento,
-          largura: p.pacote.largura,
-          altura: p.pacote.altura,
-          peso: p.pacote.peso,
-          fragil: p.pacote.fragil,
-          rotacao: p.pacote.rotacao,
-          quantidade: p.quantidade
-        }))
-      }))
-    };
-
-    this.router.navigate(['/visualiza'], { state: { dados: dto } });
-    this.popupService.sucesso('Otimização iniciada com sucesso!');
+  if (!this.caminhaoSelecionado) {
+    this.popupService.erro('Selecione um caminhão para otimização.');
+    return;
   }
+  if (this.pedidos.length === 0) {
+    this.popupService.erro('Adicione pelo menos um pedido antes de otimizar.');
+    return;
+  }
+
+  // 1) Validação prévia: nenhum pacote pode estar sem ID
+  for (const ped of this.pedidos) {
+    for (const pp of ped.pacotes) {
+      if (!pp?.pacote || pp.pacote.id == null) {
+        this.popupService.erro(`Há um pacote sem ID no pedido "${ped.nome}".`);
+        return; // evita continuar e elimina o erro TS
+      }
+    }
+  }
+
+  // 2) Montagem do DTO (agora podemos usar "!" com segurança)
+  const dto = {
+    caminhao: {
+      ...this.caminhaoSelecionado,
+      usuario: { id: this.caminhaoSelecionado.usuario.id }
+    },
+    pedidos: this.pedidos.map((pedido, index) => ({
+      id: index,
+      descricao: pedido.nome,
+      pacotes: pedido.pacotes.map(p => ({
+        id: +p.pacote.id!,                 // <- validado acima
+        nome: p.pacote.nome ?? '',
+        comprimento: p.pacote.comprimento!,// se seu modelo permitir null, trate aqui
+        largura: p.pacote.largura!,
+        altura: p.pacote.altura!,
+        peso: p.pacote.peso!,
+        fragil: !!p.pacote.fragil,
+        rotacao: !!p.pacote.rotacao,
+        quantidade: p.quantidade ?? 1
+      }))
+    }))
+  };
+
+  console.log('Body a enviar (otimizar -> state):', dto);
+  this.router.navigate(['/visualiza'], { state: { dados: dto } });
+  this.popupService.sucesso('Otimização iniciada com sucesso!');
+}
+
 
 get caminhoesFiltrados(): Caminhao[] {
   const filtro = this.filtroCaminhao.trim().toLowerCase();

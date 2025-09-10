@@ -5,13 +5,12 @@ import { FormsModule } from '@angular/forms';
 import { Usuario } from '../../model/usuario.model';
 import { AuthService } from '../../services/auth.service';
 import { NavbarComponent } from '../../components/navbar/navbar.component';
-import { FooterComponent } from '../../components/footer/footer.component';
 import { ScreenBackgroundComponent } from '../../components/screen-background/screen-background.component';
 
 @Component({
   selector: 'app-perfil',
   standalone: true,
-  imports: [NavbarComponent, FooterComponent, ScreenBackgroundComponent, NgIf, FormsModule],
+  imports: [NavbarComponent, ScreenBackgroundComponent, NgIf, FormsModule],
   templateUrl: './perfil.component.html',
   styleUrls: ['./perfil.component.css']
 })

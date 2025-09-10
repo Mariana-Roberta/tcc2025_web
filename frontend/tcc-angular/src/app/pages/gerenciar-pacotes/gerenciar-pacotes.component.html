@@ -2,14 +2,12 @@
 
 <div class="page-container">
   <div class="container">
-    <div class="top-bar">
       <h1>Gerenciar Pacotes</h1>
       <button class="btn-sucesso" *ngIf="!mostrarFormulario" (click)="exibirFormulario()">+ Adicionar Pacote</button>
-    </div>
 
     <!-- FORMULÁRIO -->
     <div *ngIf="mostrarFormulario" class="form-container">
-      <form class="form" (ngSubmit)="verificarFormulario(form)" #form="ngForm">
+      <form class="form" (ngSubmit)="verificarFormulario(form)" #form="ngForm" novalidate>
 
         <!-- NOME -->
         <div class="input-container">
@@ -24,6 +22,7 @@
             #nome="ngModel"
             (focus)="campoFocado = 'nome'"
             (blur)="campoFocado = null"
+            aria-required="true"
           />
           <span class="erro-campo" *ngIf="campoFocado === 'nome' && nome.errors">
             O nome é obrigatório.
@@ -41,9 +40,11 @@
             placeholder="Comprimento (m)"
             required
             min="0.0000001"
+            step="any"
             #comprimento="ngModel"
             (focus)="campoFocado = 'comprimento'"
             (blur)="campoFocado = null"
+            aria-required="true"
           />
           <span class="erro-campo" *ngIf="campoFocado === 'comprimento' && comprimento.errors">
             O campo deve ser preenchido com um valor maior que 0.
@@ -61,9 +62,11 @@
             placeholder="Largura (m)"
             required
             min="0.0000001"
+            step="any"
             #largura="ngModel"
             (focus)="campoFocado = 'largura'"
             (blur)="campoFocado = null"
+            aria-required="true"
           />
           <span class="erro-campo" *ngIf="campoFocado === 'largura' && largura.errors">
             O campo deve ser preenchido com um valor maior que 0.
@@ -81,9 +84,11 @@
             placeholder="Altura (m)"
             required
             min="0.0000001"
+            step="any"
             #altura="ngModel"
             (focus)="campoFocado = 'altura'"
             (blur)="campoFocado = null"
+            aria-required="true"
           />
           <span class="erro-campo" *ngIf="campoFocado === 'altura' && altura.errors">
             O campo deve ser preenchido com um valor maior que 0.
@@ -101,9 +106,11 @@
             placeholder="Peso (kg)"
             required
             min="0.0000001"
+            step="any"
             #peso="ngModel"
             (focus)="campoFocado = 'peso'"
             (blur)="campoFocado = null"
+            aria-required="true"
           />
           <span class="erro-campo" *ngIf="campoFocado === 'peso' && peso.errors">
             O campo deve ser preenchido com um valor maior que 0.
@@ -116,14 +123,14 @@
             Permitir rotacionar?
             <span class="fragil-indicador">{{ novoPacote.rotacao ? 'Sim' : 'Não' }}</span>
           </label>
-          <label class="switch">
+          <label class="switch" aria-label="Permitir rotacionar">
             <input
               type="checkbox"
               id="rotacao"
               name="rotacao"
               [(ngModel)]="novoPacote.rotacao"
             />
-            <span class="slider round"></span>
+            <span class="slider round" aria-hidden="true"></span>
           </label>
         </div>
 
@@ -146,7 +153,8 @@
     <!-- LISTAGEM -->
     <div class="tabela-container">
       <h2>Lista de Pacotes</h2>
-      <div class="filtro-bar"  style="display: flex; gap: 10px; justify-content: center;">
+
+      <div class="filtro-bar">
         <input
           type="text"
           [(ngModel)]="filtroPacote"
@@ -162,27 +170,26 @@
         <thead>
           <tr>
             <th>Nome</th>
-            <th>Dimensões (C x L x A)</th>
+            <th>Dimensões (C × L × A)</th>
             <th>Peso (kg)</th>
             <th>Permite rotação</th>
-            <th>Ações</th>
+            <th style="width: 200px;">Ações</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let pacote of pacotesPaginados; let i = index">
             <td>{{ pacote.nome }}</td>
-            <td>{{ pacote.comprimento }} x {{ pacote.largura }} x {{ pacote.altura }}</td>
+            <td>{{ pacote.comprimento }} × {{ pacote.largura }} × {{ pacote.altura }}</td>
             <td>{{ pacote.peso }}</td>
             <td>
               <span
-                class="fragil"
                 [ngClass]="{ 'fragil-true': pacote.rotacao, 'fragil-false': !pacote.rotacao }"
               >
                 {{ pacote.rotacao ? 'Sim' : 'Não' }}
               </span>
             </td>
             <td>
-              <div style="display: flex; gap: 10px">
+              <div style="display:flex;gap:10px;flex-wrap:wrap;">
                 <button class="btn-primario" (click)="editarPacote(pacote, i)">Editar</button>
                 <button class="btn-danger" (click)="excluirPacote(pacote)">Excluir</button>
               </div>
@@ -190,16 +197,17 @@
           </tr>
         </tbody>
       </table>
-      <div class="paginacao">
-  <button
-    *ngFor="let pagina of [].constructor(totalPaginas); let i = index"
-    (click)="mudarPagina(i + 1)"
-    [class.ativa]="paginaAtual === i + 1"
-  >
-    {{ i + 1 }}
-  </button>
-</div>
 
+      <!-- Paginação (usa estilos globais) -->
+      <div class="paginacao">
+        <button
+          *ngFor="let pagina of [].constructor(totalPaginas); let i = index"
+          (click)="mudarPagina(i + 1)"
+          [class.ativa]="paginaAtual === i + 1"
+        >
+          {{ i + 1 }}
+        </button>
+      </div>
     </div>
   </div>
 </div>

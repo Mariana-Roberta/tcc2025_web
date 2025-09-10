@@ -1,57 +1,123 @@
 <app-navbar></app-navbar>
 
 <div class="container">
-  <div class="top-bar">
-    <h1>Gerenciar Carregamentos</h1>
-  </div>
+  <div class="card mb-3">
+    <div class="card__header">
+      <h2 class="mb-2">Gerenciar Carregamentos</h2>
+    </div>
 
-  <div class="tabela-container">
-    <h2>Lista de Carregamentos</h2>
+    <div class="card__body" style="margin-top: 40px;">
+      <div *ngIf="loading" class="loading">
+        Carregando carregamentos...
+      </div>
 
-    <div *ngFor="let carregamento of carregamentos; let cIndex = index" class="carregamento-card">
-      <h3 (click)="toggleCaminhao(cIndex)" class="accordion-header">
-        🚚 Caminhão #{{ carregamento.caminhao.id }} - {{ carregamento.caminhao.nome }}
-        <span style="float: right; cursor: pointer; margin-left: 20px;">{{ caminhaoExpandido[cIndex] ? '▲' : '▼' }}</span>
-      </h3>
+      <!-- LISTA DE CARREGAMENTOS -->
+      <div
+        *ngFor="let carregamento of carregamentosPaginados; let cIndex = index; trackBy: trackByCarregamento"
+        class="carregamento-card">
 
-      <div *ngIf="caminhaoExpandido[cIndex]">
-        <p>
-          Dimensões: {{ carregamento.caminhao.comprimento }}m × {{ carregamento.caminhao.largura }}m × {{ carregamento.caminhao.altura }}m <br />
-          Peso Limite: {{ carregamento.caminhao.pesoLimite }} kg
-        </p>
+        <!-- Cabeçalho do card (abre/fecha detalhes) -->
+        <h3 class="accordion-header"
+            (click)="toggleCaminhao(cIndex)">
+          🚚 Caminhão #{{ carregamento.caminhao?.id }} — {{ carregamento.caminhao?.nome || '—' }}
+          <small class="muted">• criado em {{ carregamento.dataCriacao }}</small>
+          <span class="caret">
+            {{ isCaminhaoAberto(cIndex) ? '▲' : '▼' }}
+          </span>
+        </h3>
 
-        <div *ngFor="let pedido of carregamento.pedidos; let pIndex = index">
-          <h4 (click)="togglePedido(cIndex, pIndex)" class="accordion-pedido">
-            📦 Pedido: {{ pedido.descricao || 'Pedido #' + pedido.id }}
-          </h4>
+        <!-- Linha de resumo compacta (sempre visível) -->
+        <div class="linha-resumo">
+          <div class="chips">
+            <span class="chip chip--info">🗂️ {{ carregamento.pedidos?.length || 0 }} pedidos</span>
+          </div>
 
-          <div>
-            <table class="custom-table">
-              <thead>
-                <tr>
-                  <th>Nome</th>
-                  <th>Dimensões (C x L x A)</th>
-                  <th>Peso (kg)</th>
-                  <th>Quantidade</th>
-                  <th>Frágil</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let pacote of pedido.pacotes">
-                  <td>{{ pacote.nome }}</td>
-                  <td>{{ pacote.comprimento }} x {{ pacote.largura }} x {{ pacote.altura }}</td>
-                  <td>{{ pacote.peso }}</td>
-                  <td>{{ pacote.quantidade }}</td>
-                  <td>
-                    <span class="fragil" [ngClass]="{ 'fragil-true': pacote.fragil, 'fragil-false': !pacote.fragil }">
-                      {{ pacote.fragil ? 'Frágil' : 'Não Frágil' }}
-                    </span>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+          <button class="btn btn--success"
+                  (click)="visualizarCarregamento(cIndex)">
+            <i class="pi pi-eye"></i>&nbsp;Visualizar
+          </button>
+        </div>
+
+        <!-- Detalhes somente quando expandido -->
+        <div *ngIf="isCaminhaoAberto(cIndex)">
+          <div class="grid-info">
+            <div>
+              <p><strong>Dimensões:</strong>
+                {{ carregamento.caminhao?.comprimento || 0 }}m ×
+                {{ carregamento.caminhao?.largura || 0 }}m ×
+                {{ carregamento.caminhao?.altura || 0 }}m
+              </p>
+              <p><strong>Peso Limite:</strong> {{ carregamento.caminhao?.pesoLimite || 0 | number:'1.0-0' }} kg</p>
+            </div>
+          </div>
+
+          <div class="acoes-caminhao">
+            <button class="btn" (click)="toggleTodosPedidos(cIndex, true)">
+              Expandir todos
+            </button>
+            <button class="btn btn--ghost" (click)="toggleTodosPedidos(cIndex, false)">
+              Recolher todos
+            </button>
+          </div>
+
+          <!-- Lista de pedidos -->
+          <div *ngFor="let pedido of carregamento.pedidos; let pIndex = index; trackBy: trackByPedido">
+            <h4 class="accordion-pedido"
+                (click)="togglePedido(cIndex, pIndex)">
+              📦 {{ pedido.descricao || ('Pedido #' + (pedido.id ?? (pIndex + 1))) }}
+              <span class="pedido-resumo">
+                — itens: {{ contarItensPedido(pedido) }},
+                peso: {{ calcularPesoPedido(pedido) | number:'1.0-0' }} kg
+              </span>
+              <span class="caret">{{ isPedidoAberto(cIndex, pIndex) ? '▲' : '▼' }}</span>
+            </h4>
+
+            <div *ngIf="isPedidoAberto(cIndex, pIndex)">
+              <table class="custom-table">
+                <thead>
+                  <tr>
+                    <th>Nome</th>
+                    <th>Dimensões (C × L × A)</th>
+                    <th>Peso (kg)</th>
+                    <th>Qtd.</th>
+                    <th>Frágil</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let pacote of pedido.pacotes; trackBy: trackByPacote">
+                    <td>{{ pacote.nome || ('Pacote #' + pacote.id) }}</td>
+                    <td>{{ pacote.comprimento || 0 }} × {{ pacote.largura || 0 }} × {{ pacote.altura || 0 }}</td>
+                    <td>{{ pacote.peso || 0 }}</td>
+                    <td>{{ pacote.quantidade || 0 }}</td>
+                    <td>
+                      <span [class.fragil-true]="!!pacote.fragil" [class.fragil-false]="!pacote.fragil">
+                        {{ pacote.fragil ? 'Frágil' : 'Não Frágil' }}
+                      </span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
           </div>
         </div>
+      </div>
+
+      <!-- Paginação -->
+      <div class="paginacao mt-3" *ngIf="!loading && carregamentos.length">
+        <button class="btn" (click)="paginaAnterior()" [disabled]="paginaAtual === 1">◀ Anterior</button>
+        <ng-container *ngFor="let _ of [].constructor(totalPaginas); let i = index">
+          <button class="btn btn-num"
+                  [class.ativo]="(i + 1) === paginaAtual"
+                  (click)="irParaPagina(i + 1)">
+            {{ i + 1 }}
+          </button>
+        </ng-container>
+        <button class="btn" (click)="proximaPagina()" [disabled]="paginaAtual === totalPaginas">Próxima ▶</button>
+      </div>
+
+      <div class="muted mt-2" *ngIf="!loading && !carregamentos.length">
+        Nenhum carregamento encontrado.
       </div>
     </div>
   </div>

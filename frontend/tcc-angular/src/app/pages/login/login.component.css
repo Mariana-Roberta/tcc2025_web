@@ -1,0 +1,30 @@
+/* Borda e foco de erro no input */
+.input-error {
+  border-color: #d32f2f !important;
+  box-shadow: 0 0 0 3px rgba(211, 47, 47, 0.12) !important;
+}
+
+/* Mensagens de erro de campo */
+.error-text {
+  color: #b71c1c;
+  font-size: 13px;
+  margin-top: 6px;
+  display: inline-block;
+}
+
+/* Erro geral do formulário */
+.erro-msg {
+  background: #fdecea;
+  color: #b71c1c;
+  border: 1px solid #f5c2c0;
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin: 8px 0 4px;
+}
+
+/* Estado desabilitado para o botão primário (o global cobre apenas .btn) */
+.btn-primario:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  filter: grayscale(15%);
+}

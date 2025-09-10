@@ -1,3 +1,5 @@
+/* usa estilos globais; aqui somente complementos locais */
+
 .link-topo {
   position: absolute;
   top: 1rem;
@@ -9,27 +11,32 @@
   border: none;
   padding: 0;
   margin-bottom: 20px;
-  border: none;
 }
+.form-section .input-container { margin-bottom: 12px; }
 
 .form-section legend {
   font-size: 18px;
   font-weight: 600;
-  color: var(--blue-color-1);
+  color: var(--primary);
   margin-bottom: 12px;
 }
 
+/* Dica de rolagem com animação suave */
 .scroll-hint {
   display: flex;
   flex-direction: column;
   align-items: center;
   font-size: 14px;
-  color: var(--gray-color);
+  color: var(--muted);
   margin-bottom: 12px;
   animation: fadeScrollHint 1.6s ease-in-out infinite;
 }
-
 .scroll-hint i {
   font-size: 22px;
   margin-bottom: 4px;
+}
+
+@keyframes fadeScrollHint {
+  0%, 100% { opacity: .35; transform: translateY(0); }
+  50%      { opacity: 1;    transform: translateY(4px); }
 }

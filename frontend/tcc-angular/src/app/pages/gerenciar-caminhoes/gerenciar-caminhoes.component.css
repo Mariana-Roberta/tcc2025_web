@@ -1,12 +1,6 @@
-.container {
-  height: auto;
-  width: 80%;
-  background-color: var(--background-color);
-  padding: 20px 40px;
-  border-radius: 12px;
-  overflow: hidden;
-}
+/* Apenas ajustes específicos deste componente */
 
+/* Mensagem de erro dos campos */
 .erro-campo {
   color: #e74c3c;
   font-size: 0.85rem;
@@ -14,18 +8,24 @@
   display: block;
 }
 
+/* Barra de filtro acima da tabela */
 .filtro-bar {
   margin-bottom: 20px;
   display: flex;
-  justify-content: flex-end;
-}
-
-.input-filtro {
-  padding: 8px 12px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
+  gap: 10px;
+  justify-content: center; /* centraliza (melhor que inline style) */
   width: 100%;
-  max-width: 300px;
-  font-size: 0.95rem;
 }
 
+/* Input do filtro – o resto do estilo vem do global (inputs) */
+.input-filtro {
+  max-width: 320px;   /* só limitamos a largura */
+  width: 100%;
+}
+
+/* Ações dentro da célula da tabela */
+.acoes-linha {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}

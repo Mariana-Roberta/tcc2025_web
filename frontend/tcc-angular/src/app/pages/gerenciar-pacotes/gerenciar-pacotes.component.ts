@@ -8,6 +8,7 @@ import { PacoteService } from '../../services/pacote.service';
 import { Pacote } from '../../model/pacote.model';
 import { PopupService } from '../../services/popup.service';
 import { PopupComponent } from '../../components/popup/popup.component';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-gerenciar-pacotes',
@@ -54,20 +55,27 @@ export class GerenciarPacotesComponent implements OnInit {
   }
 
   carregarPacotes() {
-    const usuario = this.authService.getUsuario();
-    if (usuario) {
-      this.pacoteService.listarPorUsuario(usuario.id).subscribe({
-        next: (data: Pacote[]) => {
-          this.pacotes = data;
-        },
-        error: () => {
-          this.popupService.erro('Erro ao carregar os pacotes.');
-        }
-      });
-    } else {
-      this.popupService.erro('Usuário não autenticado.');
-    }
+  const usuario = this.authService.getUsuario();
+  if (usuario) {
+    this.pacoteService.listarPorUsuario(usuario.id).subscribe({
+      next: (data: Pacote[]) => {
+        console.log('[Pacotes] OK:', data);
+        this.pacotes = data;
+      },
+      error: (err: HttpErrorResponse) => {
+        console.error('[Pacotes] Falha ao carregar pacotes:', err);
+        // tenta extrair mensagem útil do backend
+        const msg =
+          (err.error && (err.error.mensagem || err.error.message || err.error.error)) ||
+          `${err.status} ${err.statusText}` ||
+          'Erro ao carregar os pacotes.';
+        this.popupService.erro(msg);
+      }
+    });
+  } else {
+    this.popupService.erro('Usuário não autenticado.');
   }
+}
 
   exibirFormulario() {
     this.resetarFormulario();

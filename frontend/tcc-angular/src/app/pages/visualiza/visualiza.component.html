@@ -3,6 +3,10 @@
 <div class="layout-container">
   <!-- Card de informações do caminhão -->
   <aside class="card info-card">
+    <section class="salvar-carregamento" style="margin-bottom: 24px; display: flex; justify-content: center;">
+      <button class="btn-gradient"  (click)="salvarCarregamento()">Salvar carregamento</button>
+    </section>
+
     <section class="truck-card" *ngIf="caminhao">
       <header class="truck-header">
         <i class="pi pi-truck truck-icon"></i>

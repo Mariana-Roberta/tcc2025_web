@@ -1,7 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { NavbarComponent } from '../../components/navbar/navbar.component';
 import { ScreenBackgroundComponent } from '../../components/screen-background/screen-background.component';
-import { NgClass, NgIf, NgForOf } from '@angular/common';
+import { NgClass, NgIf, NgForOf, DecimalPipe, CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
+import { PopupService } from '../../services/popup.service';
+import { CarregamentoService, CarregamentoResponse } from '../../services/carregamento.service';
 
 @Component({
   selector: 'app-gerenciar-carregamento',
@@ -9,221 +13,142 @@ import { NgClass, NgIf, NgForOf } from '@angular/common';
   imports: [
     NavbarComponent,
     ScreenBackgroundComponent,
+    CommonModule,
     NgClass,
     NgIf,
-    NgForOf
+    NgForOf,
+    DecimalPipe
   ],
   templateUrl: './gerenciar-carregamento.component.html',
-  styleUrl: './gerenciar-carregamento.component.css'
+  styleUrl: './gerenciar-carregamento.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GerenciarCarregamentoComponent implements OnInit {
-  carregamentos: any[] = [];
-  carregamentosPorPagina = 1;
+  // o shape do backend (CarregamentoResponse)
+  carregamentos: CarregamentoResponse[] = [];
+
+  carregamentosPorPagina = 2;
   paginaAtual = 1;
+
   caminhaoExpandido: boolean[] = [];
   pedidoExpandido: { [cIndex: number]: { [pIndex: number]: boolean } } = {};
 
+  loading = false;
+
+  constructor(
+    private router: Router,
+    private authService: AuthService,
+    private popupService: PopupService,
+    private cdr: ChangeDetectorRef,
+    private carregamentoService: CarregamentoService
+  ) {}
+
   ngOnInit(): void {
-    this.carregarCarregamentos();
+    this.popupService.limpar();
+    const usuario = this.authService.getUsuario();
+    if (!usuario) {
+      this.popupService.erro('Usuário não autenticado.');
+      return;
+    }
+    this.buscarDoLogado();
   }
 
+  // ==== Listagem somente ====
+  private buscarDoLogado(): void {
+    this.loading = true;
+    console.log('[Componente] Chamando service.listarDoUsuarioLogado()');
+    const usuario = this.authService.getUsuario();
+    if (usuario) {
+      this.carregamentoService.listarPorUsuario(usuario.id).subscribe({
+        next: (lista) => {
+          console.log(lista);
+          console.log('[Componente] Carregamentos recebidos do service:', lista);
+          this.carregamentos = Array.isArray(lista) ? lista : [];
+          this.caminhaoExpandido = this.carregamentos.map(() => false);
+          this.pedidoExpandido = {};
+          this.loading = false;
+          this.cdr.markForCheck(); // OnPush: força atualização da view
+        },
+        error: (err) => {
+          console.error('[Componente] Erro ao buscar carregamentos do logado:', err);
+          this.popupService.erro(err?.message || 'Erro ao listar carregamentos.');
+          this.loading = false;
+          this.cdr.markForCheck();
+        }
+      });
+    }
+  }
+
+  // ==== Paginação/calculados ====
   get totalPaginas(): number {
-    return Math.ceil(this.carregamentos.length / this.carregamentosPorPagina);
+    return Math.ceil(this.carregamentos.length / this.carregamentosPorPagina) || 1;
   }
 
-  get carregamentosPaginados(): any[] {
+  get carregamentosPaginados(): CarregamentoResponse[] {
     const inicio = (this.paginaAtual - 1) * this.carregamentosPorPagina;
     return this.carregamentos.slice(inicio, inicio + this.carregamentosPorPagina);
   }
 
-  proximaPagina(): void {
-    if (this.paginaAtual < this.totalPaginas) {
-      this.paginaAtual++;
+  proximaPagina(): void { if (this.paginaAtual < this.totalPaginas) this.paginaAtual++; }
+  paginaAnterior(): void { if (this.paginaAtual > 1) this.paginaAtual--; }
+  irParaPagina(p: number): void { if (p >= 1 && p <= this.totalPaginas) this.paginaAtual = p; }
+
+  toggleCaminhao(cIndexAbs: number): void {
+    this.caminhaoExpandido[cIndexAbs] = !this.caminhaoExpandido[cIndexAbs];
+    if (this.caminhaoExpandido[cIndexAbs] && !this.pedidoExpandido[cIndexAbs]) {
+      this.pedidoExpandido[cIndexAbs] = {};
     }
   }
 
-  paginaAnterior(): void {
-    if (this.paginaAtual > 1) {
-      this.paginaAtual--;
+  togglePedido(cIndexAbs: number, pIndex: number): void {
+    if (!this.pedidoExpandido[cIndexAbs]) this.pedidoExpandido[cIndexAbs] = {};
+    this.pedidoExpandido[cIndexAbs][pIndex] = !this.pedidoExpandido[cIndexAbs][pIndex];
+  }
+
+  isPedidoAberto(cIndexAbs: number, pIndex: number): boolean {
+    return !!this.pedidoExpandido[cIndexAbs]?.[pIndex];
+  }
+
+  isCaminhaoAberto(cIndexAbs: number): boolean {
+    return !!this.caminhaoExpandido[cIndexAbs];
+  }
+
+  toggleTodosPedidos(cIndexAbs: number, expandir: boolean): void {
+    const pedidos = this.carregamentos[cIndexAbs]?.pedidos ?? [];
+    if (!this.pedidoExpandido[cIndexAbs]) this.pedidoExpandido[cIndexAbs] = {};
+    pedidos.forEach((_, pIndex) => this.pedidoExpandido[cIndexAbs][pIndex] = expandir);
+  }
+
+  visualizarCarregamento(cIndexAbs: number): void {
+    const idCarregamento = this.carregamentos[cIndexAbs]?.id;
+    if (idCarregamento) {
+      this.router.navigate(['/visualizar-carregamento', idCarregamento]);
     }
   }
 
-  irParaPagina(pagina: number): void {
-    if (pagina >= 1 && pagina <= this.totalPaginas) {
-      this.paginaAtual = pagina;
-    }
+  // Helpers (tratam pedidos vazios)
+  calcularPesoPedido(pedido: CarregamentoResponse['pedidos'][number]): number {
+    return (pedido.pacotes || []).reduce((acc, p) => acc + ((p.peso ?? 0) * (p.quantidade ?? 0)), 0);
+    // se no futuro quiser peso unitário x qtd
+  }
+  contarItensPedido(pedido: CarregamentoResponse['pedidos'][number]): number {
+    return (pedido.pacotes || []).reduce((acc, p) => acc + (p.quantidade ?? 0), 0);
+  }
+  calcularPesoCarreg(c: CarregamentoResponse): number {
+    return (c.pedidos || []).reduce((acc, ped) => acc + this.calcularPesoPedido(ped), 0);
+  }
+  contarItensCarreg(c: CarregamentoResponse): number {
+    return (c.pedidos || []).reduce((acc, ped) => acc + this.contarItensPedido(ped), 0);
+  }
+  usoPesoPercentual(c: CarregamentoResponse): number {
+    const pesoLimite = c.caminhao?.pesoLimite ?? 0;
+    if (!pesoLimite) return 0;
+    const pesoTotal = this.calcularPesoCarreg(c);
+    return Math.min(100, +((pesoTotal / pesoLimite) * 100).toFixed(1));
   }
 
-  toggleCaminhao(index: number): void {
-    this.caminhaoExpandido[index] = !this.caminhaoExpandido[index];
-  }
-
-  togglePedido(cIndex: number, pIndex: number): void {
-    if (!this.pedidoExpandido[cIndex]) {
-      this.pedidoExpandido[cIndex] = {};
-    }
-    this.pedidoExpandido[cIndex][pIndex] = !this.pedidoExpandido[cIndex][pIndex];
-  }
-
-  carregarCarregamentos() {
-    this.carregamentos = [
-      {
-        caminhao: {
-          id: 1,
-          nome: 'Truck A',
-          comprimento: 8,
-          largura: 2.5,
-          altura: 3,
-          pesoLimite: 10000,
-          usuario: { id: 1 }
-        },
-        pedidos: [
-          {
-            id: 1,
-            descricao: 'Pedido Eletrônicos',
-            pacotes: [
-              {
-                id: 101,
-                nome: 'TV 55"',
-                comprimento: 1.2,
-                largura: 0.3,
-                altura: 0.8,
-                peso: 25,
-                fragil: true,
-                quantidade: 2
-              },
-              {
-                id: 102,
-                nome: 'Caixa de Som',
-                comprimento: 0.6,
-                largura: 0.6,
-                altura: 0.6,
-                peso: 10,
-                fragil: true,
-                quantidade: 3
-              }
-            ]
-          },
-          {
-            id: 2,
-            descricao: 'Pedido Roupas',
-            pacotes: [
-              {
-                id: 103,
-                nome: 'Caixa de Roupas',
-                comprimento: 0.7,
-                largura: 0.7,
-                altura: 0.7,
-                peso: 8,
-                fragil: false,
-                quantidade: 5
-              }
-            ]
-          }
-        ]
-      },
-      {
-        caminhao: {
-          id: 2,
-          nome: 'Truck B',
-          comprimento: 10,
-          largura: 2.8,
-          altura: 3.5,
-          pesoLimite: 12000,
-          usuario: { id: 2 }
-        },
-        pedidos: [
-          {
-            id: 1,
-            descricao: 'Pedido Construção',
-            pacotes: [
-              {
-                id: 201,
-                nome: 'Saco de Cimento',
-                comprimento: 0.5,
-                largura: 0.4,
-                altura: 0.15,
-                peso: 50,
-                fragil: false,
-                quantidade: 20
-              },
-              {
-                id: 202,
-                nome: 'Tinta 20L',
-                comprimento: 0.3,
-                largura: 0.3,
-                altura: 0.4,
-                peso: 25,
-                fragil: true,
-                quantidade: 5
-              }
-            ]
-          }
-        ]
-      },
-      {
-        caminhao: {
-          id: 3,
-          nome: 'Truck C',
-          comprimento: 6,
-          largura: 2.3,
-          altura: 2.8,
-          pesoLimite: 8000,
-          usuario: { id: 3 }
-        },
-        pedidos: [
-          {
-            id: 1,
-            descricao: 'Pedido Livros',
-            pacotes: [
-              {
-                id: 301,
-                nome: 'Caixa de Livros',
-                comprimento: 0.6,
-                largura: 0.4,
-                altura: 0.4,
-                peso: 15,
-                fragil: false,
-                quantidade: 6
-              }
-            ]
-          },
-          {
-            id: 2,
-            descricao: 'Pedido Papéis',
-            pacotes: [
-              {
-                id: 302,
-                nome: 'Papel A4',
-                comprimento: 0.3,
-                largura: 0.2,
-                altura: 0.25,
-                peso: 5,
-                fragil: false,
-                quantidade: 10
-              }
-            ]
-          },
-          {
-            id: 3,
-            descricao: 'Pedido Canecas Personalizadas',
-            pacotes: [
-              {
-                id: 303,
-                nome: 'Caixa de Canecas',
-                comprimento: 0.5,
-                largura: 0.5,
-                altura: 0.3,
-                peso: 7,
-                fragil: true,
-                quantidade: 4
-              }
-            ]
-          }
-        ]
-      }
-    ];
-    this.caminhaoExpandido = this.carregamentos.map(() => false);
-    this.pedidoExpandido = {};
-  }
+  // trackBys usando o ID do CARREGAMENTO (não do caminhão)
+  trackByCarregamento = (_: number, item: CarregamentoResponse) => item.id;
+  trackByPedido = (_: number, item: CarregamentoResponse['pedidos'][number]) => item.id;
+  trackByPacote = (_: number, item: CarregamentoResponse['pedidos'][number]['pacotes'][number]) => item.id;
 }

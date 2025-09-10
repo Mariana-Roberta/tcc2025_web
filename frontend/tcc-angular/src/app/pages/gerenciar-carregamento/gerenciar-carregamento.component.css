@@ -1,25 +1,15 @@
-.container {
-  height: auto;
-  width: 90%;
-  background-color: var(--background-color);
-  padding: 20px 40px;
-  border-radius: 12px;
+/* Usa os primitivos globais; aqui só o que é específico da página */
+
+.grid-info {
+  display: grid;
+  grid-template-columns: 1.1fr .9fr;
+  gap: 14px;
+  align-items: start;
+  margin: 8px 0;
 }
 
-.fragil-true {
-  color: #d9534f;
-  font-weight: bold;
-}
+.acoes-caminhao { display: flex; gap: 10px; margin: 6px 0 12px; flex-wrap: wrap; }
 
-.fragil-false {
-  color: #5cb85c;
-  font-weight: normal;
-}
-
-.carregamento-card {
-  border: 1px solid #ccc;
-  padding: 1.5em;
-  margin-bottom: 2em;
-  border-radius: 8px;
-  background-color: #f9f9f9;
+@media (max-width: 980px) {
+  .grid-info { grid-template-columns: 1fr; }
 }

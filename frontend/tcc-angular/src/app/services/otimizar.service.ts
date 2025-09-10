@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { AuthService } from './auth.service';
 
 interface PacoteOtimizado {
   x: number;
@@ -18,13 +19,28 @@ interface PacoteOtimizado {
   providedIn: 'root'
 })
 export class OtimizarService {
-  private readonly apiUrl = 'http://localhost:8080/api/otimizacao';
+  private readonly apiUrl = 'http://localhost:8080/api';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private authService: AuthService) {}
 
-  otimizar(caminhaoPacotes: any): Observable<PacoteOtimizado[]> {
-    return this.http.post<PacoteOtimizado[]>(this.apiUrl, caminhaoPacotes)
-      .pipe(catchError(this.handleError));
+  /** Gera headers com Bearer Token para autenticação */
+  private getAuthHeaders(): HttpHeaders {
+    const token = this.authService.getToken();
+    return new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+  }
+
+  otimizar(body: any) {
+    console.log('OTIMIZAR - body (obj):', body);
+    console.log('OTIMIZAR - body (json):', JSON.stringify(body, null, 2));
+    return this.http.post<any>(`${this.apiUrl}/otimizacao`, body, { headers: this.getAuthHeaders() });
+  }
+
+  criarCarregamento(body: any) {
+    console.log('CRIAR CARREGAMENTO - body (obj):', body);
+    console.log('CRIAR CARREGAMENTO - body (json):', JSON.stringify(body, null, 2));
+    return this.http.post<any>(`${this.apiUrl}/carregamentos`, body, { headers: this.getAuthHeaders() });
   }
 
   private handleError(error: HttpErrorResponse): Observable<never> {

@@ -28,24 +28,38 @@ export class CadastroComponent {
 
   constructor(private usuarioService: UsuarioService, private popupService: PopupService, private router: Router) {}
 
-  salvar() {
-    // Clona o objeto e remove a formatação
-    const usuarioLimpo: Usuario = {
-      ...this.usuario,
-      cnpj: this.usuario.cnpj.replace(/\D/g, ''), // remove pontos, barras e traços
-    };
-
-    this.usuarioService.cadastrarUsuario(usuarioLimpo).subscribe({
-      next: (usuario) => {
-        console.log('Usuário cadastrado com sucesso:', usuario);
-        this.popupService.sucesso('Cadastro de usuário realizado com sucesso!');
-      },
-      error: (err) => {
-        const mensagem = err.error?.mensagem || err.message;
-        this.popupService.erro(mensagem);
-      }
-    });
+  private formatarTelefoneParaEnvio(tel: string): string {
+  const d = (tel || '').replace(/\D/g, '').slice(0, 11);
+  if (d.length === 10) {
+    // fixo
+    return d.replace(/^(\d{2})(\d{4})(\d{4})$/, '($1) $2-$3');
   }
+  if (d.length === 11) {
+    // celular
+    return d.replace(/^(\d{2})(\d{5})(\d{4})$/, '($1) $2-$3');
+  }
+  return tel; // deixa como veio; backend validará e retornará erro
+}
+
+salvar() {
+  const usuarioLimpo: Usuario = {
+    ...this.usuario,
+    cnpj: this.usuario.cnpj.replace(/\D/g, ''),
+    telefone: this.formatarTelefoneParaEnvio(this.usuario.telefone), // ✅ garante padrão
+  };
+
+  this.usuarioService.cadastrarUsuario(usuarioLimpo).subscribe({
+    next: (usuario) => {
+      console.log('Usuário cadastrado com sucesso:', usuario);
+      this.popupService.sucesso('Cadastro de usuário realizado com sucesso!');
+    },
+    error: (err) => {
+      const mensagem = err.error?.mensagem || err.message;
+      this.popupService.erro(mensagem);
+    }
+  });
+}
+
 
   voltar () {
     this.router.navigate(['/login']);
@@ -65,19 +79,24 @@ export class CadastroComponent {
   }
 
   formatarTelefone(event: any): void {
-    let v = event.target.value.replace(/\D/g, '');
-    if (v.length > 11) v = v.slice(0, 11);
+  let v = String(event.target.value || '').replace(/\D/g, '');
+  if (v.length > 11) v = v.slice(0, 11);
 
-    if (v.length <= 10) {
-      // formato (00) 0000-0000
-      v = v.replace(/^(\d{2})(\d)/, '($1) $2');
-      v = v.replace(/(\d{4})(\d)/, '$1-$2');
-    } else {
-      // formato (00) 00000-0000 para celular
-      v = v.replace(/^(\d{2})(\d)/, '($1) $2');
-      v = v.replace(/(\d{5})(\d)/, '$1-$2');
-    }
-
-    event.target.value = v;
+  let formatado: string;
+  if (v.length <= 10) {
+    // (00) 0000-0000
+    formatado = v
+      .replace(/^(\d{2})(\d)/, '($1) $2')
+      .replace(/(\d{4})(\d{1,4})$/, '$1-$2');
+  } else {
+    // (00) 00000-0000
+    formatado = v
+      .replace(/^(\d{2})(\d)/, '($1) $2')
+      .replace(/(\d{5})(\d{1,4})$/, '$1-$2');
   }
+
+  event.target.value = formatado;
+  this.usuario.telefone = formatado; // ✅ atualiza o modelo
+}
+
 }
