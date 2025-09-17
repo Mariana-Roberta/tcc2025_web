@@ -1,5 +1,19 @@
 /* Usa os primitivos globais; aqui só o que é específico da página */
 
+.accordion-trigger {
+  all: unset;                /* remove estilo padrão do botão */
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  width: 100%;
+  cursor: pointer;
+}
+.accordion-trigger:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
 .grid-info {
   display: grid;
   grid-template-columns: 1.1fr .9fr;

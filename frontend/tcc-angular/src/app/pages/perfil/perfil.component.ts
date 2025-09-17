@@ -27,7 +27,7 @@ export class PerfilComponent implements OnInit {
     telefone: '',
   };
 
-  constructor(private router: Router, private authService: AuthService) {}
+  constructor(private readonly router: Router, private readonly authService: AuthService) {}
 
   ngOnInit(): void {
     const usuarioLogado = this.authService.getUsuario();

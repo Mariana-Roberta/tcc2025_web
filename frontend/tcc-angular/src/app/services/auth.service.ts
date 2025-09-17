@@ -1,73 +1,62 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Observable, tap, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
+import { Observable, tap } from 'rxjs';
 import { Usuario } from '../model/usuario.model';
 import { PopupService } from './popup.service';
 
+/**
+ * Serviço de autenticação.
+ * O Interceptor injeta a baseUrl e o Bearer quando existir.
+ */
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private readonly apiUrl = 'http://localhost:8080/api/auth';
+  constructor(
+    private readonly http: HttpClient,
+    private readonly popupService: PopupService
+  ) {}
 
-  constructor(private http: HttpClient, private popupService: PopupService) {}
-
-  login(credentials: { email: string; password: string }): Observable<any> {
-    return this.http.post<any>(this.apiUrl, credentials).pipe(
-      tap(response => {
-        localStorage.setItem('token', response.token);
+  /** Realiza login e persiste token + usuário no localStorage */
+  login(credenciais: { email: string; password: string }): Observable<any> {
+    return this.http.post<any>('/auth', credenciais).pipe(
+      tap(resposta => {
+        localStorage.setItem('token', resposta.token);
         localStorage.setItem('usuario', JSON.stringify({
-          id: response.id,
-          email: response.email,
-          cnpj: response.cnpj,
-          razaoSocial: response.razaoSocial,
-          telefone: response.telefone,
-          perfil: response.perfil
+          id: resposta.id,
+          email: resposta.email,
+          cnpj: resposta.cnpj,
+          razaoSocial: resposta.razaoSocial,
+          telefone: resposta.telefone,
+          perfil: resposta.perfil
         }));
-      }),
-      catchError(this.handleError)
+      })
     );
   }
 
+  /** Faz logout limpando o armazenamento */
   logout(): void {
-    this.popupService.limpar();
+    this.popupService.limpar?.();
     localStorage.removeItem('token');
     localStorage.removeItem('usuario');
   }
 
+  /** Usuário está logado? */
   isLoggedIn(): boolean {
     return !!localStorage.getItem('token');
   }
 
+  /** Recupera o token atual */
   getToken(): string | null {
     return localStorage.getItem('token');
   }
 
-  getUsuario(): any {
-    const usuario = localStorage.getItem('usuario');
-    return usuario ? JSON.parse(usuario) : null;
+  /** Obtém o usuário persistido */
+  getUsuario(): Usuario | null {
+    const raw = localStorage.getItem('usuario');
+    return raw ? JSON.parse(raw) : null;
   }
 
+  /** Atualiza o usuário persistido */
   setUsuario(usuario: Usuario): void {
     localStorage.setItem('usuario', JSON.stringify(usuario));
-  }
-
-  private handleError(error: HttpErrorResponse): Observable<never> {
-    let errorMessage = 'Falha ao fazer login.';
-
-    if (error.error instanceof ErrorEvent) {
-      errorMessage = `Erro do cliente: ${error.error.message}`;
-    } else {
-      if (error.error && typeof error.error === 'object' && error.error.message) {
-        errorMessage = error.error.message;
-      } else if (typeof error.error === 'string') {
-        errorMessage = error.error;
-      } else if (error.status === 403) {
-        errorMessage = 'Acesso negado. Verifique suas credenciais.';
-      } else if (error.status === 0) {
-        errorMessage = 'Servidor indisponível ou erro de conexão.';
-      }
-    }
-
-    return throwError(() => new Error(errorMessage));
   }
 }

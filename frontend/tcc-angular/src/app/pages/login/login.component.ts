@@ -23,10 +23,10 @@ export class LoginComponent {
   loginErro: string | null = null;
 
   constructor(
-    private fb: FormBuilder,
-    private authService: AuthService,
-    private router: Router,
-    private popupService: PopupService
+    private readonly fb: FormBuilder,
+    private readonly authService: AuthService,
+    private readonly router: Router,
+    private readonly popupService: PopupService
   ) {
     // Inicializa o formulário com validações
     this.loginForm = this.fb.group({

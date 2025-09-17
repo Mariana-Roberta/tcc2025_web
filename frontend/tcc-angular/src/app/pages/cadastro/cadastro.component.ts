@@ -48,9 +48,9 @@ salvar() {
     telefone: this.formatarTelefoneParaEnvio(this.usuario.telefone), // ✅ garante padrão
   };
 
-  this.usuarioService.cadastrarUsuario(usuarioLimpo).subscribe({
-    next: (usuario) => {
-      console.log('Usuário cadastrado com sucesso:', usuario);
+  this.usuarioService.salvar(usuarioLimpo).subscribe({
+    next: (data) => {
+      console.log('Usuário cadastrado com sucesso:', data);
       this.popupService.sucesso('Cadastro de usuário realizado com sucesso!');
     },
     error: (err) => {

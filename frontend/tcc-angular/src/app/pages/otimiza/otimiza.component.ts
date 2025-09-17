@@ -50,11 +50,11 @@ export class OtimizaComponent implements OnInit {
   filtroPacote: string = '';
 
   constructor(
-    private caminhaoService: CaminhaoService,
-    private pacoteService: PacoteService,
-    private authService: AuthService,
-    private popupService: PopupService,
-    private router: Router
+    private readonly caminhaoService: CaminhaoService,
+    private readonly pacoteService: PacoteService,
+    private readonly authService: AuthService,
+    private readonly popupService: PopupService,
+    private readonly router: Router
   ) {}
 
   ngOnInit() {
@@ -66,7 +66,7 @@ export class OtimizaComponent implements OnInit {
   carregarCaminhoes() {
     const usuario = this.authService.getUsuario();
     if (usuario) {
-      this.caminhaoService.listarPorUsuario(usuario.id).subscribe({
+      this.caminhaoService.listarPorUsuario(usuario.id!).subscribe({
         next: (dados) => this.caminhoes = dados,
         error: () => this.popupService.erro('Erro ao carregar caminhões.')
       });
@@ -78,7 +78,7 @@ export class OtimizaComponent implements OnInit {
   carregarPacotes() {
   const usuario = this.authService.getUsuario();
   if (usuario) {
-    this.pacoteService.listarPorUsuario(usuario.id).subscribe({
+    this.pacoteService.listarPorUsuario(usuario.id!).subscribe({
       next: (dados) => this.pacotes = dados,
       error: (err) => {
         console.error('Falha ao carregar pacotes:', err);
@@ -218,10 +218,10 @@ export class OtimizaComponent implements OnInit {
       pacotes: pedido.pacotes.map(p => ({
         id: +p.pacote.id!,                 // <- validado acima
         nome: p.pacote.nome ?? '',
-        comprimento: p.pacote.comprimento!,// se seu modelo permitir null, trate aqui
-        largura: p.pacote.largura!,
-        altura: p.pacote.altura!,
-        peso: p.pacote.peso!,
+        comprimento: p.pacote.comprimento,// se seu modelo permitir null, trate aqui
+        largura: p.pacote.largura,
+        altura: p.pacote.altura,
+        peso: p.pacote.peso,
         fragil: !!p.pacote.fragil,
         rotacao: !!p.pacote.rotacao,
         quantidade: p.quantidade ?? 1

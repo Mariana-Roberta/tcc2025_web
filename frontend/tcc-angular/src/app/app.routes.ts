@@ -22,6 +22,7 @@ export const routes: Routes = [
   { path: 'gerenciar-caminhoes', component: GerenciarCaminhoesComponent },
   { path: 'perfil', component: PerfilComponent },
   { path: 'visualiza', component: VisualizaComponent },
+  { path: 'visualiza/:id', component: VisualizaComponent },
   { path: 'otimiza', component: OtimizaComponent },
   { path: 'gerenciar-carregamentos', component: GerenciarCarregamentoComponent },
   { path: 'contato', component: ContatoComponent },

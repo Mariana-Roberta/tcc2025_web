@@ -39,9 +39,9 @@ export class GerenciarCaminhoesComponent implements OnInit {
   };
 
   constructor(
-    private caminhaoService: CaminhaoService,
-    private authService: AuthService,
-    private popupService: PopupService
+    private readonly caminhaoService: CaminhaoService,
+    private readonly authService: AuthService,
+    private readonly popupService: PopupService
   ) {}
 
   ngOnInit(): void {
@@ -52,7 +52,7 @@ export class GerenciarCaminhoesComponent implements OnInit {
   carregarCaminhoes(): void {
     const usuario = this.authService.getUsuario();
     if (usuario) {
-      this.caminhaoService.listarPorUsuario(usuario.id).subscribe({
+      this.caminhaoService.listarPorUsuario(usuario.id!).subscribe({
         next: (dados: Caminhao[]) => {
           this.caminhoes = dados;
         },
@@ -112,7 +112,7 @@ export class GerenciarCaminhoesComponent implements OnInit {
       return;
     }
 
-    this.novoCaminhao.usuario = { id: usuarioLogado.id };
+    this.novoCaminhao.usuario = { id: usuarioLogado.id! };
 
     if (this.modoEdicao && this.indiceEdicao !== null) {
       this.caminhaoService.atualizar(this.novoCaminhao.id!, this.novoCaminhao).subscribe({

@@ -44,9 +44,9 @@ export class GerenciarPacotesComponent implements OnInit {
   campoFocado: string | null = null; // para uso no HTML caso deseje controle de foco
 
   constructor(
-    private pacoteService: PacoteService,
-    private authService: AuthService,
-    private popupService: PopupService
+    private readonly pacoteService: PacoteService,
+    private readonly authService: AuthService,
+    private readonly popupService: PopupService
   ) {}
 
   ngOnInit(): void {
@@ -57,7 +57,7 @@ export class GerenciarPacotesComponent implements OnInit {
   carregarPacotes() {
   const usuario = this.authService.getUsuario();
   if (usuario) {
-    this.pacoteService.listarPorUsuario(usuario.id).subscribe({
+    this.pacoteService.listarPorUsuario(usuario.id!).subscribe({
       next: (data: Pacote[]) => {
         console.log('[Pacotes] OK:', data);
         this.pacotes = data;
@@ -120,7 +120,7 @@ export class GerenciarPacotesComponent implements OnInit {
       return;
     }
 
-    this.novoPacote.usuario = { id: usuarioLogado.id };
+    this.novoPacote.usuario = { id: usuarioLogado.id! };
 
     if (this.modoEdicao && this.indiceEdicao !== null) {
       this.pacoteService.atualizar(this.novoPacote.id!, this.novoPacote).subscribe({

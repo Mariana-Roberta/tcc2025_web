@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, inject, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
 import { NavbarComponent } from '../../components/navbar/navbar.component';
@@ -21,11 +21,15 @@ import { PopupService } from '../../services/popup.service';
   templateUrl: './visualiza.component.html',
   styleUrl: './visualiza.component.css'
 })
-export class VisualizaComponent {
+export class VisualizaComponent implements OnInit {
   caminhao: any;
   pedidos: any[] = [];
   pacotes: any[] = []; // saída da API de otimização
   coresPacotes: Map<string, string> = new Map();
+
+  // infos de cabeçalho
+  idCarregamento?: number;
+  dataCriacao?: string;
 
   pedidoIds: number[] = [];
   pedidoAtualId = 0;
@@ -33,85 +37,202 @@ export class VisualizaComponent {
 
   indicePacoteAtualPorPedido: { [pedidoId: number]: number } = {};
   loading = true;
+  isVisualiza = true;
 
-  constructor(
-    private router: Router,
-    private otimizarService: OtimizarService,
-    private popupService: PopupService
-  ) {
-    const nav = this.router.getCurrentNavigation();
-    const state = nav?.extras.state as { dados: any };
+  // injeções
+  private readonly router = inject(Router);
+  private readonly rota = inject(ActivatedRoute);
+  private readonly otimizarService = inject(OtimizarService);
+  private readonly popupService = inject(PopupService);
 
-    if (state?.dados) {
-      this.caminhao = state.dados.caminhao;
-      this.pedidos = state.dados.pedidos || [];
-      this.enviarParaOtimizar(this.caminhao, this.pedidos);
-    } else {
+  ngOnInit(): void {
+  // 1) Tenta pegar dados via Navigation Extras (primeira navegação)
+  const nav = this.router.getCurrentNavigation();
+  const navState = (nav?.extras?.state as { dados?: any }) ?? undefined;
+
+  // 2) Se não houver (ex.: após F5), tenta via history.state (Angular preserva)
+  const histState = (window.history?.state as { dados?: any }) ?? undefined;
+
+  const dados = navState?.dados ?? histState?.dados;
+
+  if (dados) {
+    // ---- MODO "sem :id" (dados já vieram na navegação) ----
+    this.isVisualiza = false;
+    this.idCarregamento = dados.id;
+    this.dataCriacao   = dados.dataCriacao;
+    this.caminhao      = dados.caminhao;
+    this.pedidos       = Array.isArray(dados.pedidos) ? dados.pedidos : [];
+
+    if (!this.caminhao || !this.pedidos.length) {
       this.loading = false;
-      this.popupService.erro('Nenhum dado de otimização encontrado.');
+      this.popupService.erro('Dados insuficientes do carregamento.');
+      return;
     }
-  }
-
-  /** Chama o endpoint de otimização e prepara a visualização */
-  enviarParaOtimizar(caminhao: any, pedidos: any[]): void {
-    const body = {
-      caminhao: {
-        id: +caminhao.id,
-        nome: caminhao.nome,
-        comprimento: +caminhao.comprimento,
-        largura: +caminhao.largura,
-        altura: +caminhao.altura,
-        pesoLimite: +caminhao.pesoLimite,
-        usuario: { id: caminhao?.usuario?.id ?? 1 }
-      },
-      pedidos: pedidos.map((pedido, idx) => ({
-        id: +(pedido.id ?? idx + 1),
-        descricao: pedido.descricao ?? pedido.nome ?? `Pedido #${idx + 1}`,
-        pacotes: (pedido.pacotes || []).map((p: any) => ({
-          id: +p.id,
-          nome: p.nome ?? null,
-          comprimento: +p.comprimento,
-          largura: +p.largura,
-          altura: +p.altura,
-          peso: +p.peso,
-          rotacao: !!p.rotacao,
-          fragil: !!p.fragil,
-          quantidade: +p.quantidade || 1
-        }))
-      }))
-    };
 
     this.loading = true;
-    this.otimizarService.otimizar(body).subscribe({
-      next: (dados) => {
-        // normaliza saída para o 3D
-        this.pacotes = (dados || []).map((d: any) => ({
-          x: +d.x,
-          y: +d.y,
-          z: +d.z,
-          comprimento: +d.comprimento,
-          largura: +d.largura,
-          altura: +d.altura,
-          pacoteId: +d.pacoteId,
-          pedidoId: +d.idPedido
-        }));
-
-        this.pedidoIds = [...new Set(this.pacotes.map(p => p.pedidoId))].sort((a, b) => a - b);
-        this.pedidoAtualId = this.pedidoIds.length > 0 ? this.pedidoIds[0] : -1;
-
-        const pacotesDoPedido = this.pacotes.filter(p => p.pedidoId === this.pedidoAtualId);
-        const primeirosIds = [...new Set(pacotesDoPedido.map(p => p.pacoteId))].sort((a, b) => a - b);
-        this.pacoteAtualId = primeirosIds[0] ?? 0;
-
-        this.loading = false;
-      },
-      error: (err) => {
-        console.error('Erro ao otimizar pacotes:', err);
-        this.popupService.erro(err?.error?.mensagem || err.message || 'Erro ao otimizar.');
-        this.loading = false;
-      }
-    });
+    this.enviarParaOtimizar(this.caminhao, this.pedidos);
+    return;
   }
+
+  // 3) Fallback: ler /visualiza/:id e buscar no backend
+  this.rota.paramMap.subscribe({
+    next: (params) => {
+      const idParam = params.get('id');
+
+      // Se não há :id e também não havia state, apenas informe suavemente
+      if (idParam == null) {
+        this.loading = false;
+        // Dê uma dica de como abrir corretamente sem acusar "inválido"
+        // (troque para popupService.info se preferir)
+        this.popupService.erro('Abra esta tela a partir da lista ou use a rota /visualiza/:id.');
+        return;
+      }
+
+      const id = Number(idParam);
+      if (!Number.isFinite(id) || id <= 0) {
+        this.loading = false;
+        this.popupService.erro('ID de carregamento inválido.');
+        return;
+      }
+
+      this.idCarregamento = id;
+      this.isVisualiza = true;
+      this.loading = true;
+
+      this.otimizarService.obterCarregamento(id).subscribe({
+        next: (carregamento) => {
+          if (!carregamento) {
+            this.loading = false;
+            this.popupService.erro('Carregamento não encontrado.');
+            return;
+          }
+
+          this.dataCriacao = carregamento.dataCriacao;
+          this.caminhao    = carregamento.caminhao;
+          this.pedidos     = carregamento.pedidos || [];
+
+          if (!this.caminhao || !this.pedidos.length) {
+            this.loading = false;
+            this.popupService.erro('Dados insuficientes do carregamento.');
+            return;
+          }
+
+          this.enviarParaOtimizar(this.caminhao, this.pedidos);
+        },
+        error: (err) => {
+          this.loading = false;
+          this.popupService.erro(err?.message || 'Erro ao buscar carregamento.');
+        }
+      });
+    },
+    error: () => {
+      this.loading = false;
+      this.popupService.erro('Não foi possível ler o parâmetro da rota.');
+    }
+  });
+}
+
+
+  /** Chama o endpoint de otimização e prepara a visualização */
+ enviarParaOtimizar(caminhao: any, pedidos: any[]): void {
+  // 1) Guarde a ORDEM dos pedidos que o UI vai usar
+  const pedidoIdOrder = pedidos.map((p, idx) => +(p?.id ?? idx + 1));
+
+  const body = {
+    caminhao: {
+      id: +caminhao.id,
+      nome: caminhao.nome,
+      comprimento: +caminhao.comprimento,
+      largura: +caminhao.largura,
+      altura: +caminhao.altura,
+      pesoLimite: +caminhao.pesoLimite,
+      usuario: { id: caminhao?.usuario?.id ?? 1 }
+    },
+    pedidos: pedidos.map((pedido, idx) => ({
+      id: +(pedido.id ?? idx + 1), // <-- importante: o mesmo ID usado em pedidoIdOrder
+      descricao: pedido.descricao ?? pedido.nome ?? `Pedido #${idx + 1}`,
+      pacotes: (pedido.pacotes || []).map((p: any) => ({
+        id: +p.id,
+        nome: p.nome ?? null,
+        comprimento: +p.comprimento,
+        largura: +p.largura,
+        altura: +p.altura,
+        peso: +p.peso,
+        rotacao: !!p.rotacao,
+        fragil: !!p.fragil,
+        quantidade: +p.quantidade || 1
+      }))
+    }))
+  };
+  this.loading = true;
+  this.otimizarService.otimizar(body).subscribe({
+    next: (dados) => {
+      // 1) Conjunto/ordem oficial de IDs de pedidos vindos do backend
+      const pedidoIdSet = new Set(pedidoIdOrder);
+
+      // 2) Detecta como o otimizador está codificando idPedido
+      type ModoId = 'REAL' | 'ONE_BASED' | 'ZERO_BASED';
+      const idsOtim = (dados || []).map((d: any) => Number(d?.idPedido)).filter(Number.isFinite);
+
+      const ehReal = idsOtim.length > 0 && idsOtim.every(id => pedidoIdSet.has(id));
+      const ehOneBased = idsOtim.length > 0
+        && Math.min(...idsOtim) >= 1
+        && Math.max(...idsOtim) <= pedidoIdOrder.length;
+      const ehZeroBased = idsOtim.length > 0
+        && Math.min(...idsOtim) >= 0
+        && Math.max(...idsOtim) < pedidoIdOrder.length;
+
+      const modo: ModoId = ehReal ? 'REAL' : (ehOneBased ? 'ONE_BASED' : (ehZeroBased ? 'ZERO_BASED' : 'REAL'));
+
+      // 3) Tradutor de idPedido cru -> ID real do pedido
+      const translatePedidoId = (raw: number) => {
+        const n = Number(raw);
+        if (!Number.isFinite(n)) return n;
+        if (modo === 'REAL') return n;
+        if (modo === 'ONE_BASED') {
+          const idx = n - 1;                // 1..N -> 0..N-1
+          return pedidoIdOrder[idx] ?? n;
+        }
+        // ZERO_BASED
+        return pedidoIdOrder[n] ?? n;       // 0..N-1
+      };
+
+      // 4) Normaliza pacotes com coerção segura + fallbacks
+      this.pacotes = (dados || []).map((d: any, idx: number) => {
+        const x = Number(d?.x) || 0;
+        const y = Number(d?.y) || 0;
+        const z = Number(d?.z) || 0;
+        const comprimento = Number(d?.comprimento) || 0;
+        const largura = Number(d?.largura) || 0;
+        const altura = Number(d?.altura) || 0;
+
+        // pacoteId pode não vir: usa índice como fallback
+        const pacoteIdBruto = Number(d?.pacoteId);
+        const pacoteId = Number.isFinite(pacoteIdBruto) ? pacoteIdBruto : idx;
+
+        const pedidoId = translatePedidoId(Number(d?.idPedido));
+
+        return { x, y, z, comprimento, largura, altura, pacoteId, pedidoId };
+      });
+
+      // 5) Use SEMPRE a ordem vinda do array `pedidos` do backend
+      this.pedidoIds = pedidoIdOrder.slice();
+      this.pedidoAtualId = this.pedidoIds.length > 0 ? this.pedidoIds[0] : -1;
+
+      // 6) Inicialize o pacote atual do 1º pedido (se houver)
+      const pacotesDoPedido = this.pacotes.filter(p => p.pedidoId === this.pedidoAtualId);
+      const primeirosIds = [...new Set(pacotesDoPedido.map(p => p.pacoteId))].sort((a, b) => a - b);
+      this.pacoteAtualId = primeirosIds[0] ?? 0;
+
+      this.loading = false;
+    },
+    error: (err) => {
+      this.popupService.erro(err?.message || 'Erro ao otimizar.');
+      this.loading = false;
+    }
+  });
+}
+
 
   /** Pedido atualmente selecionado (do array "pedidos" que veio do step anterior) */
   get pedidoAtual() {
@@ -190,6 +311,18 @@ export class VisualizaComponent {
     }
   }
 
+  get indicePedidoAtual(): number {
+    return this.pedidoIds.indexOf(this.pedidoAtualId);
+  }
+
+  get isPrimeiroPedido(): boolean {
+    return this.indicePedidoAtual <= 0;
+  }
+
+  get isUltimoPedido(): boolean {
+    return this.indicePedidoAtual >= this.pedidoIds.length - 1;
+  }
+
   confirmar(): void {
     this.popupService.sucesso('Todos os pacotes carregados e confirmados!');
   }
@@ -240,4 +373,9 @@ export class VisualizaComponent {
       }
     });
   }
+  ehNumero(v: any): boolean {
+  const n = typeof v === 'number' ? v : +v;
+  return Number.isFinite(n);
+}
+
 }
