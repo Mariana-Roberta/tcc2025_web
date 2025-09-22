@@ -1,11 +1,12 @@
-import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import {Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, inject} from '@angular/core';
 import { NavbarComponent } from '../../components/navbar/navbar.component';
 import { ScreenBackgroundComponent } from '../../components/screen-background/screen-background.component';
-import { NgIf, NgForOf, DecimalPipe, CommonModule } from '@angular/common';
+import {NgIf, NgForOf, DecimalPipe, CommonModule, Location} from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { PopupService } from '../../services/popup.service';
 import { CarregamentoService, CarregamentoResponse } from '../../services/carregamento.service';
+import {PacoteService} from '../../services/pacote.service';
 
 @Component({
   selector: 'app-gerenciar-carregamento',
@@ -38,13 +39,12 @@ export class GerenciarCarregamentoComponent implements OnInit {
 
   loading = false;
 
-  constructor(
-    private readonly router: Router,
-    private readonly authService: AuthService,
-    private readonly popupService: PopupService,
-    private readonly cdr: ChangeDetectorRef,
-    private readonly carregamentoService: CarregamentoService
-  ) {}
+  private readonly location = inject(Location);
+  private readonly router = inject(Router);
+  private readonly cdr = inject(ChangeDetectorRef);
+  private readonly carregamentoService = inject(CarregamentoService);
+  private readonly authService = inject(AuthService);
+  private readonly popupService = inject(PopupService);
 
   ngOnInit(): void {
     this.popupService.limpar();
@@ -54,6 +54,16 @@ export class GerenciarCarregamentoComponent implements OnInit {
       return;
     }
     this.buscarCarregamentos();
+  }
+
+  /** Ação: voltar para a rota anterior */
+  voltar(): void {
+    // Se houver histórico, volta; caso contrário, navega para uma rota segura (ex.: '/')
+    if (window.history.length > 1) {
+      this.location.back();
+    } else {
+      this.router.navigateByUrl('/');
+    }
   }
 
   // ==== Listagem somente ====

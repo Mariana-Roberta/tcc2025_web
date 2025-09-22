@@ -365,6 +365,7 @@ export class VisualizaComponent implements OnInit {
         this.popupService.sucesso('Carregamento salvo com sucesso!');
         // opcional: navegar para histórico/detalhe
         // this.router.navigate(['/historico']);
+        this.isVisualiza = true;
       },
       error: (err) => {
         this.loading = false;

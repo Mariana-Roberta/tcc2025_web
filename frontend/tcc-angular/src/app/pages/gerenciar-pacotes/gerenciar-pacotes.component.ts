@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {Component, inject, OnInit} from '@angular/core';
+import {CommonModule, Location} from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NavbarComponent } from '../../components/navbar/navbar.component';
 import { ScreenBackgroundComponent } from '../../components/screen-background/screen-background.component';
@@ -9,6 +9,8 @@ import { Pacote } from '../../model/pacote.model';
 import { PopupService } from '../../services/popup.service';
 import { PopupComponent } from '../../components/popup/popup.component';
 import { HttpErrorResponse } from '@angular/common/http';
+import {Router} from '@angular/router';
+import {CaminhaoService} from '../../services/caminhao.service';
 
 @Component({
   selector: 'app-gerenciar-pacotes',
@@ -43,15 +45,25 @@ export class GerenciarPacotesComponent implements OnInit {
   indiceEdicao: number | null = null;
   campoFocado: string | null = null; // para uso no HTML caso deseje controle de foco
 
-  constructor(
-    private readonly pacoteService: PacoteService,
-    private readonly authService: AuthService,
-    private readonly popupService: PopupService
-  ) {}
+  private readonly location = inject(Location);
+  private readonly router = inject(Router);
+  private readonly pacoteService = inject(PacoteService);
+  private readonly authService = inject(AuthService);
+  private readonly popupService = inject(PopupService);
 
   ngOnInit(): void {
     this.popupService.limpar();
     this.carregarPacotes();
+  }
+
+  /** Ação: voltar para a rota anterior */
+  voltar(): void {
+    // Se houver histórico, volta; caso contrário, navega para uma rota segura (ex.: '/')
+    if (window.history.length > 1) {
+      this.location.back();
+    } else {
+      this.router.navigateByUrl('/');
+    }
   }
 
   carregarPacotes() {

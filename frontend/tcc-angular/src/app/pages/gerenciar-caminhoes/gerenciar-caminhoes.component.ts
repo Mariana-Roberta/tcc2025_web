@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, inject, OnInit} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { NavbarComponent } from '../../components/navbar/navbar.component';
@@ -8,6 +8,9 @@ import { AuthService } from '../../services/auth.service';
 import { Caminhao } from '../../model/caminhao.model';
 import { PopupService } from '../../services/popup.service';
 import { PopupComponent } from '../../components/popup/popup.component';
+import {Router} from '@angular/router';
+import { Location } from '@angular/common';
+
 
 @Component({
   selector: 'app-gerenciar-caminhoes',
@@ -38,15 +41,25 @@ export class GerenciarCaminhoesComponent implements OnInit {
     usuario: { id: 0 }
   };
 
-  constructor(
-    private readonly caminhaoService: CaminhaoService,
-    private readonly authService: AuthService,
-    private readonly popupService: PopupService
-  ) {}
+  private readonly location = inject(Location);
+  private readonly router = inject(Router);
+  private readonly caminhaoService = inject(CaminhaoService);
+  private readonly authService = inject(AuthService);
+  private readonly popupService = inject(PopupService);
 
   ngOnInit(): void {
     this.popupService.limpar();
     this.carregarCaminhoes();
+  }
+
+  /** Ação: voltar para a rota anterior */
+  voltar(): void {
+    // Se houver histórico, volta; caso contrário, navega para uma rota segura (ex.: '/')
+    if (window.history.length > 1) {
+      this.location.back();
+    } else {
+      this.router.navigateByUrl('/');
+    }
   }
 
   carregarCaminhoes(): void {

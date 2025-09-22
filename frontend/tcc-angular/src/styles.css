@@ -34,8 +34,6 @@ h3 { color: #0b2f5e; font-size: 20px; margin-bottom: 5px; }
 img, svg, video, canvas { display: block; max-width: 100%; }
 
 .page-container {
-  display: flex; justify-content: center; align-items: flex-start;
-  width: 100%; min-height: 80vh; padding: 48px 0; box-sizing: border-box;
   position: relative; overflow: hidden; z-index: 1;
 }
 
