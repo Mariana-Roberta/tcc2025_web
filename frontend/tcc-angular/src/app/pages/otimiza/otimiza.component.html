@@ -1,6 +1,14 @@
 <app-navbar></app-navbar>
 
-<div class="page-container">
+<div class="page-container" style="padding: 20px; display: flex; flex-direction: column">
+  <section class="acoes-topo" style="margin-bottom: 16px; display: flex; gap: 12px; align-items: center; justify-content: space-between;">
+    <div>
+      <button class="btn btn-sec " (click)="voltar()" title="Voltar">
+        <i class="pi pi-arrow-left"></i> Voltar
+      </button>
+    </div>
+  </section>
+
   <div class="container">
     <h1>Otimização do Carregamento</h1>
 
@@ -111,8 +119,8 @@
         <td>{{ pacote.comprimento }}m × {{ pacote.largura }}m × {{ pacote.altura }}m</td>
         <td>{{ pacote.peso }}kg</td>
         <td>
-  <span 
-    class="rotacao" 
+  <span
+    class="rotacao"
     [ngClass]="{ 'rotaca-true': pacote.rotacao, 'rotaca-false': !pacote.rotacao }">
     {{ pacote.rotacao ? 'Sim' : 'Não' }}
   </span>

@@ -1,5 +1,5 @@
-<div class="page-container">
-  <div class="form-container">
+<div class="page-container" style="height:90vh;padding: 20px; display: flex; flex-direction: column; justify-content: center">
+  <div class="form-container" style="align-self: center">
     <app-logo></app-logo>
 
     <h2>Login</h2>
@@ -22,7 +22,6 @@
         />
         <small
           *ngIf="loginForm.get('email')?.hasError('required') && loginForm.get('email')?.touched"
-          id="email-erro"
           class="error-text"
           role="alert"
           aria-live="polite"
@@ -31,7 +30,6 @@
         </small>
         <small
           *ngIf="loginForm.get('email')?.hasError('email') && loginForm.get('email')?.touched"
-          id="email-erro"
           class="error-text"
           role="alert"
           aria-live="polite"
@@ -71,7 +69,7 @@
 
       <!-- Botão -->
       <button
-        class="btn-primario"
+        class="btn btn-primario"
         type="submit"
         [disabled]="loginForm.invalid"
       >

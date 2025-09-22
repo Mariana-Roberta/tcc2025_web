@@ -39,9 +39,9 @@ img, svg, video, canvas { display: block; max-width: 100%; }
 
 /* Container padrão (usado na página de carregamentos) */
 .container {
-  width: min(1100px, 95%);
-  margin: 0 auto;
-  background: var(--background-color);
+  width: auto;
+  margin: 0 2.5%;
+  background: rgba(251, 251, 254);
   padding: 24px 28px;
   border-radius: 14px;
   box-shadow: 4px 6px 12px rgba(39, 76, 119, 0.2);
@@ -131,7 +131,7 @@ a:hover, .link:hover { cursor: pointer; text-decoration: underline; }
    🧾 Formulários
    ============================= */
 .form-container {
-  width: 100%; max-width: 640px; background: var(--background-color);
+  width: 100%; max-width: 640px; background: var(--light-color);
   padding: 32px 24px; border-radius: 16px; box-shadow: 0 6px 16px rgba(0,0,0,.08);
   display: flex; flex-direction: column; align-items: center; gap: 24px;
   max-height: 80vh; overflow-y: auto; box-sizing: border-box;
@@ -235,3 +235,152 @@ a:hover, .link:hover { cursor: pointer; text-decoration: underline; }
   .linha-resumo { flex-direction: column; align-items: flex-start; }
   .btn-visualizar { align-self: stretch; text-align: center; }
 }
+
+/* =============================
+   🔁 Transição suave entre temas
+   ============================= */
+html, body, .container, .carregamento-card, .custom-table, .btn,
+input, select, textarea {
+  transition: background-color .25s ease, color .25s ease, border-color .25s ease, box-shadow .25s ease;
+}
+
+/* =============================
+   🌙 Tema escuro (mais claro)
+   ============================= */
+:root.theme-dark {
+  --text-color: #F0F4FA;         /* texto mais claro */
+  --background-color: #1B2432;   /* fundo principal mais claro */
+  --light-color: #2E3A4C;        /* linhas/bordas */
+  --blue-color-1: #82C0FF;       /* primário vibrante */
+  --blue-color-2: #5FB0E6;
+  --blue-color-3: #3A4E68;
+  --gray-color: #B8C4D4;
+  --accent-color: #4ADE80;       /* verde suave (sucesso) */
+  --accent-selected-color: #22C55E;
+}
+
+/* Fundo e texto base */
+:root.theme-dark body {
+  background: var(--background-color);
+  color: var(--text-color);
+}
+
+/* Containers padrão */
+:root.theme-dark .container {
+  background: rgba(35, 46, 64); /* fundo translúcido */
+  border: 1px solid #2E3A4C;
+  box-shadow: 0 6px 16px rgba(0,0,0,.25);
+}
+
+/* Formulários */
+:root.theme-dark input,
+:root.theme-dark select,
+:root.theme-dark textarea {
+  background: #242F40;
+  border-color: #2E3A4C;
+  color: var(--text-color);
+}
+:root.theme-dark input::placeholder,
+:root.theme-dark select::placeholder,
+:root.theme-dark textarea::placeholder {
+  color: #AAB8C7;
+}
+
+/* Botões base */
+:root.theme-dark .btn {
+  background: #2A3548;
+  color: var(--text-color);
+  border-color: #2E3A4C;
+  box-shadow: 0 1px 3px rgba(0,0,0,.3);
+}
+:root.theme-dark .btn:hover {
+  border-color: var(--blue-color-2);
+  box-shadow: 0 6px 12px rgba(0,0,0,.25);
+}
+
+/* Semânticos */
+:root.theme-dark .btn-primario { background: var(--blue-color-1); color: #0f1824; }
+:root.theme-dark .btn-secundario { color: var(--blue-color-1); border: 2px solid var(--blue-color-1); }
+:root.theme-dark .btn-secundario:hover { background: var(--blue-color-1); color: #0f1824; }
+:root.theme-dark .btn-sucesso { background: var(--accent-color); color: #0f1824; }
+:root.theme-dark .btn-danger { background: #f87171; color: #fff; }
+
+:root.theme-dark .btn-visualizar {
+  background: linear-gradient(90deg, var(--accent-color), var(--accent-selected-color));
+  color: #fff;
+  border: none;
+  font-weight: 700;
+  letter-spacing: .3px;
+  box-shadow: 0 4px 10px rgba(34, 197, 94, .3); /* brilho verde */
+}
+
+:root.theme-dark .btn-visualizar:hover {
+  filter: brightness(1.1);
+  box-shadow: 0 6px 16px rgba(34, 197, 94, .45);
+}
+
+
+/* Tabelas */
+:root.theme-dark .custom-table {
+  background: #232F41;
+  color: var(--text-color);
+  box-shadow: 0 2px 6px rgba(0,0,0,.2);
+}
+:root.theme-dark .custom-table th { background: #2C3A52; color: #E6F1FF; }
+:root.theme-dark .custom-table td { color: #E6F1FF; }
+:root.theme-dark .custom-table tr:nth-child(even) { background: #1E2A3C; }
+:root.theme-dark .custom-table tr:hover { background: #2C3C52; }
+:root.theme-dark .custom-table tr.ativo {
+  background: color-mix(in srgb, var(--accent-color) 30%, #1E2A3C);
+  border-left-color: var(--accent-color);
+}
+
+/* Links */
+:root.theme-dark a,
+:root.theme-dark .link { color: var(--blue-color-2); }
+:root.theme-dark .link-voltar {
+  background: #243146;
+  color: #E2ECFF;
+  box-shadow: 0 1px 4px rgba(0,0,0,.3);
+}
+:root.theme-dark .link-voltar:hover { background: #1E2A3C; }
+
+/* Cards & acordeão */
+:root.theme-dark .carregamento-card {
+  background: rgba(35, 46, 64, 0.85);
+  border: 1px solid #2E3A4C;
+  box-shadow: 0 4px 12px rgba(0,0,0,.25);
+}
+:root.theme-dark .linha-resumo {
+  background: #243146;
+  border-color: #2E3A4C;
+}
+:root.theme-dark .chip {
+  background: #243146;
+  border-color: #2E3A4C;
+  color: #E6EEF7;
+}
+:root.theme-dark .chip-uso {
+  background: color-mix(in srgb, var(--blue-color-2) 25%, #243146);
+  border-color: var(--blue-color-2);
+}
+:root.theme-dark .barra-peso { background: #243146; border-color: #2E3A4C; }
+
+/* Paginação */
+:root.theme-dark .paginacao button {
+  background: #243146;
+  border: 1px solid #2E3A4C;
+  color: var(--text-color);
+}
+:root.theme-dark .paginacao button:hover { background: #30405A; }
+:root.theme-dark .paginacao button.ativa {
+  background: var(--accent-color);
+  color: #0f1824;
+  border-color: var(--accent-selected-color);
+}
+:root.theme-dark .paginacao button:disabled { background: #2A3446; color: #7C8CA5; }
+
+/* Cabeçalhos */
+:root.theme-dark h1,
+:root.theme-dark h2,
+:root.theme-dark h3 { color: #E6F1FF; }

@@ -1,12 +1,13 @@
-<div class="page-container">
-  <div class="link-topo">
-    <a class="link-voltar" href="#" (click)="$event.preventDefault(); voltar()">
-      <i class="pi pi-arrow-left" style="font-size: 1rem; margin-right: 10px;"></i>
-      Voltar
-    </a>
-  </div>
+<div class="page-container" style="padding: 20px; display: flex; flex-direction: column">
+  <section class="acoes-topo" style="margin-bottom: 16px; display: flex; gap: 12px; align-items: center; justify-content: space-between;">
+    <div>
+      <button class="btn btn-sec " (click)="voltar()" title="Voltar">
+        <i class="pi pi-arrow-left"></i> Voltar
+      </button>
+    </div>
+  </section>
 
-  <div class="form-container card">
+  <div class="form-container card"  style="align-self: center">
     <app-logo></app-logo>
 
     <h2>Cadastro</h2>
@@ -80,10 +81,10 @@
       </fieldset>
 
       <div class="form-actions">
-        <button type="button" class="btn btn--ghost" (click)="voltar()">
+        <button type="button" class="btn btn-primario" (click)="voltar()">
           Cancelar
         </button>
-        <button class="btn btn--primary" type="submit">
+        <button class="btn btn-sucesso" type="submit">
           Cadastrar
         </button>
       </div>

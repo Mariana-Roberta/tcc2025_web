@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {Component, inject, OnInit} from '@angular/core';
+import {CommonModule, Location} from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
@@ -54,8 +54,19 @@ export class OtimizaComponent implements OnInit {
     private readonly pacoteService: PacoteService,
     private readonly authService: AuthService,
     private readonly popupService: PopupService,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly location: Location
   ) {}
+
+  /** Ação: voltar para a rota anterior */
+  voltar(): void {
+    // Se houver histórico, volta; caso contrário, navega para uma rota segura (ex.: '/')
+    if (window.history.length > 1) {
+      this.location.back();
+    } else {
+      this.router.navigateByUrl('/');
+    }
+  }
 
   ngOnInit() {
     this.popupService.limpar();

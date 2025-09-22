@@ -12,6 +12,9 @@
   <div class="user-section">
     <button *ngIf="isLoggedIn()" class="btn-gradient" (click)="otimizar()">Otimizar</button>
     <button *ngIf="isLoggedIn()" class="btn-danger" (click)="logout()">Sair</button>
+    <button class="btn" (click)="alternarTema()">
+      <i class="pi" [ngClass]="temaAtual === 'dark' ? 'pi-sun' : 'pi-moon'"></i>
+    </button>
     <div class="username-wrapper">
       <span class="username">{{ nomeUsuario }}</span>
     </div>
