@@ -109,9 +109,18 @@ export class GerenciarCarregamentoComponent implements OnInit {
     return this.carregamentos.slice(inicio, inicio + this.carregamentosPorPagina);
   }
 
-  proximaPagina(): void { if (this.paginaAtual < this.totalPaginas) this.paginaAtual++; }
-  paginaAnterior(): void { if (this.paginaAtual > 1) this.paginaAtual--; }
-  irParaPagina(p: number): void { if (p >= 1 && p <= this.totalPaginas) this.paginaAtual = p; }
+  proximaPagina(): void {
+    if (this.paginaAtual < this.totalPaginas) this.paginaAtual++;
+  }
+
+  paginaAnterior(): void {
+    if (this.paginaAtual > 1) this.paginaAtual--;
+  }
+
+  irParaPagina(p: number): void {
+    if (p >= 1 && p <= this.totalPaginas) this.paginaAtual = p;
+  }
+
 
   // ==== Expansão por ID ====
 

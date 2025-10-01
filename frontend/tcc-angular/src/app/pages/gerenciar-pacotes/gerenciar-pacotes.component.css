@@ -1,3 +1,4 @@
+.card:hover {cursor: default; transform: none;}
 /* --- Toggle Switch (específico da página) --- */
 .toggle-switch {
   display: flex;

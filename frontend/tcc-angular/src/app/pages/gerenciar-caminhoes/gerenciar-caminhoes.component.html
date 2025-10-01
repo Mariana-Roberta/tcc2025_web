@@ -1,6 +1,6 @@
 <app-navbar></app-navbar>
 
-<div class="page-container" style="display: flex; flex-direction: column">
+<div class="page-container" style="height: auto; min-height: 100vh;display: flex; flex-direction: column">
   <section class="acoes-topo" style="margin-bottom: 16px; display: flex; gap: 12px; align-items: center; justify-content: space-between;">
     <div>
       <button class="btn btn-sec " (click)="voltar()" title="Voltar">
@@ -13,7 +13,7 @@
     <h1>Gerenciar Caminhões</h1>
 
     <button class="btn-sucesso" *ngIf="!mostrarFormulario" (click)="exibirFormulario()">
-      + Adicionar Caminhão
+      <i class="pi pi-plus-circle"></i> Adicionar Caminhão
     </button>
 
     <div class="filtro-bar">

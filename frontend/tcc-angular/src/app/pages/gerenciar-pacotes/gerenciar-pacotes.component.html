@@ -1,6 +1,6 @@
 <app-navbar></app-navbar>
 
-<div class="page-container" style="display: flex; flex-direction: column">
+<div class="page-container" style="height: auto; min-height: 100vh;display: flex; flex-direction: column">
   <section class="acoes-topo" style="margin-bottom: 16px; display: flex; gap: 12px; align-items: center; justify-content: space-between;">
     <div>
       <button class="btn btn-sec " (click)="voltar()" title="Voltar">
@@ -11,7 +11,19 @@
 
   <div class="container">
       <h1>Gerenciar Pacotes</h1>
-      <button class="btn-sucesso" *ngIf="!mostrarFormulario" (click)="exibirFormulario()">+ Adicionar Pacote</button>
+      <div style="display: flex; gap: 20px;">
+        <button class="btn-sucesso" (click)="fileInput.click()">
+          <i class="pi pi-file-import"></i> Importar CSV
+        </button>
+        <input
+          #fileInput
+          type="file"
+          (change)="importarCSV($event)"
+          accept=".csv"
+          hidden
+        />
+        <button class="btn-sucesso" *ngIf="!mostrarFormulario" (click)="exibirFormulario()"><i class="pi pi-plus-circle"></i> Adicionar Pacote</button>
+      </div>
 
       <div class="filtro-bar">
         <input

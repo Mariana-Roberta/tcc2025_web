@@ -1,7 +1,4 @@
-/* Apenas ajustes específicos deste componente */
-
-
-
+.card:hover {cursor: default; transform: none;}
 /* Ações dentro da célula da tabela */
 .acoes-linha {
   display: flex;

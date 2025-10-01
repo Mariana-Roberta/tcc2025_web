@@ -1,6 +1,6 @@
 <app-navbar></app-navbar>
 
-<div class="page-container" style="display: flex; flex-direction: column">
+<div class="page-container" style="height: auto; min-height: 100vh;display: flex; flex-direction: column">
   <section class="acoes-topo" style="margin-bottom: 16px; display: flex; gap: 12px; align-items: center; justify-content: space-between;">
     <div>
       <button class="btn btn-sec " (click)="voltar()" title="Voltar">
@@ -92,18 +92,24 @@
     </div>
 
     <!-- Paginação -->
-    <div class="paginacao" *ngIf="!loading && carregamentos?.length">
-      <button class="btn" type="button" (click)="paginaAnterior()" [disabled]="paginaAtual === 1">◀ Anterior</button>
-      <ng-container *ngFor="let _ of [].constructor(totalPaginas); let i = index">
-        <button class="btn btn-num"
-                type="button"
-                [class.ativo]="(i + 1) === paginaAtual"
-                (click)="irParaPagina(i + 1)">
-          {{ i + 1 }}
-        </button>
-      </ng-container>
-      <button class="btn" type="button" (click)="proximaPagina()" [disabled]="paginaAtual === totalPaginas">Próxima ▶</button>
-    </div>
+<div class="paginacao" *ngIf="!loading && carregamentos?.length">
+  <button type="button" (click)="paginaAnterior()" [disabled]="paginaAtual === 1">
+    ◀ Anterior
+  </button>
+
+  <ng-container *ngFor="let _ of [].constructor(totalPaginas); let i = index">
+    <button type="button"
+            [class.ativa]="(i + 1) === paginaAtual"
+            (click)="irParaPagina(i + 1)">
+      {{ i + 1 }}
+    </button>
+  </ng-container>
+
+  <button type="button" (click)="proximaPagina()" [disabled]="paginaAtual === totalPaginas">
+    Próxima ▶
+  </button>
+</div>
+
 
     <div class="muted" *ngIf="!loading && !carregamentos?.length">
       Nenhum carregamento encontrado.
