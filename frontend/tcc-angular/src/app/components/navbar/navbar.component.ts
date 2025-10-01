@@ -54,6 +54,13 @@ export class NavbarComponent implements OnInit {
     this.mostrarMenu = !this.mostrarMenu;
   }
 
+  mobileMenuOpen = false;
+
+  toggleMobileMenu() {
+    this.mobileMenuOpen = !this.mobileMenuOpen;
+  }
+
+
   irParaPerfil() {
     this.router.navigate(['/perfil']);
     this.mostrarMenu = false;

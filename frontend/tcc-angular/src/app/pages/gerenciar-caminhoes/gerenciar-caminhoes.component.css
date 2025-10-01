@@ -1,31 +1,24 @@
 /* Apenas ajustes específicos deste componente */
 
-/* Mensagem de erro dos campos */
-.erro-campo {
-  color: #e74c3c;
-  font-size: 0.85rem;
-  margin-top: 4px;
-  display: block;
-}
 
-/* Barra de filtro acima da tabela */
-.filtro-bar {
-  margin-bottom: 20px;
-  display: flex;
-  gap: 10px;
-  justify-content: center; /* centraliza (melhor que inline style) */
-  width: 100%;
-}
-
-/* Input do filtro – o resto do estilo vem do global (inputs) */
-.input-filtro {
-  max-width: 320px;   /* só limitamos a largura */
-  width: 100%;
-}
 
 /* Ações dentro da célula da tabela */
 .acoes-linha {
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
+}
+
+/* ======== Cards ======== */
+
+.info-caminhao {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 12px;
+}
+
+.info-caminhao li {
+  font-size: 14px;
+  margin-bottom: 4px;
+  color: var(--text-color);
 }

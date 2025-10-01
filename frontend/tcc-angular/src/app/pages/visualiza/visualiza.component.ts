@@ -1,6 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import {CommonModule, Location} from '@angular/common';
 
 import { NavbarComponent } from '../../components/navbar/navbar.component';
 import { ThreeDViewComponent } from '../three-d-view/three-d-view.component';
@@ -8,6 +8,7 @@ import { PopupComponent } from '../../components/popup/popup.component';
 
 import { OtimizarService } from '../../services/otimizar.service';
 import { PopupService } from '../../services/popup.service';
+import { ScreenBackgroundComponent } from '../../components/screen-background/screen-background.component';
 
 @Component({
   selector: 'app-visualiza',
@@ -16,7 +17,8 @@ import { PopupService } from '../../services/popup.service';
     CommonModule,
     NavbarComponent,
     ThreeDViewComponent,
-    PopupComponent
+    PopupComponent,
+    ScreenBackgroundComponent
   ],
   templateUrl: './visualiza.component.html',
   styleUrl: './visualiza.component.css'
@@ -40,6 +42,7 @@ export class VisualizaComponent implements OnInit {
   isVisualiza = true;
 
   // injeções
+  private readonly location = inject(Location);
   private readonly router = inject(Router);
   private readonly rota = inject(ActivatedRoute);
   private readonly otimizarService = inject(OtimizarService);
@@ -379,4 +382,13 @@ export class VisualizaComponent implements OnInit {
   return Number.isFinite(n);
 }
 
+/** Ação: voltar para a rota anterior */
+  voltar(): void {
+    // Se houver histórico, volta; caso contrário, navega para uma rota segura (ex.: '/')
+    if (window.history.length > 1) {
+      this.location.back();
+    } else {
+      this.router.navigateByUrl('/');
+    }
+  }
 }

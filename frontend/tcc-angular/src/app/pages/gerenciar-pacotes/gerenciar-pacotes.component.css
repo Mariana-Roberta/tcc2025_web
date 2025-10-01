@@ -1,7 +1,7 @@
 /* --- Toggle Switch (específico da página) --- */
 .toggle-switch {
   display: flex;
-  align-items: center;
+  align-items: left;
   gap: 12px;
 }
 
@@ -65,30 +65,4 @@
   font-size: 0.85rem;
   margin-top: 4px;
   display: block;
-}
-
-/* Barra de filtro (layout fino) */
-.filtro-bar {
-  margin-bottom: 20px;
-  display: flex;
-  gap: 10px;
-  width: 100%;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-.input-filtro {
-  padding: 10px 14px;
-  border: 1px solid var(--light-color);
-  border-radius: 10px;
-  width: 100%;
-  max-width: 320px;
-  font-size: 0.95rem;
-  background: #fff;
-  color: var(--text-color);
-}
-.input-filtro:focus {
-  outline: none;
-  border-color: var(--blue-color-2);
-  box-shadow: 0 0 0 3px rgba(96,150,186,.2);
 }
