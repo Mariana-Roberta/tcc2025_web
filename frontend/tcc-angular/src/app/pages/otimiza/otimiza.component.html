@@ -1,6 +1,6 @@
 <app-navbar></app-navbar>
 
-<div class="page-container" style="display: flex; flex-direction: column">
+<div class="page-container" style="display: flex; flex-direction: column; overflow-y: auto;">
   <section class="acoes-topo" style="margin-bottom: 16px; display: flex; gap: 12px; align-items: center; justify-content: space-between;">
     <div>
       <button class="btn btn-sec " (click)="voltar()" title="Voltar">
@@ -51,7 +51,7 @@
   <div class="confirmacao-box" style="margin-top: 20px; text-align: center;">
     <p *ngIf="!caminhaoSelecionado">Selecione um caminhão para continuar</p>
     <button
-      class="btn-continuar"
+      class="btn-continuar" *ngIf="caminhaoSelecionado"
       [disabled]="!caminhaoSelecionado"
       (click)="continuarParaPacotes()"
     >
@@ -111,7 +111,7 @@
           <p><strong>Peso:</strong> {{ pacote.peso }}kg</p>
           <p>
             <strong>Rotaciona:</strong>
-            <span [ngClass]="{ 'rotaca-true': pacote.rotacao, 'rotaca-false': !pacote.rotacao }">
+            <span [ngClass]="{ 'rotacao-true': pacote.rotacao, 'rotacao-false': !pacote.rotacao }">
               {{ pacote.rotacao ? 'Sim' : 'Não' }}
             </span>
           </p>
@@ -129,7 +129,7 @@
           />
 
           <ng-container *ngIf="!quantidadesConfirmadas[pacote.id!]">
-            <button class="btn-ok"
+            <button class="btn-sucesso"
               type="button"
               (click)="confirmarQuantidade(pacote); $event.stopPropagation()">
               OK
@@ -137,14 +137,14 @@
           </ng-container>
 
           <ng-container *ngIf="quantidadesConfirmadas[pacote.id!]">
-            <button class="btn-desfazer"
+            <button class="btn-danger"
               type="button"
               (click)="desfazerConfirmacao(pacote); $event.stopPropagation()">
               Desfazer
             </button>
           </ng-container>
 
-          <button class="btn-cancelar"
+          <button class="btn-secundario"
             type="button"
             (click)="cancelarSelecao(pacote); $event.stopPropagation()">
             Cancelar
@@ -156,7 +156,7 @@
     <!-- Confirmação -->
     <div class="confirmacao-box" style="margin-top: 20px; text-align: center;">
       <p *ngIf="pacotesSelecionados.length === 0">Selecione ao menos um pacote para este pedido</p>
-      <button class="btn-continuar"
+      <button class="btn-primario" *ngIf="pacotesSelecionados.length > 0 && todosPacotesConfirmados()"
               [disabled]="pacotesSelecionados.length === 0 || !todosPacotesConfirmados()"
               (click)="confirmarPedido()">
         Confirmar Pedido
@@ -179,8 +179,8 @@
 
   <!-- Confirmação Final -->
   <div class="confirmacao-box" style="margin-top: 20px; text-align: center;">
-    <p *ngIf="pacotesSelecionados.length === 0">Selecione pelo menos um pacote</p>
-    <button class="btn-continuar"
+    <p *ngIf="pedidos.length === 0">Registre pelo menos um pedido</p>
+    <button class="btn-sucesso" *ngIf="pedidos.length > 0"
             [disabled]="pacotesSelecionados.length === 0 || !todosPacotesConfirmados()"
             (click)="confirmarOtimizacao()">
       Confirmar Otimização

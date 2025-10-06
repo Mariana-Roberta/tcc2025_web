@@ -17,14 +17,13 @@ export const routes: Routes = [
   { path: 'cadastro', component: CadastroComponent },
 
   // protegidas por autenticação
-  { path: 'home', component: HomeComponent},
-  { path: 'gerenciar-pacotes', component: GerenciarPacotesComponent},
-  { path: 'gerenciar-caminhoes', component: GerenciarCaminhoesComponent },
-  { path: 'perfil', component: PerfilComponent },
-  { path: 'visualiza', component: VisualizaComponent },
-  { path: 'visualiza/:id', component: VisualizaComponent },
-  { path: 'otimiza', component: OtimizaComponent },
-  { path: 'gerenciar-carregamentos', component: GerenciarCarregamentoComponent },
+  { path: 'home', component: HomeComponent, canActivate: [AuthGuard]},
+  { path: 'gerenciar-pacotes', component: GerenciarPacotesComponent, canActivate: [AuthGuard]},
+  { path: 'gerenciar-caminhoes', component: GerenciarCaminhoesComponent, canActivate: [AuthGuard]},
+  { path: 'visualiza', component: VisualizaComponent, canActivate: [AuthGuard]},
+  { path: 'visualiza/:id', component: VisualizaComponent, canActivate: [AuthGuard]},
+  { path: 'otimiza', component: OtimizaComponent, canActivate: [AuthGuard]},
+  { path: 'gerenciar-carregamentos', component: GerenciarCarregamentoComponent, canActivate: [AuthGuard]},
   { path: 'contato', component: ContatoComponent },
 
   // rota fallback para erro 404

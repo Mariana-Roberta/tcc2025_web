@@ -12,9 +12,19 @@
   <div class="container">
     <h1>Gerenciar Caminhões</h1>
 
-    <button class="btn-sucesso" *ngIf="!mostrarFormulario" (click)="exibirFormulario()">
-      <i class="pi pi-plus-circle"></i> Adicionar Caminhão
-    </button>
+      <div style="display: flex; gap: 20px;">
+        <button class="btn-sucesso" (click)="fileInput.click()">
+          <i class="pi pi-file-import"></i> Importar CSV
+        </button>
+        <input
+          #fileInput
+          type="file"
+          (change)="importarCSV($event)"
+          accept=".csv"
+          hidden
+        />
+        <button class="btn-sucesso" *ngIf="!mostrarFormulario" (click)="exibirFormulario()"><i class="pi pi-plus-circle"></i> Adicionar Pacote</button>
+      </div>
 
     <div class="filtro-bar">
       <input

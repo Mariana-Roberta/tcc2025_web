@@ -31,7 +31,6 @@ type PacoteOtimo = Readonly<{
   styleUrls: ['./three-d-view.component.css']
 })
 export class ThreeDViewComponent implements OnInit, OnChanges, OnDestroy {
-  // ❗️Troquei o nome do template-ref para #host (ver HTML)
   @ViewChild('host', { static: true }) hostRef!: ElementRef<HTMLDivElement>;
 
   @Input() pacotesOtimizados: ReadonlyArray<PacoteOtimo> = [];
@@ -42,30 +41,37 @@ export class ThreeDViewComponent implements OnInit, OnChanges, OnDestroy {
   };
 
   @Input() loading: boolean | undefined;
-  @Output() coresGeradasChange = new EventEmitter<Map<string, string>>(); // key: "pedidoId|pacoteId"
+  @Output() coresGeradasChange = new EventEmitter<Map<string, string>>();
 
-  // THREE objects
   private scene?: THREE.Scene;
   private camera?: THREE.PerspectiveCamera;
   private renderer?: THREE.WebGLRenderer;
   private controls?: OrbitControls;
 
-  // meshes
   private truckMesh?: THREE.Mesh;
   private boxes: THREE.Mesh[] = [];
 
-  // cores por par "pedidoId|pacoteId"
   private coresGeradas: Map<string, THREE.Color> = new Map();
-
-  // estado
   private initialized = false;
   private animationId: number | null = null;
   private readonly onResize = () => this.onWindowResize();
+  private temaObserver?: MutationObserver;
 
   ngOnInit(): void {
     this.ensureInit();
     window.addEventListener('resize', this.onResize);
-    // Ajuste tardio para quando o container renderiza depois
+
+    // Observa mudanças de tema
+    const html = document.documentElement;
+    this.temaObserver = new MutationObserver(() => {
+      const isDark = html.classList.contains('theme-dark');
+      if (this.scene) {
+        const color = isDark ? 0x2a3340 : 0xf5f5f5;
+        this.scene.background = new THREE.Color(color);
+      }
+    });
+    this.temaObserver.observe(html, { attributes: true, attributeFilter: ['class'] });
+
     setTimeout(() => this.onWindowResize(), 100);
   }
 
@@ -92,14 +98,13 @@ export class ThreeDViewComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnDestroy(): void {
     window.removeEventListener('resize', this.onResize);
+    this.temaObserver?.disconnect();
 
-    // cancela loop
     if (this.animationId !== null) {
       cancelAnimationFrame(this.animationId);
       this.animationId = null;
     }
 
-    // dispose dos objetos THREE para evitar vazamento
     this.clearBoxes();
     if (this.truckMesh) {
       this.scene?.remove(this.truckMesh);
@@ -113,7 +118,6 @@ export class ThreeDViewComponent implements OnInit, OnChanges, OnDestroy {
     this.controls?.dispose();
     if (this.renderer) {
       this.renderer.dispose();
-      // remove canvas do DOM
       const host = this.hostRef?.nativeElement;
       if (host && this.renderer.domElement?.parentElement === host) {
         host.removeChild(this.renderer.domElement);
@@ -121,7 +125,6 @@ export class ThreeDViewComponent implements OnInit, OnChanges, OnDestroy {
       this.renderer = undefined;
     }
 
-    // limpa cena/câmera
     this.scene = undefined;
     this.camera = undefined;
   }
@@ -149,30 +152,42 @@ export class ThreeDViewComponent implements OnInit, OnChanges, OnDestroy {
 
   // ============ THREE setup ============
   private initThreeJS(): void {
-    this.scene = new THREE.Scene();
-    this.scene.background = new THREE.Color(0xeeeeee);
+  this.scene = new THREE.Scene();
 
-    const host = this.hostRef.nativeElement;
-    const width = host.clientWidth || 800;
-    const height = host.clientHeight || 600;
+  // 🎨 Define cor inicial de acordo com o tema atual
+  const isDark = document.documentElement.classList.contains('theme-dark');
+  const backgroundColor = isDark ? 0x2a3340 : 0xf5f5f5; // fundo azul escuro no dark, claro no light
+  this.scene.background = new THREE.Color(backgroundColor);
 
-    this.camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
-    this.camera.position.set(10.3, 6.7, 7.5);
-    this.camera.lookAt(0, 0, 0);
+  const host = this.hostRef.nativeElement;
+  const width = host.clientWidth || 800;
+  const height = host.clientHeight || 600;
 
-    this.renderer = new THREE.WebGLRenderer({ antialias: true });
-    this.renderer.setSize(width, height);
-    this.renderer.setPixelRatio(window.devicePixelRatio || 1);
-    host.innerHTML = ''; // garante contêiner limpo
-    host.appendChild(this.renderer.domElement);
+  this.camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
+  this.camera.position.set(5.5, 3.5, 4.5);
+  this.camera.lookAt(new THREE.Vector3(2, 2, 3));
 
-    const ambientLight = new THREE.AmbientLight(0x404040);
-    this.scene.add(ambientLight);
+  this.renderer = new THREE.WebGLRenderer({ antialias: true });
+  this.renderer.setSize(width, height);
+  this.renderer.setPixelRatio(window.devicePixelRatio || 1);
+  host.innerHTML = '';
+  host.appendChild(this.renderer.domElement);
 
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-    directionalLight.position.set(5, 10, 7.5).normalize();
-    this.scene.add(directionalLight);
+  // Luz ambiente e direcional
+  const ambientLight = new THREE.AmbientLight(isDark ? 0x606c7d : 0x404040); // mais azul no dark
+  this.scene.add(ambientLight);
+
+  const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+  directionalLight.position.set(5, 10, 7.5).normalize();
+  this.scene.add(directionalLight);
+
+  // Luz hemisférica azulada no dark mode
+  if (isDark) {
+    const hemiLight = new THREE.HemisphereLight(0x6b7c93, 0x222222, 0.3);
+    this.scene.add(hemiLight);
   }
+}
+
 
   private onWindowResize(): void {
     if (!this.camera || !this.renderer) return;
@@ -190,7 +205,6 @@ export class ThreeDViewComponent implements OnInit, OnChanges, OnDestroy {
   private desenharCaminhao(): void {
     if (!this.scene) return;
 
-    // remove mesh anterior do caminhão, se existir
     if (this.truckMesh) {
       this.scene.remove(this.truckMesh);
       (this.truckMesh.geometry as THREE.BufferGeometry)?.dispose?.();
@@ -200,7 +214,6 @@ export class ThreeDViewComponent implements OnInit, OnChanges, OnDestroy {
       this.truckMesh = undefined;
     }
 
-    // Geometria do "container" (BackSide → desenha paredes por dentro)
     const geometry = new THREE.BoxGeometry(
       this.caminhao.largura,
       this.caminhao.altura,
@@ -224,10 +237,8 @@ export class ThreeDViewComponent implements OnInit, OnChanges, OnDestroy {
     if (!this.scene) this.ensureInit();
     if (!this.scene) return;
 
-    // limpa pacotes antigos
     this.clearBoxes();
 
-    // Gera cores por chave "pedidoId|pacoteId"
     const chaves = [...new Set(pacotes.map(p => `${p.pedidoId}|${p.pacoteId}`))];
     chaves.forEach(chave => {
       if (!this.coresGeradas.has(chave)) {
@@ -236,10 +247,8 @@ export class ThreeDViewComponent implements OnInit, OnChanges, OnDestroy {
       }
     });
 
-    // Desenha caixas (X=largura, Y=altura, Z=comprimento)
     pacotes.forEach(pacote => {
       const geometry = new THREE.BoxGeometry(pacote.largura, pacote.altura, pacote.comprimento);
-
       const chaveCor = `${pacote.pedidoId}|${pacote.pacoteId}`;
       const corPacote = this.coresGeradas.get(chaveCor)!;
 
@@ -261,7 +270,6 @@ export class ThreeDViewComponent implements OnInit, OnChanges, OnDestroy {
       this.boxes.push(mesh);
     });
 
-    // Emite cores em hex para o componente pai
     const coresFormatadas = new Map<string, string>();
     this.coresGeradas.forEach((cor, chave) => {
       coresFormatadas.set(chave, `#${cor.getHexString()}`);
@@ -288,6 +296,13 @@ export class ThreeDViewComponent implements OnInit, OnChanges, OnDestroy {
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     this.controls.enableDamping = true;
     this.controls.dampingFactor = 0.05;
+
+    this.controls.minDistance = 2;
+    this.controls.maxDistance = 20;
+    this.controls.maxPolarAngle = Math.PI / 2.1;
+    this.controls.minPolarAngle = Math.PI / 6;
+    this.controls.minAzimuthAngle = -Math.PI / 2;
+    this.controls.maxAzimuthAngle = Math.PI / 2;
   }
 
   private animate(): void {

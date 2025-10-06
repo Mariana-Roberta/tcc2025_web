@@ -1,11 +1,18 @@
 .contato-card {
   background-color: var(--background-color);
   width: 80%;
+  max-width: 1200px;
+  height: auto;
+  margin: 0 auto;
   padding: 32px 24px;
   border-radius: 16px;
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
   overflow: auto;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .cards-container {
@@ -13,20 +20,26 @@
   flex-wrap: wrap;
   gap: 30px;
   justify-content: center;
+  width: 100%;
 }
 
 .card-dev {
-  background: #ffffff;
+  background: var(--light-color);
   padding: 24px 20px;
   border-radius: 16px;
   width: 360px;
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
   text-align: left;
+  transition: transform 0.2s ease;
+}
+
+.card-dev:hover {
+  transform: translateY(-5px);
 }
 
 .card-dev h3 {
   font-size: 20px;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   color: var(--blue-color-1);
 }
 
@@ -43,7 +56,7 @@
   color: var(--blue-color-2);
   text-decoration: none;
   font-weight: 500;
-  word-break: break-all;
+  word-break: break-word;
 }
 
 .card-dev a:hover {
@@ -51,7 +64,7 @@
 }
 
 /* Ícones */
-.icon-user{
+.icon-user {
   color: var(--blue-color-2);
   font-size: 20px;
 }
@@ -69,37 +82,55 @@
   margin-bottom: 10px;
 }
 
+/* Responsividade */
+@media (max-width: 1024px) {
+  .contato-card {
+    width: 90%;
+    padding: 28px 20px;
+  }
+
+  .card-dev {
+    width: 45%;
+  }
+}
+
 @media (max-width: 768px) {
+  .contato-card {
+    width: 95%;
+    padding: 24px 16px;
+  }
+
   .cards-container {
     flex-direction: column;
     align-items: center;
+    gap: 20px;
   }
 
   .card-dev {
     width: 100%;
-    max-width: 90%;
+    max-width: 400px;
+    padding: 20px;
+  }
+
+  .card-dev h3 {
+    font-size: 18px;
+  }
+
+  .card-dev p {
+    font-size: 15px;
   }
 }
 
-.card-dev a {
-  color: var(--blue-color-2);
-  text-decoration: none;
-}
-
-.card-dev a:hover {
-  text-decoration: underline;
-}
-
-@media (max-width: 768px) {
-  .contato-wrapper {
-    padding: 24px;
-  }
-
-  .titulo {
-    font-size: 24px;
-  }
-
+@media (max-width: 480px) {
   .card-dev {
-    width: 100%;
+    padding: 16px;
+  }
+
+  .card-dev h3 {
+    font-size: 16px;
+  }
+
+  .card-dev p {
+    font-size: 14px;
   }
 }

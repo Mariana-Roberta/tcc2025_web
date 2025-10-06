@@ -1,6 +1,6 @@
 <app-navbar></app-navbar>
 
-<div class="page-container" style="padding: 20px; display: flex; flex-direction: column">
+<div class="page-container" style="padding: 20px; display: flex; flex-direction: column; overflow-y: auto;">
 <section class="acoes-topo" style="display: flex; gap: 12px; justify-content: flex-start;">
   <div>
     <button class="btn btn-sec " (click)="voltar()" title="Voltar">
@@ -65,18 +65,18 @@
 
   <!-- Canvas do Three.js -->
   <main class="canvas-container">
-  <app-three-d-view
-    *ngIf="!loading 
-           && caminhao 
-           && ehNumero(caminhao?.comprimento) 
-           && ehNumero(caminhao?.largura) 
-           && ehNumero(caminhao?.altura) 
-           && pacotesParaMostrar?.length"
-    [pacotesOtimizados]="pacotesParaMostrar"
-    [caminhao]="caminhao"
-    (coresGeradasChange)="receberCoresGeradas($event)"
-  ></app-three-d-view>
-</main>
+    <app-three-d-view
+      *ngIf="!loading 
+            && caminhao 
+            && ehNumero(caminhao?.comprimento) 
+            && ehNumero(caminhao?.largura) 
+            && ehNumero(caminhao?.altura) 
+            && pacotesParaMostrar?.length"
+      [pacotesOtimizados]="pacotesParaMostrar"
+      [caminhao]="caminhao"
+      (coresGeradasChange)="receberCoresGeradas($event)"
+    ></app-three-d-view>
+  </main>
 
 
   <!-- Card de Passo a Passo -->
@@ -113,7 +113,7 @@
           <strong>{{ pedidoAtual.descricao || pedidoAtual.nome || ('Pedido #' + pedidoAtual.id) }}</strong><br/>
 
           <div style="margin-top: 10px;">
-            <p>Pacotes do pedido:</p>
+            <p>Oriente-se pelas cores de cada pacote do pedido, e posicione-os:</p>
 
             <ul class="lista-pacotes">
               <li *ngFor="let p of resumoPacotesDoPedidoAtual">

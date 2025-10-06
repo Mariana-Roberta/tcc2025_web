@@ -10,6 +10,7 @@ import { PopupService } from '../../services/popup.service';
 import { PopupComponent } from '../../components/popup/popup.component';
 import {Router} from '@angular/router';
 import { Location } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 
 
 @Component({
@@ -41,6 +42,7 @@ export class GerenciarCaminhoesComponent implements OnInit {
     usuario: { id: 0 }
   };
 
+  private readonly http = inject(HttpClient);
   private readonly location = inject(Location);
   private readonly router = inject(Router);
   private readonly caminhaoService = inject(CaminhaoService);
@@ -204,4 +206,23 @@ get caminhoesPaginados(): any[] {
 
   campoFocado: string | null = null;
 
+    importarCSV(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (!input.files?.length) return;
+
+    const file = input.files[0];
+    
+    const formData = new FormData();
+    formData.append('file', file, file.name);
+
+    this.http.post('http://localhost:8080/api/caminhoes/upload-csv', formData).subscribe({
+      next: () => {
+        alert('Caminhões importados com sucesso!');
+        this.carregarCaminhoes();
+      },
+      error: (err: any) => {
+        alert('Erro ao importar: ' + err.message);
+      },
+    });
+  }
 }

@@ -447,8 +447,9 @@ li:hover {
     gap: 8px;
   }
 
-  .canvas-container {
+  .canvas-container, canvas {
     min-height: 200px;
+    height: 500px;
   }
 
   h3, .pedido-titulo {

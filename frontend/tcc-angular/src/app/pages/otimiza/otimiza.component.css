@@ -6,15 +6,6 @@
   line-height: 1.6;
 }
 
-/* 🔵 Estilo especial para card ativo apenas na etapa caminhão */
-.card.ativo {
-  border: 2px solid var(--blue-color-2);
-  box-shadow: 0 0 10px rgba(96, 150, 186, 0.5);
-  transform: scale(1.02);
-  transition: all 0.2s ease;
-}
-
-
 /* Seção principal */
 .section-container {
   display: flex;
@@ -45,55 +36,113 @@
   border-radius: 4px;
 }
 
-/* Cards */
-.caminhao-card,
-.produto-card {
-  background-color: var(--light-color);
-  border-radius: 10px;
-  padding: 16px 20px;
-  cursor: pointer;
+/* GRID responsivo */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+/* CARD base */
+.card {
+  background-color: var(--background-color);
+  border-radius: 14px;
+  padding: 18px 20px;
+  border: 1px solid var(--blue-color-1);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  transition: all 0.25s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+  border-color: var(--blue-color-2);
+}
+
+/* CARD ativo (selecionado) */
+.card.ativo {
+  border: 2px solid var(--blue-color-2);
+  box-shadow: 0 4px 14px rgba(96,150,186,0.4);
+  transform: scale(1.02);
   transition: all 0.2s ease;
-  border-left: 5px solid transparent;
-  color: var(--text-color);
 }
 
-.caminhao-card:hover,
-.produto-card:hover {
-  background-color: color-mix(in srgb, var(--blue-color-3) 20%, var(--background-color));
-  transform: translateY(-1px);
-}
-
-.caminhao-card.ativo,
-.produto-card.ativo {
-  background-color: var(--blue-color-2);
-  border-left: 5px solid var(--blue-color-1);
-  color: #fff;
-  box-shadow: 0 4px 12px rgba(39, 76, 119, 0.2);
-}
-
-.caminhao-card.ativo i,
-.produto-card.ativo i {
-  color: #fff;
-}
-
+/* Cabeçalho */
 .card-header {
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 1.05rem;
-  font-weight: bold;
-  margin-bottom: 8px;
-  color: var(--text-color);
+  margin-bottom: 10px;
 }
 
 .card-header i {
-  color: var(--gray-color);
+  color: var(--blue-color-2);
+  font-size: 1.2rem;
 }
 
-.card-body {
+.card-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+/* Corpo do card */
+.card-body p {
+  margin: 4px 0;
+  color: var(--text-color);
+  font-size: 0.92rem;
+  line-height: 1.4;
+}
+
+/* Ações dentro do card */
+.card-actions {
+  margin-top: 10px;
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  align-items: center;
+  gap: 8px;
+  border-top: 1px solid #e8ebf0;
+  padding-top: 10px;
+}
+
+/* Inputs e botões menores */
+.card-actions input[type="number"] {
+  width: 70px;
+  height: 100%;
+  padding: 4px 8px;
+  border: 1px solid #d0d5db;
+  border-radius: 6px;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+/* Tags “Rotaciona: Sim/Não” */
+.rotacao-true {
+  background-color: color-mix(in srgb, var(--blue-color-3) 20%, var(--blue-color-2));
+  color: var(--text-color);
+  border: 1px solid var(--text-color);
+  border-radius: 8px;
+  padding: 2px 8px;
+  font-weight: 500;
+  font-size: 0.85rem;
+  text-align: center;
+  margin-left: 5px;
+}
+
+.rotacao-false {
+  background-color: var(--light-color);
+  border: 1px solid var(--text-color);
+  color: var(--text-color);
+  border-radius: 8px;
+  padding: 2px 8px;
+  font-weight: 500;
+  font-size: 0.85rem;
+  text-align: center;
+  margin-left: 5px;
 }
 
 .badge {
@@ -183,53 +232,6 @@
   margin-top: 8px;
 }
 
-.btn-ok {
-  padding: 4px 12px;
-  background-color: var(--accent-selected-color);
-  color: #fff;
-  font-size: 0.85rem;
-  border: none;
-  border-radius: 6px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.btn-ok:hover {
-  background-color: var(--accent-color);
-}
-
-.btn-desfazer {
-  background-color: color-mix(in srgb, #ff0000 10%, var(--background-color));
-  color: #c0392b;
-  border: 1px solid color-mix(in srgb, #ff0000 30%, var(--light-color));
-  padding: 6px 12px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: background-color 0.2s ease;
-}
-
-.btn-desfazer:hover {
-  background-color: color-mix(in srgb, #ff0000 20%, var(--background-color));
-}
-
-.btn-cancelar {
-  background-color: var(--light-color);
-  color: var(--gray-color);
-  border: 1px solid var(--gray-color);
-  padding: 6px 12px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 500;
-  margin-left: 8px;
-  transition: background-color 0.2s ease;
-}
-
-.btn-cancelar:hover {
-  background-color: color-mix(in srgb, var(--gray-color) 20%, var(--background-color));
-}
-
 .lista-pedidos-container {
   margin-top: 30px;
   padding: 20px;
@@ -270,19 +272,21 @@
   border-radius: 12px;
 }
 
-.rotacao-true {
-  background-color: color-mix(in srgb, var(--blue-color-1) 10%, var(--background-color));
-  border: 1px solid var(--blue-color-1);
-  padding: 2px 6px;
-  border-radius: 8px;
-  color: var(--blue-color-1);
-  font-weight: 500;
-}
+/* RESPONSIVIDADE */
+@media (max-width: 768px) {
+  .card-grid {
+    grid-template-columns: 1fr;
+  }
 
-.rotaca-false {
-  background-color: var(--light-color);
-  border: 1px solid var(--gray-color);
-  padding: 2px 6px;
-  border-radius: 8px;
-  color: var(--gray-color);
+  .card {
+    padding: 16px;
+  }
+
+  .card-body p {
+    font-size: 0.9rem;
+  }
+
+  .btn-continuar {
+    width: 100%;
+  }
 }
