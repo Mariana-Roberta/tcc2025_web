@@ -393,7 +393,7 @@ input:disabled, select:disabled, textarea:disabled {
 }
 
 @media (max-width: 480px) {
-  .page-container {padding: 10px;}
+  .page-container {padding: 5px;}
   h1 { font-size: 28px; }
   h2 { font-size: 22px; }
   h3 { font-size: 18px; }

@@ -442,6 +442,8 @@ li:hover {
 }
 
 @media (max-width: 576px) {
+  
+
   .layout-container {
     padding: 8px;
     gap: 8px;

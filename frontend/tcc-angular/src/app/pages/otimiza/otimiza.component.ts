@@ -16,6 +16,7 @@ import { CaminhaoService } from '../../services/caminhao.service';
 import { PacoteService } from '../../services/pacote.service';
 import { AuthService } from '../../services/auth.service';
 import { PopupService } from '../../services/popup.service';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-otimiza',
@@ -55,7 +56,8 @@ export class OtimizaComponent implements OnInit {
     private readonly authService: AuthService,
     private readonly popupService: PopupService,
     private readonly router: Router,
-    private readonly location: Location
+    private readonly location: Location,
+    private readonly http: HttpClient
   ) {}
 
   /** Ação: voltar para a rota anterior */
@@ -279,5 +281,128 @@ get pacotesFiltrados(): Pacote[] {
     );
   });
 }
+
+async importarCSV(event: Event): Promise<void> {
+  const input = event.target as HTMLInputElement;
+  if (!input.files?.length) return;
+
+  const file = input.files[0];
+  const reader = new FileReader();
+
+  reader.onload = async (e) => {
+    const conteudo = e.target?.result as string;
+    if (!conteudo) return;
+
+    try {
+      // Detecta separador
+      const firstLine = conteudo.split(/\r?\n/).find(l => l.trim().length > 0) || '';
+      const sep = firstLine.includes(';') && !firstLine.includes(',') ? ';' : ',';
+      const linhas = conteudo.split(/\r?\n/).filter(l => l.trim().length > 0);
+      const cabecalho = linhas[0].split(sep).map(h => h.trim().toLowerCase());
+
+      const idxPedido = cabecalho.indexOf('pedido');
+      const idxNome = cabecalho.indexOf('nome');
+      const idxComprimento = cabecalho.indexOf('comprimento');
+      const idxLargura = cabecalho.indexOf('largura');
+      const idxAltura = cabecalho.indexOf('altura');
+      const idxPeso = cabecalho.indexOf('peso');
+      const idxFragil = cabecalho.indexOf('fragil');
+      const idxRotacao = cabecalho.indexOf('rotacao');
+      const idxQuantidade = cabecalho.indexOf('quantidade');
+
+      if (idxPedido === -1) {
+        this.popupService.erro('O CSV precisa conter uma coluna "pedido".');
+        return;
+      }
+
+      const usuario = this.authService.getUsuario();
+      if (!usuario) {
+        this.popupService.erro('Usuário não autenticado.');
+        return;
+      }
+
+      const pacotesMap = new Map<string, Pacote>();
+      const pedidosMap = new Map<string, Pedido>();
+
+      const toBool = (v: string | undefined) => v?.trim().toLowerCase() === 'true' || v?.trim() === '1';
+      const toNumberSafe = (v: string | undefined) => {
+        const n = Number((v ?? '').replace(',', '.'));
+        return Number.isFinite(n) ? n : 0;
+      };
+
+      // percorre as linhas de dados
+      for (let i = 1; i < linhas.length; i++) {
+        const cols = linhas[i].split(sep).map(c => c.trim());
+        if (cols.length === 0 || cols.every(c => c === '')) continue;
+
+        const nomePedido = cols[idxPedido]?.trim() || `Pedido ${i}`;
+        const quantidadeLida = idxQuantidade >= 0 ? Math.max(1, Math.floor(Number(cols[idxQuantidade] ?? 1))) : 1;
+
+        // Pacote temporário
+        let pacote: Pacote = {
+          id: undefined, // ainda não salvo
+          nome: cols[idxNome]?.trim() || `Pacote ${i}`,
+          comprimento: toNumberSafe(cols[idxComprimento]),
+          largura: toNumberSafe(cols[idxLargura]),
+          altura: toNumberSafe(cols[idxAltura]),
+          peso: toNumberSafe(cols[idxPeso]),
+          fragil: toBool(cols[idxFragil]),
+          rotacao: toBool(cols[idxRotacao]),
+          usuario: { id: usuario.id! }
+        };
+
+        // Salva no backend se não existir
+        try {
+          const res: any = await this.pacoteService.salvar(pacote).toPromise();
+          pacote.id = res.id; // atualiza ID retornado
+        } catch (err) {
+          console.error('Erro ao salvar pacote', pacote.nome, err);
+          this.popupService.erro(`Não foi possível salvar o pacote "${pacote.nome}" no sistema.`);
+          return;
+        }
+
+        pacotesMap.set(`${nomePedido}-${pacote.nome}`, pacote);
+
+        if (!pedidosMap.has(nomePedido)) {
+          pedidosMap.set(nomePedido, { nome: nomePedido, pacotes: [] });
+        }
+
+        // adiciona o pacote ao pedido com a quantidade lida
+        pedidosMap.get(nomePedido)!.pacotes.push({
+          pacote,
+          quantidade: quantidadeLida,
+          confirmado: true
+        });
+      }
+
+      // Atualiza estado geral
+      this.pacotes = Array.from(pacotesMap.values());
+      this.pedidos = Array.from(pedidosMap.values());
+
+      // 🔹 Preenche os estados necessários para habilitar o botão
+      this.pacotesSelecionados = [...this.pacotes];
+      this.quantidadesSelecionadas = {};
+      this.quantidadesConfirmadas = {};
+      for (const ped of this.pedidos) {
+        for (const pp of ped.pacotes) {
+          const id = pp.pacote.id!;
+          this.quantidadesSelecionadas[id] = pp.quantidade ?? 1;
+          this.quantidadesConfirmadas[id] = true;
+        }
+      }
+
+      this.popupService.sucesso('Pedidos importados e pacotes salvos com sucesso!');
+      console.log('Pedidos importados:', this.pedidos);
+
+    } catch (err) {
+      console.error('Erro ao processar CSV:', err);
+      this.popupService.erro('Erro ao ler o arquivo CSV.');
+    }
+  };
+
+  reader.readAsText(file, 'UTF-8');
+}
+
+
 
 }

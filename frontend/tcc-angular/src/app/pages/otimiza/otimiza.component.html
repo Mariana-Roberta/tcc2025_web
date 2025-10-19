@@ -71,6 +71,17 @@
 
   <!-- Novo Pedido -->
   <div *ngIf="!pedidoAtual">
+    <button class="btn-sucesso" (click)="fileInput.click()">
+          <i class="pi pi-file-import"></i> Importar CSV
+    </button>
+    <input
+      #fileInput
+      type="file"
+      (change)="importarCSV($event)"
+      accept=".csv"
+      hidden
+    />
+
     <button (click)="criarNovoPedido()" class="button btn-sucesso">
       + Novo Pedido
     </button>
