@@ -120,39 +120,51 @@ export class GerenciarCaminhoesComponent implements OnInit {
 }
 
 
-  adicionarOuEditarCaminhao(): void {
-    const usuarioLogado = this.authService.getUsuario();
-    if (!usuarioLogado) {
-      this.popupService.erro('Usuário não autenticado.');
-      return;
-    }
+adicionarOuEditarCaminhao(): void {
+  const usuarioLogado = this.authService.getUsuario();
+  if (!usuarioLogado) {
+    this.popupService.erro('Usuário não autenticado.');
+    return;
+  }
 
-    this.novoCaminhao.usuario = { id: usuarioLogado.id! };
+  this.novoCaminhao.usuario = { id: usuarioLogado.id! };
 
-    if (this.modoEdicao && this.indiceEdicao !== null) {
-      this.caminhaoService.atualizar(this.novoCaminhao.id!, this.novoCaminhao).subscribe({
-        next: () => {
-          this.popupService.sucesso('Caminhão atualizado com sucesso!');
-          this.carregarCaminhoes();
-          this.cancelarAdicao();
-        },
-        error: () => {
+  if (this.modoEdicao && this.indiceEdicao !== null) {
+    // 🟦 Atualizar caminhão existente
+    this.caminhaoService.atualizar(this.novoCaminhao.id!, this.novoCaminhao).subscribe({
+      next: () => {
+        this.popupService.sucesso('Caminhão atualizado com sucesso!');
+        this.carregarCaminhoes();
+        this.cancelarAdicao();
+      },
+      error: (erro) => {
+        if (erro.status === 409) {
+          this.popupService.alerta(erro.error?.mensagem || 'Caminhão já cadastrado no sistema.');
+        } else {
           this.popupService.erro('Erro ao atualizar caminhão.');
         }
-      });
-    } else {
-      this.caminhaoService.salvar(this.novoCaminhao).subscribe({
-        next: () => {
-          this.popupService.sucesso('Caminhão salvo com sucesso!');
-          this.carregarCaminhoes();
-          this.cancelarAdicao();
-        },
-        error: () => {
+      }
+    });
+
+  } else {
+    // 🟩 Criar novo caminhão
+    this.caminhaoService.salvar(this.novoCaminhao).subscribe({
+      next: () => {
+        this.popupService.sucesso('Caminhão salvo com sucesso!');
+        this.carregarCaminhoes();
+        this.cancelarAdicao();
+      },
+      error: (erro) => {
+        console.log(erro.status)
+        if (erro.status === 409) {
+          this.popupService.alerta(erro.error?.mensagem || 'Caminhão já cadastrado no sistema.');
+        } else {
           this.popupService.erro('Erro ao salvar caminhão.');
         }
-      });
-    }
+      }
+    });
   }
+}
 
   excluirCaminhao(caminhao: Caminhao): void {
     this.caminhaoService.excluir(caminhao.id!).subscribe({

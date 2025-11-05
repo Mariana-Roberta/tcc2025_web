@@ -1,5 +1,11 @@
 import { Injectable } from '@angular/core';
-import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpErrorResponse } from '@angular/common/http';
+import {
+  HttpInterceptor,
+  HttpRequest,
+  HttpHandler,
+  HttpEvent,
+  HttpErrorResponse
+} from '@angular/common/http';
 import { Observable, catchError, throwError } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { AuthService } from '../../services/auth.service';
@@ -14,21 +20,17 @@ export class ApiInterceptor implements HttpInterceptor {
   ) {}
 
   private montarUrl(url: string): string {
-    // Não toca URLs absolutas
-    if (/^https?:\/\//i.test(url)) return url;
-    // Prefixa a base da API
+    if (/^https?:\/\//i.test(url)) return url; // URLs absolutas ficam como estão
     const base = environment.apiUrl?.replace(/\/+$/, '') || '';
     const path = url.replace(/^\/+/, '');
     return `${base}/${path}`;
   }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    // 1) Base URL
     const url = this.montarUrl(req.url);
 
-    // 2) Headers (Bearer quando existir)
     const token = this.auth.getToken?.();
-    const precisaAuth = !url.endsWith('/auth'); // evite forçar no login
+    const precisaAuth = !url.endsWith('/auth');
     let headers = req.headers.set('Accept', 'application/json');
 
     if (precisaAuth && token) {
@@ -40,11 +42,21 @@ export class ApiInterceptor implements HttpInterceptor {
 
     const reqClonada = req.clone({ url, headers });
 
-    // 3) Tratamento de erros centralizado
     return next.handle(reqClonada).pipe(
       catchError((error: HttpErrorResponse) => {
         const mensagem = this.errorService.mapearMensagem(error);
-        return throwError(() => new Error(mensagem));
+
+        // ✅ Mostra o erro no console (útil para debug)
+        console.error('[HTTP ERROR]', error);
+
+        // ✅ Mantém o objeto original, apenas adicionando a mensagem mapeada
+        const erroComMensagem = {
+          ...error,
+          mensagem: mensagem
+        };
+
+        // ✅ Repassa o erro completo para o componente
+        return throwError(() => erroComMensagem);
       })
     );
   }

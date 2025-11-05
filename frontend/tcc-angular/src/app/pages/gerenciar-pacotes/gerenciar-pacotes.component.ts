@@ -126,7 +126,7 @@ export class GerenciarPacotesComponent implements OnInit {
     this.adicionarOuEditarPacote();
   }
 
-  adicionarOuEditarPacote() {
+  adicionarOuEditarPacote(): void {
     const usuarioLogado = this.authService.getUsuario();
     if (!usuarioLogado) {
       this.popupService.erro('Usuário não autenticado.');
@@ -136,29 +136,49 @@ export class GerenciarPacotesComponent implements OnInit {
     this.novoPacote.usuario = { id: usuarioLogado.id! };
 
     if (this.modoEdicao && this.indiceEdicao !== null) {
+      // 🟦 Atualizar pacote existente
       this.pacoteService.atualizar(this.novoPacote.id!, this.novoPacote).subscribe({
         next: () => {
           this.popupService.sucesso('Pacote atualizado com sucesso!');
           this.carregarPacotes();
           this.cancelar();
         },
-        error: () => {
-          this.popupService.erro('Erro ao atualizar o pacote.');
+        error: (erro) => {
+          console.log('Erro ao atualizar pacote:', erro);
+
+          if (erro.status === 409) {
+            this.popupService.alerta(
+              erro.error?.mensagem || erro.mensagem || 'Pacote já cadastrado no sistema.'
+            );
+          } else {
+            this.popupService.erro(erro.mensagem || 'Erro ao atualizar o pacote.');
+          }
         }
       });
+
     } else {
+      // 🟩 Criar novo pacote
       this.pacoteService.salvar(this.novoPacote).subscribe({
         next: () => {
           this.popupService.sucesso('Pacote salvo com sucesso!');
           this.carregarPacotes();
           this.cancelar();
         },
-        error: () => {
-          this.popupService.erro('Erro ao salvar o pacote.');
+        error: (erro) => {
+          console.log('Erro ao salvar pacote:', erro);
+
+          if (erro.status === 409) {
+            this.popupService.alerta(
+              erro.error?.mensagem || erro.mensagem || 'Pacote já cadastrado no sistema.'
+            );
+          } else {
+            this.popupService.erro(erro.mensagem || 'Erro ao salvar o pacote.');
+          }
         }
       });
     }
   }
+
 
   editarPacote(pacote: Pacote, index: number) {
     this.mostrarFormulario = true;

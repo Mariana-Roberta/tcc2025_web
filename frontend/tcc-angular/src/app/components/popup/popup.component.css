@@ -13,6 +13,10 @@
   align-items: center;
 }
 
+.popup.alerta {
+  background-color: #f19409;
+}
+
 .popup.erro {
   background-color: #f44336;
 }
