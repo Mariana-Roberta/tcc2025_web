@@ -330,7 +330,6 @@ async importarCSV(event: Event): Promise<void> {
         return Number.isFinite(n) ? n : 0;
       };
 
-      // percorre as linhas de dados
       for (let i = 1; i < linhas.length; i++) {
         const cols = linhas[i].split(sep).map(c => c.trim());
         if (cols.length === 0 || cols.every(c => c === '')) continue;
@@ -338,9 +337,8 @@ async importarCSV(event: Event): Promise<void> {
         const nomePedido = cols[idxPedido]?.trim() || `Pedido ${i}`;
         const quantidadeLida = idxQuantidade >= 0 ? Math.max(1, Math.floor(Number(cols[idxQuantidade] ?? 1))) : 1;
 
-        // Pacote temporário
         let pacote: Pacote = {
-          id: undefined, // ainda não salvo
+          id: undefined,
           nome: cols[idxNome]?.trim() || `Pacote ${i}`,
           comprimento: toNumberSafe(cols[idxComprimento]),
           largura: toNumberSafe(cols[idxLargura]),
@@ -351,23 +349,28 @@ async importarCSV(event: Event): Promise<void> {
           usuario: { id: usuario.id! }
         };
 
-        // Salva no backend se não existir
         try {
           const res: any = await this.pacoteService.salvar(pacote).toPromise();
-          pacote.id = res.id; // atualiza ID retornado
-        } catch (err) {
-          console.error('Erro ao salvar pacote', pacote.nome, err);
-          this.popupService.erro(`Não foi possível salvar o pacote "${pacote.nome}" no sistema.`);
-          return;
+          pacote.id = res.id;
+        } catch (err: any) {
+          if (err.status === 409 && err.error?.mensagem?.includes('Pacote já cadastrado')) {
+            console.warn(`Pacote duplicado detectado: ${pacote.nome}`);
+            this.popupService.alerta(`Pacote "${pacote.nome}" já cadastrado — reutilizado.`);
+            // continua o fluxo, o pacote não será perdido
+          } else {
+            console.error('Erro ao salvar pacote', pacote.nome, err);
+            this.popupService.erro(`Erro ao salvar o pacote "${pacote.nome}".`);
+            return;
+          }
         }
 
+        // 🔹 Adiciona o pacote ao mapa de pacotes/pedidos mesmo que já existisse
         pacotesMap.set(`${nomePedido}-${pacote.nome}`, pacote);
 
         if (!pedidosMap.has(nomePedido)) {
           pedidosMap.set(nomePedido, { nome: nomePedido, pacotes: [] });
         }
 
-        // adiciona o pacote ao pedido com a quantidade lida
         pedidosMap.get(nomePedido)!.pacotes.push({
           pacote,
           quantidade: quantidadeLida,
@@ -375,14 +378,13 @@ async importarCSV(event: Event): Promise<void> {
         });
       }
 
-      // Atualiza estado geral
+      // Atualiza estados
       this.pacotes = Array.from(pacotesMap.values());
       this.pedidos = Array.from(pedidosMap.values());
-
-      // 🔹 Preenche os estados necessários para habilitar o botão
       this.pacotesSelecionados = [...this.pacotes];
       this.quantidadesSelecionadas = {};
       this.quantidadesConfirmadas = {};
+
       for (const ped of this.pedidos) {
         for (const pp of ped.pacotes) {
           const id = pp.pacote.id!;
@@ -391,7 +393,7 @@ async importarCSV(event: Event): Promise<void> {
         }
       }
 
-      this.popupService.sucesso('Pedidos importados e pacotes salvos com sucesso!');
+      this.popupService.sucesso('Pedidos importados e pacotes processados com sucesso!');
       console.log('Pedidos importados:', this.pedidos);
 
     } catch (err) {
@@ -402,6 +404,7 @@ async importarCSV(event: Event): Promise<void> {
 
   reader.readAsText(file, 'UTF-8');
 }
+
 
 
 
