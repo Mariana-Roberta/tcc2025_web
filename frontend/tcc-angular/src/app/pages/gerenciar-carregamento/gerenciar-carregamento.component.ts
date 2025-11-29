@@ -206,4 +206,73 @@ export class GerenciarCarregamentoComponent implements OnInit {
   trackByCarregamento = (_: number, item: CarregamentoResponse) => item.id;
   trackByPedido = (_: number, item: CarregamentoResponse['pedidos'][number]) => item?.id;
   trackByPacote = (_: number, item: CarregamentoResponse['pedidos'][number]['pacotes'][number]) => item?.id;
+
+  /** Excluir um carregamento por ID */
+excluirCarregamento(id: number | string): void {
+  if (!id) return;
+
+    this.loading = true;
+    this.cdr.markForCheck();
+
+    this.carregamentoService.excluir(id).subscribe({
+      next: () => {
+        this.popupService.sucesso('Carregamento excluído com sucesso.');
+
+        // Remove da lista local
+        const idStr = String(id);
+        this.carregamentos = this.carregamentos.filter(c => String(c.id) !== idStr);
+
+        // Remove estados de expansão
+        delete this.caminhaoExpandido[idStr];
+        delete this.pedidoExpandido[idStr];
+
+        // Ajusta paginação caso a página atual fique vazia
+        if (this.paginaAtual > this.totalPaginas) {
+          this.paginaAtual = this.totalPaginas;
+        }
+
+        // Após excluir → recarrega a lista real do backend
+        this.buscarCarregamentos();
+
+        this.loading = false;
+        this.cdr.markForCheck();
+      },
+      error: (err: { message: any; }) => {
+        console.error('[Componente] Erro ao excluir carregamento:', err);
+        this.popupService.erro(err?.message || 'Erro ao excluir carregamento.');
+        this.loading = false;
+        this.cdr.markForCheck();
+      }
+    });
+  }
+
+baixarPdf(id: number) {
+  this.carregamentoService.baixarPdf(id).subscribe({
+    next: (blob: Blob) => {
+      // 1. Cria a URL temporária para o Blob
+      const url = window.URL.createObjectURL(blob);
+      
+      // 2. Cria o elemento de link invisível
+      const a = document.createElement('a');
+      a.href = url;
+      
+      // 3. ESSENCIAL: Define o nome E força o comportamento de "Salvar como"
+      // Sem essa linha, o navegador abre o PDF na mesma aba.
+      a.download = `relatorio_carregamento_${id}.pdf`;
+
+      // 4. Truque para compatibilidade (necessário para Firefox e alguns browsers)
+      document.body.appendChild(a);
+      
+      // 5. Simula o clique
+      a.click();
+
+      // 6. Limpeza
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    },
+    error: (err: any) => {
+      console.error("Erro ao baixar PDF", err);
+    }
+  });
+}
 }

@@ -45,7 +45,7 @@ salvar() {
   const usuarioLimpo: Usuario = {
     ...this.usuario,
     cnpj: this.usuario.cnpj.replace(/\D/g, ''),
-    telefone: this.formatarTelefoneParaEnvio(this.usuario.telefone), // ✅ garante padrão
+    telefone: this.formatarTelefoneParaEnvio(this.usuario.telefone),
   };
 
   this.usuarioService.salvar(usuarioLimpo).subscribe({
@@ -54,16 +54,25 @@ salvar() {
       this.popupService.sucesso('Cadastro de usuário realizado com sucesso!');
     },
     error: (err) => {
-      const mensagem = err.error?.mensagem || err.message;
+      const mensagem =
+        err.error?.message ||
+        err.error?.mensagem ||
+        err.message ||
+        'Erro inesperado ao cadastrar usuário.';
+
       this.popupService.erro(mensagem);
     }
   });
 }
 
 
-  voltar () {
-    this.router.navigate(['/login']);
-  }
+
+voltar() {
+  console.clear();      // limpa o console
+  this.popupService.limpar(); // se existir popup aberto
+  this.router.navigate(['/login']);
+}
+
 
 
   formatarCnpj(event: any): void {

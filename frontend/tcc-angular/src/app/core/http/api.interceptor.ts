@@ -27,10 +27,15 @@ export class ApiInterceptor implements HttpInterceptor {
   }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    const rotasPublicas = [
+      '/api/auth',
+      '/api/usuarios'
+    ];
+
     const url = this.montarUrl(req.url);
 
     const token = this.auth.getToken?.();
-    const precisaAuth = !url.endsWith('/auth');
+    const precisaAuth = !rotasPublicas.some(r => url.endsWith(r));
     let headers = req.headers.set('Accept', 'application/json');
 
     if (precisaAuth && token) {
@@ -44,7 +49,7 @@ export class ApiInterceptor implements HttpInterceptor {
 
     return next.handle(reqClonada).pipe(
       catchError((error: HttpErrorResponse) => {
-        const mensagem = this.errorService.mapearMensagem(error);
+        const message = this.errorService.mapearMensagem(error);
 
         // ✅ Mostra o erro no console (útil para debug)
         console.error('[HTTP ERROR]', error);
@@ -52,7 +57,7 @@ export class ApiInterceptor implements HttpInterceptor {
         // ✅ Mantém o objeto original, apenas adicionando a mensagem mapeada
         const erroComMensagem = {
           ...error,
-          mensagem: mensagem
+          message: message
         };
 
         // ✅ Repassa o erro completo para o componente

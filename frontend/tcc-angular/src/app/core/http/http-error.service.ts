@@ -23,7 +23,15 @@ export class HttpErrorService {
     if (error.status === 403) return 'Acesso negado. Você não tem permissão para esta operação.';
 
     // Prioriza mensagens do backend
-    if (typeof error.error === 'string' && error.error.trim().length) return error.error;
+    if (typeof error.error === 'string' && error.error.trim().length) {
+      try {
+        const parsed = JSON.parse(error.error);
+        console.log("erro de teste: ", parsed.message)
+        if (parsed.message) return parsed.message;
+      } catch {
+        return error.error;
+      }
+    }
     if (error.error && typeof error.error === 'object' && error.error.message) return error.error.message;
 
     return 'Ocorreu um erro inesperado no servidor.';
