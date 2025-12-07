@@ -18,13 +18,15 @@ export const routes: Routes = [
 
   // protegidas por autenticação
   { path: 'home', component: HomeComponent, canActivate: [AuthGuard] },
-  { path: 'gerenciar-pacotes', component: GerenciarPacotesComponent , canActivate: [AuthGuard] },
-  { path: 'gerenciar-caminhoes', component: GerenciarCaminhoesComponent, canActivate: [AuthGuard] },
   { path: 'perfil', component: PerfilComponent, canActivate: [AuthGuard] },
-  { path: 'visualiza', component: VisualizaComponent, canActivate: [AuthGuard]  },
-  { path: 'otimiza', component: OtimizaComponent, canActivate: [AuthGuard]  },
-  { path: 'gerenciar-carregamentos', component: GerenciarCarregamentoComponent },
-  { path: 'contato', component: ContatoComponent, canActivate: [AuthGuard] },
+  { path: 'home', component: HomeComponent, canActivate: [AuthGuard]},
+  { path: 'gerenciar-pacotes', component: GerenciarPacotesComponent, canActivate: [AuthGuard]},
+  { path: 'gerenciar-caminhoes', component: GerenciarCaminhoesComponent, canActivate: [AuthGuard]},
+  { path: 'visualiza', component: VisualizaComponent, canActivate: [AuthGuard]},
+  { path: 'visualiza/:id', component: VisualizaComponent, canActivate: [AuthGuard]},
+  { path: 'otimiza', component: OtimizaComponent, canActivate: [AuthGuard]},
+  { path: 'gerenciar-carregamentos', component: GerenciarCarregamentoComponent, canActivate: [AuthGuard]},
+  { path: 'contato', component: ContatoComponent },
 
   // rota fallback para erro 404
   { path: '**', redirectTo: 'login' }

@@ -1,8 +1,11 @@
 <footer class="footer-container">
     <div class="footer-content">
-      <p>&copy; 2025 Empresa. Todos os direitos reservados.</p>
+      <p>&copy; 2025 GerencieX. Todos os direitos reservados.</p>
       <div class="footer-links">
-        <a href="">Contato</a>
+        <button class="btn" (click)="irParaContato()">Contato</button>
+        <button class="btn" (click)="alternarTema()">
+          <i class="pi" [ngClass]="temaAtual === 'dark' ? 'pi-sun' : 'pi-moon'"></i>
+        </button>
       </div>
     </div>
   </footer>

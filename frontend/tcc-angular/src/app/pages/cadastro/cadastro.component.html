@@ -1,14 +1,18 @@
-<div class="page-container">
-  <div class="link-topo">
-    <a class="link-voltar" (click)="voltar()"><i class="pi pi-arrow-left" style="font-size: 1rem; margin-right: 10px;"></i> Voltar</a>
-  </div>
+<div class="page-container" style="display: flex; flex-direction: column">
+  <section class="acoes-topo" style="margin-bottom: 16px; display: flex; gap: 12px; align-items: center; justify-content: space-between;">
+    <div>
+      <button class="btn btn-sec " (click)="voltar()" title="Voltar">
+        <i class="pi pi-arrow-left"></i> Voltar
+      </button>
+    </div>
+  </section>
 
-  <div class="form-container">
+  <div class="form-container card"  style="align-self: center">
     <app-logo></app-logo>
 
     <h2>Cadastro</h2>
 
-    <div class="scroll-hint">
+    <div class="scroll-hint" aria-hidden="true">
       <i class="pi pi-angle-double-down"></i>
       <span>Role para baixo para preencher o formulário</span>
     </div>
@@ -18,19 +22,36 @@
       <fieldset class="form-section">
         <legend>Dados da Empresa</legend>
 
-        <div class="input-container" style="margin-bottom: 10px;">
+        <div class="input-container">
           <label for="cnpj">CNPJ</label>
-          <input id="cnpj" name="cnpj" type="text" placeholder="Digite seu CNPJ" required [(ngModel)]="usuario.cnpj" (input)="formatarCnpj($event)" />
+          <input id="cnpj"
+                 name="cnpj"
+                 type="text"
+                 placeholder="Digite seu CNPJ"
+                 required
+                 [(ngModel)]="usuario.cnpj"
+                 (input)="formatarCnpj($event)" />
         </div>
 
-        <div class="input-container" style="margin-bottom: 10px;">
+        <div class="input-container">
           <label for="razao">Razão Social</label>
-          <input id="razao" name="razaoSocial" type="text" placeholder="Digite sua razão social" required [(ngModel)]="usuario.razaoSocial" />
+          <input id="razao"
+                 name="razaoSocial"
+                 type="text"
+                 placeholder="Digite sua razão social"
+                 required
+                 [(ngModel)]="usuario.razaoSocial" />
         </div>
 
-        <div class="input-container" style="margin-bottom: 10px;">
+        <div class="input-container">
           <label for="telefone">Telefone</label>
-          <input id="telefone" name="telefone" type="text" placeholder="Digite seu telefone" required [(ngModel)]="usuario.telefone" (input)="formatarTelefone($event)" />
+          <input id="telefone"
+                 name="telefone"
+                 type="text"
+                 placeholder="Digite seu telefone"
+                 required
+                 [(ngModel)]="usuario.telefone"
+                 (input)="formatarTelefone($event)" />
         </div>
       </fieldset>
 
@@ -38,18 +59,35 @@
       <fieldset class="form-section">
         <legend>Conta de Acesso</legend>
 
-        <div class="input-container" style="margin-bottom: 10px;">
+        <div class="input-container">
           <label for="email">Email</label>
-          <input id="email" name="email" type="email" placeholder="Digite seu email" required [(ngModel)]="usuario.email" />
+          <input id="email"
+                 name="email"
+                 type="email"
+                 placeholder="Digite seu email"
+                 required
+                 [(ngModel)]="usuario.email" />
         </div>
 
-        <div class="input-container" style="margin-bottom: 10px;">
+        <div class="input-container">
           <label for="senha">Senha</label>
-          <input id="senha" name="password" type="password" placeholder="Digite sua senha" required [(ngModel)]="usuario.password" />
+          <input id="senha"
+                 name="password"
+                 type="password"
+                 placeholder="Digite sua senha"
+                 required
+                 [(ngModel)]="usuario.password" />
         </div>
       </fieldset>
 
-      <button class="btn-primario" type="submit">Cadastrar</button>
+      <div class="form-actions">
+        <button type="button" class="btn-primario" (click)="voltar()">
+          Cancelar
+        </button>
+        <button class="btn-sucesso" type="submit">
+          Cadastrar
+        </button>
+      </div>
     </form>
   </div>
 </div>

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, inject, OnInit} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { NavbarComponent } from '../../components/navbar/navbar.component';
@@ -8,6 +8,10 @@ import { AuthService } from '../../services/auth.service';
 import { Caminhao } from '../../model/caminhao.model';
 import { PopupService } from '../../services/popup.service';
 import { PopupComponent } from '../../components/popup/popup.component';
+import {Router} from '@angular/router';
+import { Location } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
+
 
 @Component({
   selector: 'app-gerenciar-caminhoes',
@@ -38,21 +42,32 @@ export class GerenciarCaminhoesComponent implements OnInit {
     usuario: { id: 0 }
   };
 
-  constructor(
-    private caminhaoService: CaminhaoService,
-    private authService: AuthService,
-    private popupService: PopupService
-  ) {}
+  private readonly http = inject(HttpClient);
+  private readonly location = inject(Location);
+  private readonly router = inject(Router);
+  private readonly caminhaoService = inject(CaminhaoService);
+  private readonly authService = inject(AuthService);
+  private readonly popupService = inject(PopupService);
 
   ngOnInit(): void {
     this.popupService.limpar();
     this.carregarCaminhoes();
   }
 
+  /** Ação: voltar para a rota anterior */
+  voltar(): void {
+    // Se houver histórico, volta; caso contrário, navega para uma rota segura (ex.: '/')
+    if (window.history.length > 1) {
+      this.location.back();
+    } else {
+      this.router.navigateByUrl('/');
+    }
+  }
+
   carregarCaminhoes(): void {
     const usuario = this.authService.getUsuario();
     if (usuario) {
-      this.caminhaoService.listarPorUsuario(usuario.id).subscribe({
+      this.caminhaoService.listarPorUsuario(usuario.id!).subscribe({
         next: (dados: Caminhao[]) => {
           this.caminhoes = dados;
         },
@@ -105,39 +120,51 @@ export class GerenciarCaminhoesComponent implements OnInit {
 }
 
 
-  adicionarOuEditarCaminhao(): void {
-    const usuarioLogado = this.authService.getUsuario();
-    if (!usuarioLogado) {
-      this.popupService.erro('Usuário não autenticado.');
-      return;
-    }
+adicionarOuEditarCaminhao(): void {
+  const usuarioLogado = this.authService.getUsuario();
+  if (!usuarioLogado) {
+    this.popupService.erro('Usuário não autenticado.');
+    return;
+  }
 
-    this.novoCaminhao.usuario = { id: usuarioLogado.id };
+  this.novoCaminhao.usuario = { id: usuarioLogado.id! };
 
-    if (this.modoEdicao && this.indiceEdicao !== null) {
-      this.caminhaoService.atualizar(this.novoCaminhao.id!, this.novoCaminhao).subscribe({
-        next: () => {
-          this.popupService.sucesso('Caminhão atualizado com sucesso!');
-          this.carregarCaminhoes();
-          this.cancelarAdicao();
-        },
-        error: () => {
+  if (this.modoEdicao && this.indiceEdicao !== null) {
+    // 🟦 Atualizar caminhão existente
+    this.caminhaoService.atualizar(this.novoCaminhao.id!, this.novoCaminhao).subscribe({
+      next: () => {
+        this.popupService.sucesso('Caminhão atualizado com sucesso!');
+        this.carregarCaminhoes();
+        this.cancelarAdicao();
+      },
+      error: (erro) => {
+        if (erro.status === 409) {
+          this.popupService.alerta(erro.error?.mensagem || 'Caminhão já cadastrado no sistema.');
+        } else {
           this.popupService.erro('Erro ao atualizar caminhão.');
         }
-      });
-    } else {
-      this.caminhaoService.salvar(this.novoCaminhao).subscribe({
-        next: () => {
-          this.popupService.sucesso('Caminhão salvo com sucesso!');
-          this.carregarCaminhoes();
-          this.cancelarAdicao();
-        },
-        error: () => {
+      }
+    });
+
+  } else {
+    // 🟩 Criar novo caminhão
+    this.caminhaoService.salvar(this.novoCaminhao).subscribe({
+      next: () => {
+        this.popupService.sucesso('Caminhão salvo com sucesso!');
+        this.carregarCaminhoes();
+        this.cancelarAdicao();
+      },
+      error: (erro) => {
+        console.log(erro.status)
+        if (erro.status === 409) {
+          this.popupService.alerta(erro.error?.mensagem || 'Caminhão já cadastrado no sistema.');
+        } else {
           this.popupService.erro('Erro ao salvar caminhão.');
         }
-      });
-    }
+      }
+    });
   }
+}
 
   excluirCaminhao(caminhao: Caminhao): void {
     this.caminhaoService.excluir(caminhao.id!).subscribe({
@@ -191,4 +218,23 @@ get caminhoesPaginados(): any[] {
 
   campoFocado: string | null = null;
 
+    importarCSV(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (!input.files?.length) return;
+
+    const file = input.files[0];
+    
+    const formData = new FormData();
+    formData.append('file', file, file.name);
+
+    this.http.post('http://localhost:8080/api/caminhoes/upload-csv', formData).subscribe({
+      next: () => {
+        alert('Caminhões importados com sucesso!');
+        this.carregarCaminhoes();
+      },
+      error: (err: any) => {
+        alert('Erro ao importar: ' + err.message);
+      },
+    });
+  }
 }

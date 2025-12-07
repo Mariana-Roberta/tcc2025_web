@@ -3,6 +3,7 @@ import {NavbarComponent} from '../../components/navbar/navbar.component';
 import {FooterComponent} from '../../components/footer/footer.component';
 import {ScreenBackgroundComponent} from '../../components/screen-background/screen-background.component';
 import {NgForOf} from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-contato',
@@ -25,13 +26,19 @@ export class ContatoComponent {
     {
       nome: 'Ottony Kazumi Andrade',
       email: 'ottony.k@email.com',
-      github: 'https://github.com/'
+      github: 'https://github.com/OttonyKazumi'
     },
     {
       nome: 'Paulo Vitor de Araujo Rocha',
       email: 'dr.pvrocha@email.com',
-      github: 'https://github.com/'
+      github: 'https://github.com/psicopop'
     }
   ];
+
+  constructor(private router: Router) {}
+  
+  voltar () {
+    this.router.navigate(['/login']);
+  }
 }
 

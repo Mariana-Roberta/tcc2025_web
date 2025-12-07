@@ -4,8 +4,12 @@ import { BehaviorSubject } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
+/**
+ * Serviço simples para notificação visual (sucesso/erro/aviso).
+ * Pode estar integrado ao seu componente <app-popup>.
+ */
 export class PopupService {
-  private mensagemSubject = new BehaviorSubject<{ mensagem: string, tipo: 'sucesso' | 'erro' } | null>(null);
+  private readonly mensagemSubject = new BehaviorSubject<{ mensagem: string, tipo: 'sucesso' | 'erro' | 'alerta' } | null>(null);
   mensagem$ = this.mensagemSubject.asObservable();
 
   sucesso(mensagem: string) {
@@ -14,6 +18,10 @@ export class PopupService {
 
   erro(mensagem: string) {
     this.mensagemSubject.next({ mensagem, tipo: 'erro' });
+  }
+
+  alerta(mensagem: string) {
+    this.mensagemSubject.next({ mensagem, tipo: 'alerta' });
   }
 
   limpar() {

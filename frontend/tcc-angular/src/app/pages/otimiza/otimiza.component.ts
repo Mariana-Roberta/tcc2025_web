@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {Component, inject, OnInit} from '@angular/core';
+import {CommonModule, Location} from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
@@ -16,6 +16,7 @@ import { CaminhaoService } from '../../services/caminhao.service';
 import { PacoteService } from '../../services/pacote.service';
 import { AuthService } from '../../services/auth.service';
 import { PopupService } from '../../services/popup.service';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-otimiza',
@@ -50,12 +51,24 @@ export class OtimizaComponent implements OnInit {
   filtroPacote: string = '';
 
   constructor(
-    private caminhaoService: CaminhaoService,
-    private pacoteService: PacoteService,
-    private authService: AuthService,
-    private popupService: PopupService,
-    private router: Router
+    private readonly caminhaoService: CaminhaoService,
+    private readonly pacoteService: PacoteService,
+    private readonly authService: AuthService,
+    private readonly popupService: PopupService,
+    private readonly router: Router,
+    private readonly location: Location,
+    private readonly http: HttpClient
   ) {}
+
+  /** Ação: voltar para a rota anterior */
+  voltar(): void {
+    // Se houver histórico, volta; caso contrário, navega para uma rota segura (ex.: '/')
+    if (window.history.length > 1) {
+      this.location.back();
+    } else {
+      this.router.navigateByUrl('/');
+    }
+  }
 
   ngOnInit() {
     this.popupService.limpar();
@@ -66,7 +79,7 @@ export class OtimizaComponent implements OnInit {
   carregarCaminhoes() {
     const usuario = this.authService.getUsuario();
     if (usuario) {
-      this.caminhaoService.listarPorUsuario(usuario.id).subscribe({
+      this.caminhaoService.listarPorUsuario(usuario.id!).subscribe({
         next: (dados) => this.caminhoes = dados,
         error: () => this.popupService.erro('Erro ao carregar caminhões.')
       });
@@ -76,16 +89,21 @@ export class OtimizaComponent implements OnInit {
   }
 
   carregarPacotes() {
-    const usuario = this.authService.getUsuario();
-    if (usuario) {
-      this.pacoteService.listarPorUsuario(usuario.id).subscribe({
-        next: (dados) => this.pacotes = dados,
-        error: () => this.popupService.erro('Erro ao carregar pacotes.')
-      });
-    } else {
-      this.popupService.erro('Usuário não autenticado.');
-    }
+  const usuario = this.authService.getUsuario();
+  if (usuario) {
+    this.pacoteService.listarPorUsuario(usuario.id!).subscribe({
+      next: (dados) => this.pacotes = dados,
+      error: (err) => {
+        console.error('Falha ao carregar pacotes:', err);
+        const msg = err?.error?.mensagem || err?.statusText || err?.message || 'Erro ao carregar pacotes.';
+        this.popupService.erro(msg);
+      }
+    });
+  } else {
+    this.popupService.erro('Usuário não autenticado.');
   }
+}
+
 
   selecionarCaminhao(c: Caminhao) {
     this.caminhaoSelecionado = c;
@@ -182,41 +200,53 @@ export class OtimizaComponent implements OnInit {
   }
 
   confirmarOtimizacao() {
-    if (!this.caminhaoSelecionado) {
-      this.popupService.erro('Selecione um caminhão para otimização.');
-      return;
-    }
-
-    if (this.pedidos.length === 0) {
-      this.popupService.erro('Adicione pelo menos um pedido antes de otimizar.');
-      return;
-    }
-
-    const dto = {
-      caminhao: {
-        ...this.caminhaoSelecionado,
-        usuario: { id: this.caminhaoSelecionado.usuario.id }
-      },
-      pedidos: this.pedidos.map((pedido, index) => ({
-        id: index,
-        descricao: pedido.nome,
-        pacotes: pedido.pacotes.map(p => ({
-          id: p.pacote.id,
-          nome: p.pacote.nome,
-          comprimento: p.pacote.comprimento,
-          largura: p.pacote.largura,
-          altura: p.pacote.altura,
-          peso: p.pacote.peso,
-          fragil: p.pacote.fragil,
-          rotacao: p.pacote.rotacao,
-          quantidade: p.quantidade
-        }))
-      }))
-    };
-
-    this.router.navigate(['/visualiza'], { state: { dados: dto } });
-    this.popupService.sucesso('Otimização iniciada com sucesso!');
+  if (!this.caminhaoSelecionado) {
+    this.popupService.erro('Selecione um caminhão para otimização.');
+    return;
   }
+  if (this.pedidos.length === 0) {
+    this.popupService.erro('Adicione pelo menos um pedido antes de otimizar.');
+    return;
+  }
+
+  // 1) Validação prévia: nenhum pacote pode estar sem ID
+  for (const ped of this.pedidos) {
+    for (const pp of ped.pacotes) {
+      if (!pp?.pacote || pp.pacote.id == null) {
+        this.popupService.erro(`Há um pacote sem ID no pedido "${ped.nome}".`);
+        return; // evita continuar e elimina o erro TS
+      }
+    }
+  }
+
+  // 2) Montagem do DTO (agora podemos usar "!" com segurança)
+  const dto = {
+    caminhao: {
+      ...this.caminhaoSelecionado,
+      usuario: { id: this.caminhaoSelecionado.usuario.id }
+    },
+    pedidos: this.pedidos.map((pedido, index) => ({
+      id: index,
+      descricao: pedido.nome,
+      pacotes: pedido.pacotes.map(p => ({
+        id: +p.pacote.id!,                 // <- validado acima
+        nome: p.pacote.nome ?? '',
+        comprimento: p.pacote.comprimento,// se seu modelo permitir null, trate aqui
+        largura: p.pacote.largura,
+        altura: p.pacote.altura,
+        peso: p.pacote.peso,
+        fragil: !!p.pacote.fragil,
+        rotacao: !!p.pacote.rotacao,
+        quantidade: p.quantidade ?? 1
+      }))
+    }))
+  };
+
+  console.log('Body a enviar (otimizar -> state):', dto);
+  this.router.navigate(['/visualiza'], { state: { dados: dto } });
+  this.popupService.sucesso('Otimização iniciada com sucesso!');
+}
+
 
 get caminhoesFiltrados(): Caminhao[] {
   const filtro = this.filtroCaminhao.trim().toLowerCase();
@@ -251,5 +281,131 @@ get pacotesFiltrados(): Pacote[] {
     );
   });
 }
+
+async importarCSV(event: Event): Promise<void> {
+  const input = event.target as HTMLInputElement;
+  if (!input.files?.length) return;
+
+  const file = input.files[0];
+  const reader = new FileReader();
+
+  reader.onload = async (e) => {
+    const conteudo = e.target?.result as string;
+    if (!conteudo) return;
+
+    try {
+      // Detecta separador
+      const firstLine = conteudo.split(/\r?\n/).find(l => l.trim().length > 0) || '';
+      const sep = firstLine.includes(';') && !firstLine.includes(',') ? ';' : ',';
+      const linhas = conteudo.split(/\r?\n/).filter(l => l.trim().length > 0);
+      const cabecalho = linhas[0].split(sep).map(h => h.trim().toLowerCase());
+
+      const idxPedido = cabecalho.indexOf('pedido');
+      const idxNome = cabecalho.indexOf('nome');
+      const idxComprimento = cabecalho.indexOf('comprimento');
+      const idxLargura = cabecalho.indexOf('largura');
+      const idxAltura = cabecalho.indexOf('altura');
+      const idxPeso = cabecalho.indexOf('peso');
+      const idxFragil = cabecalho.indexOf('fragil');
+      const idxRotacao = cabecalho.indexOf('rotacao');
+      const idxQuantidade = cabecalho.indexOf('quantidade');
+
+      if (idxPedido === -1) {
+        this.popupService.erro('O CSV precisa conter uma coluna "pedido".');
+        return;
+      }
+
+      const usuario = this.authService.getUsuario();
+      if (!usuario) {
+        this.popupService.erro('Usuário não autenticado.');
+        return;
+      }
+
+      const pacotesMap = new Map<string, Pacote>();
+      const pedidosMap = new Map<string, Pedido>();
+
+      const toBool = (v: string | undefined) => v?.trim().toLowerCase() === 'true' || v?.trim() === '1';
+      const toNumberSafe = (v: string | undefined) => {
+        const n = Number((v ?? '').replace(',', '.'));
+        return Number.isFinite(n) ? n : 0;
+      };
+
+      for (let i = 1; i < linhas.length; i++) {
+        const cols = linhas[i].split(sep).map(c => c.trim());
+        if (cols.length === 0 || cols.every(c => c === '')) continue;
+
+        const nomePedido = cols[idxPedido]?.trim() || `Pedido ${i}`;
+        const quantidadeLida = idxQuantidade >= 0 ? Math.max(1, Math.floor(Number(cols[idxQuantidade] ?? 1))) : 1;
+
+        let pacote: Pacote = {
+          id: undefined,
+          nome: cols[idxNome]?.trim() || `Pacote ${i}`,
+          comprimento: toNumberSafe(cols[idxComprimento]),
+          largura: toNumberSafe(cols[idxLargura]),
+          altura: toNumberSafe(cols[idxAltura]),
+          peso: toNumberSafe(cols[idxPeso]),
+          fragil: toBool(cols[idxFragil]),
+          rotacao: toBool(cols[idxRotacao]),
+          usuario: { id: usuario.id! }
+        };
+
+        try {
+          const res: any = await this.pacoteService.salvar(pacote).toPromise();
+          pacote.id = res.id;
+        } catch (err: any) {
+          if (err.status === 409 && err.error?.mensagem?.includes('Pacote já cadastrado')) {
+            console.warn(`Pacote duplicado detectado: ${pacote.nome}`);
+            this.popupService.alerta(`Pacote "${pacote.nome}" já cadastrado — reutilizado.`);
+            // continua o fluxo, o pacote não será perdido
+          } else {
+            console.error('Erro ao salvar pacote', pacote.nome, err);
+            this.popupService.erro(`Erro ao salvar o pacote "${pacote.nome}".`);
+            return;
+          }
+        }
+
+        // 🔹 Adiciona o pacote ao mapa de pacotes/pedidos mesmo que já existisse
+        pacotesMap.set(`${nomePedido}-${pacote.nome}`, pacote);
+
+        if (!pedidosMap.has(nomePedido)) {
+          pedidosMap.set(nomePedido, { nome: nomePedido, pacotes: [] });
+        }
+
+        pedidosMap.get(nomePedido)!.pacotes.push({
+          pacote,
+          quantidade: quantidadeLida,
+          confirmado: true
+        });
+      }
+
+      // Atualiza estados
+      this.pacotes = Array.from(pacotesMap.values());
+      this.pedidos = Array.from(pedidosMap.values());
+      this.pacotesSelecionados = [...this.pacotes];
+      this.quantidadesSelecionadas = {};
+      this.quantidadesConfirmadas = {};
+
+      for (const ped of this.pedidos) {
+        for (const pp of ped.pacotes) {
+          const id = pp.pacote.id!;
+          this.quantidadesSelecionadas[id] = pp.quantidade ?? 1;
+          this.quantidadesConfirmadas[id] = true;
+        }
+      }
+
+      this.popupService.sucesso('Pedidos importados e pacotes processados com sucesso!');
+      console.log('Pedidos importados:', this.pedidos);
+
+    } catch (err) {
+      console.error('Erro ao processar CSV:', err);
+      this.popupService.erro('Erro ao ler o arquivo CSV.');
+    }
+  };
+
+  reader.readAsText(file, 'UTF-8');
+}
+
+
+
 
 }

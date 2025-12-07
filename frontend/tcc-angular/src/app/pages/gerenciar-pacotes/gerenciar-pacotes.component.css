@@ -1,113 +1,69 @@
-.container {
-  height: auto;
-  width: 80%;
-  background-color: var(--background-color);
-  padding: 20px 40px;
-  border-radius: 12px;
-  overflow: hidden;
-}
-
-.fragil-true {
-  background-color: #e0e5f3;
-  border: 1px solid #4488ff;
-  padding: 2px 6px;
-  border-radius: 8px;
-  color: #4488ff;
-  font-weight: 500;
-}
-
-.fragil-false {
-  background-color: #e1e1e1;
-  border: 1px solid #9a9a9a;
-  padding: 2px 6px;
-  border-radius: 8px;
-  color: #9a9a9a;
-}
-
+.card:hover {cursor: default; transform: none;}
+/* --- Toggle Switch (específico da página) --- */
 .toggle-switch {
   display: flex;
   align-items: left;
   gap: 12px;
 }
 
-/* Estilo base do botão deslizante */
+/* Base do switch */
 .switch {
   position: relative;
   display: inline-block;
   width: 46px;
   height: 26px;
 }
-
 .switch input {
   opacity: 0;
   width: 0;
   height: 0;
 }
 
-/* Trilho do botão */
+/* Trilho */
 .slider {
   position: absolute;
   cursor: pointer;
   background-color: #ccc;
   border-radius: 34px;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  transition: 0.4s;
+  inset: 0;
+  transition: 0.25s;
 }
 
-/* Bolinha do botão */
+/* Bolinha */
 .slider:before {
-  position: absolute;
   content: "";
+  position: absolute;
   height: 20px;
   width: 20px;
   left: 3px;
   bottom: 3px;
-  background-color: white;
-  transition: 0.4s;
+  background-color: #fff;
   border-radius: 50%;
+  transition: 0.25s;
 }
 
-/* Quando ativado */
-input:checked + .slider {
-  background-color: #10c66f;
+/* Ativo */
+.switch input:checked + .slider {
+  background-color: var(--accent-color);
 }
-
-input:checked + .slider:before {
+.switch input:checked + .slider:before {
   transform: translateX(20px);
 }
 
 /* Forma arredondada */
-.slider.round {
-  border-radius: 34px;
-}
+.slider.round { border-radius: 34px; }
 
+/* Indicador textual do toggle */
 .fragil-indicador {
-  font-weight: bold;
-  color: #333;
+  font-weight: 700;
+  color: var(--text-color);
   min-width: 30px;
 }
 
+/* Mensagens de erro de campo */
 .erro-campo {
   color: #e74c3c;
   font-size: 0.85rem;
   margin-top: 4px;
   display: block;
-}
-
-.filtro-bar {
-  margin-bottom: 20px;
-  display: flex;
-  justify-content: flex-end;
-}
-
-.input-filtro {
-  padding: 8px 12px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  width: 100%;
-  max-width: 300px;
-  font-size: 0.95rem;
 }

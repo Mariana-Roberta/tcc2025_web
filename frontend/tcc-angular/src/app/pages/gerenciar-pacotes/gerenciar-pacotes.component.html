@@ -1,208 +1,222 @@
 <app-navbar></app-navbar>
 
-<div class="page-container">
+<div class="page-container" style="height: auto; min-height: 100vh;display: flex; flex-direction: column">
+  <section class="acoes-topo" style="margin-bottom: 16px; display: flex; gap: 12px; align-items: center; justify-content: space-between;">
+    <div>
+      <button class="btn btn-sec " (click)="voltar()" title="Voltar">
+        <i class="pi pi-arrow-left"></i> Voltar
+      </button>
+    </div>
+  </section>
+
   <div class="container">
-    <div class="top-bar">
       <h1>Gerenciar Pacotes</h1>
-      <button class="btn-sucesso" *ngIf="!mostrarFormulario" (click)="exibirFormulario()">+ Adicionar Pacote</button>
-    </div>
+      <div style="display: flex; gap: 20px;">
+        <button class="btn-sucesso" (click)="fileInput.click()">
+          <i class="pi pi-file-import"></i> Importar CSV
+        </button>
+        <input
+          #fileInput
+          type="file"
+          (change)="importarCSV($event)"
+          accept=".csv"
+          hidden
+        />
+        <button class="btn-sucesso" *ngIf="!mostrarFormulario" (click)="exibirFormulario()"><i class="pi pi-plus-circle"></i> Adicionar Pacote</button>
+      </div>
 
-    <!-- FORMULÁRIO -->
-    <div *ngIf="mostrarFormulario" class="form-container">
-      <form class="form" (ngSubmit)="verificarFormulario(form)" #form="ngForm">
-
-        <!-- NOME -->
-        <div class="input-container">
-          <label for="nome">Nome do Pacote</label>
-          <input
-            type="text"
-            id="nome"
-            name="nome"
-            [(ngModel)]="novoPacote.nome"
-            placeholder="Nome do Pacote"
-            required
-            #nome="ngModel"
-            (focus)="campoFocado = 'nome'"
-            (blur)="campoFocado = null"
-          />
-          <span class="erro-campo" *ngIf="campoFocado === 'nome' && nome.errors">
-            O nome é obrigatório.
-          </span>
-        </div>
-
-        <!-- COMPRIMENTO -->
-        <div class="input-container">
-          <label for="comprimento">Comprimento (m)</label>
-          <input
-            type="number"
-            id="comprimento"
-            name="comprimento"
-            [(ngModel)]="novoPacote.comprimento"
-            placeholder="Comprimento (m)"
-            required
-            min="0.0000001"
-            #comprimento="ngModel"
-            (focus)="campoFocado = 'comprimento'"
-            (blur)="campoFocado = null"
-          />
-          <span class="erro-campo" *ngIf="campoFocado === 'comprimento' && comprimento.errors">
-            O campo deve ser preenchido com um valor maior que 0.
-          </span>
-        </div>
-
-        <!-- LARGURA -->
-        <div class="input-container">
-          <label for="largura">Largura (m)</label>
-          <input
-            type="number"
-            id="largura"
-            name="largura"
-            [(ngModel)]="novoPacote.largura"
-            placeholder="Largura (m)"
-            required
-            min="0.0000001"
-            #largura="ngModel"
-            (focus)="campoFocado = 'largura'"
-            (blur)="campoFocado = null"
-          />
-          <span class="erro-campo" *ngIf="campoFocado === 'largura' && largura.errors">
-            O campo deve ser preenchido com um valor maior que 0.
-          </span>
-        </div>
-
-        <!-- ALTURA -->
-        <div class="input-container">
-          <label for="altura">Altura (m)</label>
-          <input
-            type="number"
-            id="altura"
-            name="altura"
-            [(ngModel)]="novoPacote.altura"
-            placeholder="Altura (m)"
-            required
-            min="0.0000001"
-            #altura="ngModel"
-            (focus)="campoFocado = 'altura'"
-            (blur)="campoFocado = null"
-          />
-          <span class="erro-campo" *ngIf="campoFocado === 'altura' && altura.errors">
-            O campo deve ser preenchido com um valor maior que 0.
-          </span>
-        </div>
-
-        <!-- PESO -->
-        <div class="input-container">
-          <label for="peso">Peso (kg)</label>
-          <input
-            type="number"
-            id="peso"
-            name="peso"
-            [(ngModel)]="novoPacote.peso"
-            placeholder="Peso (kg)"
-            required
-            min="0.0000001"
-            #peso="ngModel"
-            (focus)="campoFocado = 'peso'"
-            (blur)="campoFocado = null"
-          />
-          <span class="erro-campo" *ngIf="campoFocado === 'peso' && peso.errors">
-            O campo deve ser preenchido com um valor maior que 0.
-          </span>
-        </div>
-
-        <!-- ROTAÇÃO -->
-        <div class="input-container toggle-switch">
-          <label for="rotacao">
-            Permitir rotacionar?
-            <span class="fragil-indicador">{{ novoPacote.rotacao ? 'Sim' : 'Não' }}</span>
-          </label>
-          <label class="switch">
-            <input
-              type="checkbox"
-              id="rotacao"
-              name="rotacao"
-              [(ngModel)]="novoPacote.rotacao"
-            />
-            <span class="slider round"></span>
-          </label>
-        </div>
-
-        <!-- BOTÕES -->
-        <div class="form-actions">
-          <button
-            type="submit"
-            [ngClass]="{ 'btn-sucesso': !form.invalid, 'btn-desabilitado': form.invalid }"
-            [disabled]="form.invalid"
-            (focus)="campoFocado = 'submit'"
-            (blur)="campoFocado = null"
-          >
-            {{ modoEdicao ? 'Salvar Alterações' : 'Salvar' }}
-          </button>
-          <button type="button" class="btn-secundario" (click)="cancelar()">Cancelar</button>
-        </div>
-      </form>
-    </div>
-
-    <!-- LISTAGEM -->
-    <div class="tabela-container">
-      <h2>Lista de Pacotes</h2>
-      <div class="filtro-bar"  style="display: flex; gap: 10px; justify-content: center;">
+      <div class="filtro-bar">
         <input
           type="text"
           [(ngModel)]="filtroPacote"
           placeholder="Filtrar por nome, peso ou dimensões"
           class="input-filtro"
         />
-        <button type="button" class="btn-secundario" (click)="filtroPacote = ''">
-          Limpar
-        </button>
+        <button type="button" class="btn-secundario" (click)="filtroPacote = ''"> Limpar </button>
       </div>
 
-      <table class="custom-table">
-        <thead>
-          <tr>
-            <th>Nome</th>
-            <th>Dimensões (C x L x A)</th>
-            <th>Peso (kg)</th>
-            <th>Permite rotação</th>
-            <th>Ações</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let pacote of pacotesPaginados; let i = index">
-            <td>{{ pacote.nome }}</td>
-            <td>{{ pacote.comprimento }} x {{ pacote.largura }} x {{ pacote.altura }}</td>
-            <td>{{ pacote.peso }}</td>
-            <td>
-              <span
-                class="fragil"
-                [ngClass]="{ 'fragil-true': pacote.rotacao, 'fragil-false': !pacote.rotacao }"
-              >
+      <div class="card-grid">
+        <div class="card" *ngFor="let pacote of pacotesPaginados; let i = index">
+          <h3>{{ pacote.nome }}</h3>
+
+          <ul class="card-info">
+            <li><strong>Dimensões:</strong> {{ pacote.comprimento }} × {{ pacote.largura }} × {{ pacote.altura }} m</li>
+            <li><strong>Peso:</strong> {{ pacote.peso }} kg</li>
+            <li>
+              <strong>Permite rotação:</strong>
+              <span [ngClass]="{ 'fragil-true': pacote.rotacao, 'fragil-false': !pacote.rotacao }">
                 {{ pacote.rotacao ? 'Sim' : 'Não' }}
               </span>
-            </td>
-            <td>
-              <div style="display: flex; gap: 10px">
-                <button class="btn-primario" (click)="editarPacote(pacote, i)">Editar</button>
-                <button class="btn-danger" (click)="excluirPacote(pacote)">Excluir</button>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+            </li>
+          </ul>
+
+          <div class="card-actions">
+            <button class="btn-primario" (click)="editarPacote(pacote, i)">Editar</button>
+            <button class="btn-danger" (click)="excluirPacote(pacote)">Excluir</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Paginação (usa estilos globais) -->
       <div class="paginacao">
-  <button
-    *ngFor="let pagina of [].constructor(totalPaginas); let i = index"
-    (click)="mudarPagina(i + 1)"
-    [class.ativa]="paginaAtual === i + 1"
-  >
-    {{ i + 1 }}
-  </button>
+        <button
+          *ngFor="let pagina of [].constructor(totalPaginas); let i = index"
+          (click)="mudarPagina(i + 1)"
+          [class.ativa]="paginaAtual === i + 1"
+        >
+          {{ i + 1 }}
+        </button>
+      </div>
 </div>
 
+    <!-- FORMULÁRIO -->
+    <div *ngIf="mostrarFormulario" class="popup-overlay">
+      <div class="popup-form-container">
+        <h2>{{ modoEdicao ? 'Editar Pacote' : 'Adicionar Pacote' }}</h2>
+        
+        <form class="form" (ngSubmit)="verificarFormulario(form)" #form="ngForm" novalidate>
+
+          <!-- NOME -->
+          <div class="input-container">
+            <label for="nome">Nome do Pacote</label>
+            <input
+              type="text"
+              id="nome"
+              name="nome"
+              [(ngModel)]="novoPacote.nome"
+              placeholder="Nome do Pacote"
+              required
+              #nome="ngModel"
+              (focus)="campoFocado = 'nome'"
+              (blur)="campoFocado = null"
+              aria-required="true"
+            />
+            <span class="input-error" *ngIf="campoFocado === 'nome' && nome.errors">
+              O nome é obrigatório.
+            </span>
+          </div>
+
+          <!-- COMPRIMENTO -->
+          <div class="input-container">
+            <label for="comprimento">Comprimento (m)</label>
+            <input
+              type="number"
+              id="comprimento"
+              name="comprimento"
+              [(ngModel)]="novoPacote.comprimento"
+              placeholder="Comprimento (m)"
+              required
+              min="0.0000001"
+              step="any"
+              #comprimento="ngModel"
+              (focus)="campoFocado = 'comprimento'"
+              (blur)="campoFocado = null"
+              aria-required="true"
+            />
+            <span class="input-error" *ngIf="campoFocado === 'comprimento' && comprimento.errors">
+              O campo deve ser preenchido com um valor maior que 0.
+            </span>
+          </div>
+
+          <!-- LARGURA -->
+          <div class="input-container">
+            <label for="largura">Largura (m)</label>
+            <input
+              type="number"
+              id="largura"
+              name="largura"
+              [(ngModel)]="novoPacote.largura"
+              placeholder="Largura (m)"
+              required
+              min="0.0000001"
+              step="any"
+              #largura="ngModel"
+              (focus)="campoFocado = 'largura'"
+              (blur)="campoFocado = null"
+              aria-required="true"
+            />
+            <span class="input-error" *ngIf="campoFocado === 'largura' && largura.errors">
+              O campo deve ser preenchido com um valor maior que 0.
+            </span>
+          </div>
+
+          <!-- ALTURA -->
+          <div class="input-container">
+            <label for="altura">Altura (m)</label>
+            <input
+              type="number"
+              id="altura"
+              name="altura"
+              [(ngModel)]="novoPacote.altura"
+              placeholder="Altura (m)"
+              required
+              min="0.0000001"
+              step="any"
+              #altura="ngModel"
+              (focus)="campoFocado = 'altura'"
+              (blur)="campoFocado = null"
+              aria-required="true"
+            />
+            <span class="input-error" *ngIf="campoFocado === 'altura' && altura.errors">
+              O campo deve ser preenchido com um valor maior que 0.
+            </span>
+          </div>
+
+          <!-- PESO -->
+          <div class="input-container">
+            <label for="peso">Peso (kg)</label>
+            <input
+              type="number"
+              id="peso"
+              name="peso"
+              [(ngModel)]="novoPacote.peso"
+              placeholder="Peso (kg)"
+              required
+              min="0.0000001"
+              step="any"
+              #peso="ngModel"
+              (focus)="campoFocado = 'peso'"
+              (blur)="campoFocado = null"
+              aria-required="true"
+            />
+            <span class="input-error" *ngIf="campoFocado === 'peso' && peso.errors">
+              O campo deve ser preenchido com um valor maior que 0.
+            </span>
+          </div>
+
+          <!-- ROTAÇÃO -->
+          <div class="input-container toggle-switch">
+            <label for="rotacao">
+              Permitir rotacionar?
+              <span class="fragil-indicador">{{ novoPacote.rotacao ? 'Sim' : 'Não' }}</span>
+            </label>
+            <label class="switch" aria-label="Permitir rotacionar">
+              <input
+                type="checkbox"
+                id="rotacao"
+                name="rotacao"
+                [(ngModel)]="novoPacote.rotacao"
+              />
+              <span class="slider round" aria-hidden="true"></span>
+            </label>
+          </div>
+
+          <!-- BOTÕES -->
+          <div class="form-actions">
+            <button
+              type="submit"
+              [ngClass]="{ 'btn-sucesso': !form.invalid, 'btn-desabilitado': form.invalid }"
+              [disabled]="form.invalid"
+              (focus)="campoFocado = 'submit'"
+              (blur)="campoFocado = null"
+            >
+              {{ modoEdicao ? 'Salvar Alterações' : 'Salvar' }}
+            </button>
+            <button type="button" class="btn-secundario" (click)="cancelar()">Cancelar</button>
+          </div>
+        </form>
+      </div>
     </div>
-  </div>
-</div>
 
 <app-screen-background></app-screen-background>
 <app-popup></app-popup>

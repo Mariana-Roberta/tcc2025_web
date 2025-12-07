@@ -20,7 +20,7 @@
 
 .logo-text {
   font-size: 2rem;
-  color: #163e68;
+  color: var(--text-color);
   font-weight: 600;
   margin: 0;
 }

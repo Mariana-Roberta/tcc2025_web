@@ -1,11 +1,10 @@
-<div class="page-container">
-  <div class="form-container">
+<div class="page-container" style="height:90vh; display: flex; flex-direction: column; justify-content: center">
+  <div class="form-container card" style="align-self: center">
     <app-logo></app-logo>
 
     <h2>Login</h2>
 
-    <form class="form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-
+    <form class="form" [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
       <!-- Email -->
       <div class="input-container">
         <label for="email">Email</label>
@@ -14,12 +13,27 @@
           type="email"
           placeholder="Digite seu email"
           formControlName="email"
+          autocomplete="email"
+          autocapitalize="none"
+          spellcheck="false"
           [class.input-error]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched"
+          [attr.aria-invalid]="loginForm.get('email')?.invalid ? 'true' : 'false'"
+          [attr.aria-describedby]="(loginForm.get('email')?.invalid && loginForm.get('email')?.touched) ? 'email-erro' : null"
         />
-        <small *ngIf="loginForm.get('email')?.hasError('required') && loginForm.get('email')?.touched">
+        <small
+          *ngIf="loginForm.get('email')?.hasError('required') && loginForm.get('email')?.touched"
+          class="error-text"
+          role="alert"
+          aria-live="polite"
+        >
           Email é obrigatório.
         </small>
-        <small *ngIf="loginForm.get('email')?.hasError('email') && loginForm.get('email')?.touched">
+        <small
+          *ngIf="loginForm.get('email')?.hasError('email') && loginForm.get('email')?.touched"
+          class="error-text"
+          role="alert"
+          aria-live="polite"
+        >
           Email inválido.
         </small>
       </div>
@@ -32,26 +46,40 @@
           type="password"
           placeholder="Digite sua senha"
           formControlName="password"
+          autocomplete="current-password"
           [class.input-error]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
+          [attr.aria-invalid]="loginForm.get('password')?.invalid ? 'true' : 'false'"
+          [attr.aria-describedby]="(loginForm.get('password')?.invalid && loginForm.get('password')?.touched) ? 'password-erro' : null"
         />
-        <small *ngIf="loginForm.get('password')?.hasError('required') && loginForm.get('password')?.touched">
+        <small
+          *ngIf="loginForm.get('password')?.hasError('required') && loginForm.get('password')?.touched"
+          id="password-erro"
+          class="error-text"
+          role="alert"
+          aria-live="polite"
+        >
           Senha é obrigatória.
         </small>
       </div>
 
       <!-- Erro geral -->
-      <div *ngIf="loginErro" class="erro-msg">
+      <div *ngIf="loginErro" class="erro-msg" role="alert" aria-live="assertive">
         {{ loginErro }}
       </div>
 
       <!-- Botão -->
-      <button class="btn-primario" type="submit" [disabled]="loginForm.invalid">
+      <button
+        class="btn-primario"
+        type="submit"
+        [disabled]="loginForm.invalid"
+      >
         Entrar
       </button>
     </form>
 
     <div class="register">
-      <p>Não tem conta?
+      <p>
+        Não tem conta?
         <a class="register-link" (click)="irParaRegistro()">Registre-se aqui</a>
       </p>
     </div>

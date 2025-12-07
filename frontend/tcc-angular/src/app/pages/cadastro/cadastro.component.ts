@@ -28,39 +28,48 @@ export class CadastroComponent {
 
   constructor(private usuarioService: UsuarioService, private popupService: PopupService, private router: Router) {}
 
-  salvar() {
-  // Reformatar telefone para garantir consistência
-  let telefone = this.usuario.telefone.replace(/\D/g, ''); // Só os números
-
-  if (telefone.length === 10) {
-    telefone = telefone.replace(/^(\d{2})(\d{4})(\d{4})/, '($1) $2-$3');
-  } else if (telefone.length === 11) {
-    telefone = telefone.replace(/^(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+  private formatarTelefoneParaEnvio(tel: string): string {
+    const d = (tel || '').replace(/\D/g, '').slice(0, 11);
+    if (d.length === 10) {
+      // fixo
+      return d.replace(/^(\d{2})(\d{4})(\d{4})$/, '($1) $2-$3');
+    }
+    if (d.length === 11) {
+      // celular
+      return d.replace(/^(\d{2})(\d{5})(\d{4})$/, '($1) $2-$3');
+    }
+    return tel; // deixa como veio; backend validará e retornará erro
   }
 
-  const usuarioLimpo: Usuario = {
-    ...this.usuario,
-    cnpj: this.usuario.cnpj.replace(/\D/g, ''),
-    telefone: telefone // aqui entra formatado no padrão
-  };
+  salvar() {
+    const usuarioLimpo: Usuario = {
+      ...this.usuario,
+      cnpj: this.usuario.cnpj.replace(/\D/g, ''),
+      telefone: this.formatarTelefoneParaEnvio(this.usuario.telefone),
+    };
 
-  this.usuarioService.cadastrarUsuario(usuarioLimpo).subscribe({
-    next: (usuario) => {
-      console.log('Usuário cadastrado com sucesso:', usuario);
-      this.popupService.sucesso('Cadastro de usuário realizado com sucesso!');
-    },
-    error: (err) => {
-      const mensagem = err.error?.mensagem || err.message;
-      this.popupService.erro(mensagem);
-    }
-  });
-}
+    this.usuarioService.salvar(usuarioLimpo).subscribe({
+      next: (data) => {
+        console.log('Usuário cadastrado com sucesso:', data);
+        this.popupService.sucesso('Cadastro de usuário realizado com sucesso!');
+      },
+      error: (err) => {
+        const mensagem =
+          err.error?.message ||
+          err.error?.mensagem ||
+          err.message ||
+          'Erro inesperado ao cadastrar usuário.';
 
+        this.popupService.erro(mensagem);
+      }
+    });
+  }
 
-  voltar () {
+  voltar() {
+    console.clear();      // limpa o console
+    this.popupService.limpar(); // se existir popup aberto
     this.router.navigate(['/login']);
   }
-
 
   formatarCnpj(event: any): void {
     let v = event.target.value.replace(/\D/g, ''); // remove tudo que não é número
@@ -75,19 +84,24 @@ export class CadastroComponent {
   }
 
   formatarTelefone(event: any): void {
-    let v = event.target.value.replace(/\D/g, '');
-    if (v.length > 11) v = v.slice(0, 11);
+  let v = String(event.target.value || '').replace(/\D/g, '');
+  if (v.length > 11) v = v.slice(0, 11);
 
-    if (v.length <= 10) {
-      // formato (00) 0000-0000
-      v = v.replace(/^(\d{2})(\d)/, '($1) $2');
-      v = v.replace(/(\d{4})(\d)/, '$1-$2');
-    } else {
-      // formato (00) 00000-0000 para celular
-      v = v.replace(/^(\d{2})(\d)/, '($1) $2');
-      v = v.replace(/(\d{5})(\d)/, '$1-$2');
-    }
-
-    event.target.value = v;
+  let formatado: string;
+  if (v.length <= 10) {
+    // (00) 0000-0000
+    formatado = v
+      .replace(/^(\d{2})(\d)/, '($1) $2')
+      .replace(/(\d{4})(\d{1,4})$/, '$1-$2');
+  } else {
+    // (00) 00000-0000
+    formatado = v
+      .replace(/^(\d{2})(\d)/, '($1) $2')
+      .replace(/(\d{5})(\d{1,4})$/, '$1-$2');
   }
+
+  event.target.value = formatado;
+  this.usuario.telefone = formatado; // ✅ atualiza o modelo
+}
+
 }

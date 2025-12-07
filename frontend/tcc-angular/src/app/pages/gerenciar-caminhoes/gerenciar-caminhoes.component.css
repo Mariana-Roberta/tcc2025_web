@@ -1,31 +1,21 @@
-.container {
-  height: auto;
-  width: 80%;
-  background-color: var(--background-color);
-  padding: 20px 40px;
-  border-radius: 12px;
-  overflow: hidden;
-}
-
-.erro-campo {
-  color: #e74c3c;
-  font-size: 0.85rem;
-  margin-top: 4px;
-  display: block;
-}
-
-.filtro-bar {
-  margin-bottom: 20px;
+.card:hover {cursor: default; transform: none;}
+/* Ações dentro da célula da tabela */
+.acoes-linha {
   display: flex;
-  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
-.input-filtro {
-  padding: 8px 12px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  width: 100%;
-  max-width: 300px;
-  font-size: 0.95rem;
+/* ======== Cards ======== */
+
+.info-caminhao {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 12px;
 }
 
+.info-caminhao li {
+  font-size: 14px;
+  margin-bottom: 4px;
+  color: var(--text-color);
+}

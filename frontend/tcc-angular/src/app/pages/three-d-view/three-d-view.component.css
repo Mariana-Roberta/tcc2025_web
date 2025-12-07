@@ -1,3 +1,4 @@
+/* three-d-view.component.css */
 :host {
   display: block;
   width: 100%;
@@ -12,9 +13,16 @@ canvas {
   border-radius: 10px;
 }
 
-#container {
+.three-container {
   width: 100%;
   height: 100%;
   position: relative;
   border-radius: 10px;
+}
+
+@media (max-width: 576px) {
+  .three-container, canvas {
+    min-height: 200px;
+    height: 500px;
+  }
 }

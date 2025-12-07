@@ -1,184 +1,191 @@
 <app-navbar></app-navbar>
-<div class="page-container">
+
+<div class="page-container" style="height: auto; min-height: 100vh;display: flex; flex-direction: column">
+  <section class="acoes-topo" style="margin-bottom: 16px; display: flex; gap: 12px; align-items: center; justify-content: space-between;">
+    <div>
+      <button class="btn btn-sec " (click)="voltar()" title="Voltar">
+        <i class="pi pi-arrow-left"></i> Voltar
+      </button>
+    </div>
+  </section>
+
   <div class="container">
     <h1>Gerenciar Caminhões</h1>
-    <button class="btn-sucesso" *ngIf="!mostrarFormulario" (click)="exibirFormulario()">+ Adicionar Caminhão</button>
 
-    <!-- FORMULÁRIO -->
-    <!-- FORMULÁRIO -->
-<div *ngIf="mostrarFormulario" class="form-container">
-  <form class="form" (ngSubmit)="verificarFormulario(form)" #form="ngForm">
+      <div style="display: flex; gap: 20px;">
+        <button class="btn-sucesso" (click)="fileInput.click()">
+          <i class="pi pi-file-import"></i> Importar CSV
+        </button>
+        <input
+          #fileInput
+          type="file"
+          (change)="importarCSV($event)"
+          accept=".csv"
+          hidden
+        />
+        <button class="btn-sucesso" *ngIf="!mostrarFormulario" (click)="exibirFormulario()"><i class="pi pi-plus-circle"></i> Adicionar Pacote</button>
+      </div>
 
-    <!-- MODELO -->
-    <div class="input-container">
-      <label for="modelo">Modelo</label>
+    <div class="filtro-bar">
       <input
         type="text"
-        name="modelo"
-        id="modelo"
-        [(ngModel)]="novoCaminhao.nome"
-        placeholder="Modelo do caminhão"
-        required
-        #modelo="ngModel"
-        (focus)="campoFocado = 'modelo'"
-        (blur)="campoFocado = null"
+        [(ngModel)]="filtroCaminhao"
+        placeholder="Filtrar por nome, peso ou dimensões"
+        class="input-filtro"
       />
-      <span class="erro-campo" *ngIf="campoFocado === 'modelo' && modelo.errors">
-        O modelo é obrigatório.
-      </span>
+      <button type="button" class="btn-secundario" (click)="filtroCaminhao = ''">Limpar</button>
     </div>
 
-    <!-- COMPRIMENTO -->
-    <div class="input-container">
-      <label for="comprimento">Comprimento (m)</label>
-      <input
-        type="number"
-        name="comprimento"
-        id="comprimento"
-        [(ngModel)]="novoCaminhao.comprimento"
-        placeholder="Comprimento (m)"
-        required
-        min="0.1"
-        #comprimento="ngModel"
-        (focus)="campoFocado = 'comprimento'"
-        (blur)="campoFocado = null"
-      />
-      <span class="erro-campo" *ngIf="campoFocado === 'comprimento' && comprimento.errors">
-        O campo deve ser preenchido com um valor maior que 0.
-      </span>
+    <!-- ✅ Cards no lugar da tabela -->
+    <div class="card-grid" style="margin: 20px 0;">
+      <div class="card" *ngFor="let caminhao of caminhoesPaginados; let i = index">
+        <h3>{{ caminhao.nome }}</h3>
+
+        <ul class="card-info">
+          <li><strong>Comprimento:</strong> {{ caminhao.comprimento }} m</li>
+          <li><strong>Largura:</strong> {{ caminhao.largura }} m</li>
+          <li><strong>Altura:</strong> {{ caminhao.altura }} m</li>
+          <li><strong>Peso Limite:</strong> {{ caminhao.pesoLimite }} kg</li>
+        </ul>
+
+        <div class="card-actions">
+          <button class="btn-primario" (click)="editarCaminhao(caminhao, i)">Editar</button>
+          <button class="btn-danger" (click)="excluirCaminhao(caminhao)">Excluir</button>
+        </div>
+      </div>
     </div>
 
-    <!-- LARGURA -->
-    <div class="input-container">
-      <label for="largura">Largura (m)</label>
-      <input
-        type="number"
-        name="largura"
-        id="largura"
-        [(ngModel)]="novoCaminhao.largura"
-        placeholder="Largura (m)"
-        required
-        min="0.1"
-        #largura="ngModel"
-        (focus)="campoFocado = 'largura'"
-        (blur)="campoFocado = null"
-      />
-      <span class="erro-campo" *ngIf="campoFocado === 'largura' && largura.errors">
-        O campo deve ser preenchido com um valor maior que 0.
-      </span>
-    </div>
-
-    <!-- ALTURA -->
-    <div class="input-container">
-      <label for="altura">Altura (m)</label>
-      <input
-        type="number"
-        name="altura"
-        id="altura"
-        [(ngModel)]="novoCaminhao.altura"
-        placeholder="Altura (m)"
-        required
-        min="0.1"
-        #altura="ngModel"
-        (focus)="campoFocado = 'altura'"
-        (blur)="campoFocado = null"
-      />
-      <span class="erro-campo" *ngIf="campoFocado === 'altura' && altura.errors">
-        O campo deve ser preenchido com um valor maior que 0.
-      </span>
-    </div>
-
-    <!-- PESO LIMITE -->
-    <div class="input-container">
-      <label for="pesoLimite">Peso limite (kg)</label>
-      <input
-        type="number"
-        name="pesoLimite"
-        id="pesoLimite"
-        [(ngModel)]="novoCaminhao.pesoLimite"
-        placeholder="Peso limite (kg)"
-        required
-        min="1"
-        #pesoLimite="ngModel"
-        (focus)="campoFocado = 'pesoLimite'"
-        (blur)="campoFocado = null"
-      />
-      <span class="erro-campo" *ngIf="campoFocado === 'pesoLimite' && pesoLimite.errors">
-        O campo deve ser preenchido com um valor maior que 0.
-      </span>
-    </div>
-
-    <!-- AÇÕES -->
-    <div class="form-actions">
+  
+    <div class="paginacao">
       <button
-        type="submit"
-        [ngClass]="{'btn-sucesso': !form.invalid, 'btn-desabilitado': form.invalid}"
-        [disabled]="form.invalid"
-        (focus)="campoFocado = 'submit'"
-        (blur)="campoFocado = null">
-        {{ modoEdicao ? 'Salvar Alterações' : 'Salvar' }}
+        *ngFor="let pagina of [].constructor(totalPaginas); let i = index"
+        (click)="mudarPagina(i + 1)"
+        [class.ativa]="paginaAtual === i + 1">
+        {{ i + 1 }}
       </button>
-      <button type="button" class="btn-secundario" (click)="cancelarAdicao()">Cancelar</button>
-    </div>
-
-  </form>
-</div>
-
-
-    <!-- LISTAGEM -->
-    <div class="tabela-container">
-      <h2>Lista de Caminhões</h2>
-      <div class="filtro-bar"  style="display: flex; gap: 10px; justify-content: center;">
-        <input
-          type="text"
-          [(ngModel)]="filtroCaminhao"
-          placeholder="Filtrar por nome, peso ou dimensões"
-          class="input-filtro"
-        />
-        <button type="button" class="btn-secundario" (click)="filtroCaminhao = ''">
-          Limpar
-        </button>
-      </div>
-      <table class="custom-table">
-        <thead>
-        <tr>
-          <th>Modelo</th>
-          <th>Comprimento</th>
-          <th>Largura</th>
-          <th>Altura</th>
-          <th>Peso Limite</th>
-          <th>Ações</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr *ngFor="let caminhao of caminhoesPaginados; let i = index">
-          <td data-label="Modelo">{{ caminhao.nome }}</td>
-          <td data-label="Comprimento">{{ caminhao.comprimento }} m</td>
-          <td data-label="Largura">{{ caminhao.largura }} m</td>
-          <td data-label="Altura">{{ caminhao.altura }} m</td>
-          <td data-label="Peso Limite">{{ caminhao.pesoLimite }} kg</td>
-          <td data-label="Ações">
-            <div style="display: flex; gap: 10px">
-              <button class="btn-primario" (click)="editarCaminhao(caminhao, i)">Editar</button>
-              <button class="btn-danger" (click)="excluirCaminhao(caminhao)">Excluir</button>
-            </div>
-          </td>
-        </tr>
-        </tbody>
-      </table>
-
-      <div class="paginacao">
-        <button
-          *ngFor="let pagina of [].constructor(totalPaginas); let i = index"
-          (click)="mudarPagina(i + 1)"
-          [class.ativa]="paginaAtual === i + 1"
-        >
-          {{ i + 1 }}
-        </button>
-      </div>
     </div>
   </div>
 </div>
+
+<!-- POP-UP DO FORMULÁRIO -->
+<div *ngIf="mostrarFormulario" class="popup-overlay">
+  <div class="popup-form-container">
+    <h2>{{ modoEdicao ? 'Editar Caminhão' : 'Adicionar Caminhão' }}</h2>
+
+    <form class="form" (ngSubmit)="verificarFormulario(form)" #form="ngForm">
+      <!-- MODELO -->
+      <div class="input-container">
+        <label for="modelo">Modelo</label>
+        <input
+          type="text"
+          name="modelo"
+          id="modelo"
+          [(ngModel)]="novoCaminhao.nome"
+          placeholder="Modelo do caminhão"
+          required
+          #modelo="ngModel"
+          (focus)="campoFocado = 'modelo'"
+          (blur)="campoFocado = null"
+        />
+        <span class="input-error" *ngIf="campoFocado === 'modelo' && modelo.errors">
+          O modelo é obrigatório.
+        </span>
+      </div>
+
+      <!-- COMPRIMENTO -->
+      <div class="input-container">
+        <label for="comprimento">Comprimento (m)</label>
+        <input
+          type="number"
+          name="comprimento"
+          id="comprimento"
+          [(ngModel)]="novoCaminhao.comprimento"
+          placeholder="Comprimento (m)"
+          required
+          min="0.1"
+          #comprimento="ngModel"
+          (focus)="campoFocado = 'comprimento'"
+          (blur)="campoFocado = null"
+        />
+        <span class="input-error" *ngIf="campoFocado === 'comprimento' && comprimento.errors">
+          O campo deve ser preenchido com um valor maior que 0.
+        </span>
+      </div>
+
+      <!-- LARGURA -->
+      <div class="input-container">
+        <label for="largura">Largura (m)</label>
+        <input
+          type="number"
+          name="largura"
+          id="largura"
+          [(ngModel)]="novoCaminhao.largura"
+          placeholder="Largura (m)"
+          required
+          min="0.1"
+          #largura="ngModel"
+          (focus)="campoFocado = 'largura'"
+          (blur)="campoFocado = null"
+        />
+        <span class="input-error" *ngIf="campoFocado === 'largura' && largura.errors">
+          O campo deve ser preenchido com um valor maior que 0.
+        </span>
+      </div>
+
+      <!-- ALTURA -->
+      <div class="input-container">
+        <label for="altura">Altura (m)</label>
+        <input
+          type="number"
+          name="altura"
+          id="altura"
+          [(ngModel)]="novoCaminhao.altura"
+          placeholder="Altura (m)"
+          required
+          min="0.1"
+          #altura="ngModel"
+          (focus)="campoFocado = 'altura'"
+          (blur)="campoFocado = null"
+        />
+        <span class="input-error" *ngIf="campoFocado === 'altura' && altura.errors">
+          O campo deve ser preenchido com um valor maior que 0.
+        </span>
+      </div>
+
+      <!-- PESO LIMITE -->
+      <div class="input-container">
+        <label for="pesoLimite">Peso limite (kg)</label>
+        <input
+          type="number"
+          name="pesoLimite"
+          id="pesoLimite"
+          [(ngModel)]="novoCaminhao.pesoLimite"
+          placeholder="Peso limite (kg)"
+          required
+          min="1"
+          #pesoLimite="ngModel"
+          (focus)="campoFocado = 'pesoLimite'"
+          (blur)="campoFocado = null"
+        />
+        <span class="input-error" *ngIf="campoFocado === 'pesoLimite' && pesoLimite.errors">
+          O campo deve ser preenchido com um valor maior que 0.
+        </span>
+      </div>
+
+      <!-- AÇÕES -->
+      <div class="form-actions">
+        <button
+          type="submit"
+          [ngClass]="{'btn-sucesso': !form.invalid, 'btn-desabilitado': form.invalid}"
+          [disabled]="form.invalid">
+          {{ modoEdicao ? 'Salvar Alterações' : 'Salvar' }}
+        </button>
+        <button type="button" class="btn-secundario" (click)="cancelarAdicao()">Cancelar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 
 <app-screen-background></app-screen-background>
 <app-popup></app-popup>

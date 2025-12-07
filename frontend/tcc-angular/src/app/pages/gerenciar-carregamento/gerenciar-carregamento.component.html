@@ -1,59 +1,211 @@
 <app-navbar></app-navbar>
 
-<div class="container">
-  <div class="top-bar">
-    <h1>Gerenciar Carregamentos</h1>
-  </div>
+<div class="page-container" 
+     style="height: auto; min-height: 100vh; display: flex; flex-direction: column">
 
-  <div class="tabela-container">
-    <h2>Lista de Carregamentos</h2>
+  <!-- Ações do topo -->
+  <section class="acoes-topo"
+           style="margin-bottom: 16px; display: flex; gap: 12px; align-items: center; justify-content: space-between;">
+    <div>
+      <button class="btn btn-sec" (click)="voltar()" title="Voltar">
+        <i class="pi pi-arrow-left"></i> Voltar
+      </button>
+    </div>
+  </section>
 
-    <div *ngFor="let carregamento of carregamentos; let cIndex = index" class="carregamento-card">
-      <h3 (click)="toggleCaminhao(cIndex)" class="accordion-header">
-        🚚 Caminhão #{{ carregamento.caminhao.id }} - {{ carregamento.caminhao.nome }}
-        <span style="float: right; cursor: pointer; margin-left: 20px;">{{ caminhaoExpandido[cIndex] ? '▲' : '▼' }}</span>
-      </h3>
+  <div class="container">
+    <h2>Gerenciar Carregamentos</h2>
 
-      <div *ngIf="caminhaoExpandido[cIndex]">
-        <p>
-          Dimensões: {{ carregamento.caminhao.comprimento }}m × {{ carregamento.caminhao.largura }}m × {{ carregamento.caminhao.altura }}m <br />
-          Peso Limite: {{ carregamento.caminhao.pesoLimite }} kg
-        </p>
+    <div *ngIf="loading" class="loading">
+      Carregando carregamentos...
+    </div>
 
-        <div *ngFor="let pedido of carregamento.pedidos; let pIndex = index">
-          <h4 (click)="togglePedido(cIndex, pIndex)" class="accordion-pedido">
-            📦 Pedido: {{ pedido.descricao || 'Pedido #' + pedido.id }}
-          </h4>
+    <!-- LISTA DE CARREGAMENTOS -->
+    <div class="carregamento-card"
+         *ngFor="let carregamento of carregamentosPaginados; trackBy: trackByCarregamento">
 
-          <div>
-            <table class="custom-table">
+      <!-- Cabeçalho -->
+      <div class="carregamento-header"
+           (click)="toggleCaminhao(carregamento.id)">
+        
+        <div class="header-main">
+          <h3>
+            Carregamento #{{ carregamento.id }} ●
+            <small>
+              Criado em {{ carregamento?.dataCriacao | date:'dd/MM/yyyy HH:mm' }}
+            </small>
+          </h3>
+
+          <span class="chip">
+            🗂️ {{ carregamento?.pedidos?.length ?? 0 }} pedidos
+          </span>
+        </div>
+
+        <div class="header-meta" style="display: flex; gap: 12px; align-items: center; justify-content: space-between;">
+          <button class="btn-danger" 
+                  (click)="excluirCarregamento(carregamento.id); $event.stopPropagation()">
+            <i class="pi pi-trash" style="margin-right: 8px"></i> Excluir
+          </button>
+
+          <button class="btn-visualizar" 
+                  (click)="visualizarCarregamento(carregamento.id); $event.stopPropagation()">
+            <i class="pi pi-eye" style="margin-right: 8px"></i> Visualizar
+          </button>
+
+          <button class="btn" (click)="baixarPdf(carregamento.id); $event.stopPropagation()">
+            <i class="pi pi-file-pdf" style="margin-right: 8px;"></i> PDF
+          </button>
+
+          <span class="caret">
+            {{ isCaminhaoAberto(carregamento.id) ? '▲' : '▼' }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Detalhes -->
+      <div class="carregamento-detalhes"
+           *ngIf="isCaminhaoAberto(carregamento.id)">
+
+        <!-- Informações do caminhão -->
+        <div class="grid-info">
+          <p style="font-size: 16px;">
+            <strong>{{ carregamento?.caminhao?.nome }} ●</strong>
+          </p>
+
+          <p>
+            <strong>Dimensões:</strong>
+            {{ carregamento?.caminhao?.comprimento }} ×
+            {{ carregamento?.caminhao?.largura }} ×
+            {{ carregamento?.caminhao?.altura }} m
+          </p>
+
+          <p>
+            <strong>Peso limite:</strong>
+            {{ carregamento?.caminhao?.pesoLimite | number:'1.0-0' }} kg
+          </p>
+        </div>
+
+        <!-- PEDIDOS -->
+        <div class="pedido-card"
+             *ngFor="let pedido of carregamento?.pedidos; trackBy: trackByPedido">
+
+          <div class="pedido-header"
+               (click)="togglePedido(carregamento.id, pedido?.id ?? -1)">
+
+            📦 {{ pedido?.descricao || ('Pedido #' + pedido?.id) }}
+
+            <div class="header-meta">
+              <span class="pedido-info">
+                Itens: {{ contarItensPedido(pedido) }} •
+                Peso: {{ calcularPesoPedido(pedido) | number:'1.0-0' }} kg
+              </span>
+
+              <span class="caret">
+                {{ isPedidoAberto(carregamento.id, pedido.id) ? '▲' : '▼' }}
+              </span>
+            </div>
+          </div>
+
+          <!-- PACOTES -->
+          <div class="pacote-wrapper"
+               *ngIf="isPedidoAberto(carregamento.id, pedido?.id ?? -1)">
+
+            <!-- Tabela Desktop -->
+            <table class="pacote-tabela">
               <thead>
                 <tr>
                   <th>Nome</th>
-                  <th>Dimensões (C x L x A)</th>
-                  <th>Peso (kg)</th>
-                  <th>Quantidade</th>
+                  <th>Dimensões</th>
+                  <th>Peso</th>
+                  <th>Qtd</th>
                   <th>Frágil</th>
                 </tr>
               </thead>
+
               <tbody>
-                <tr *ngFor="let pacote of pedido.pacotes">
-                  <td>{{ pacote.nome }}</td>
-                  <td>{{ pacote.comprimento }} x {{ pacote.largura }} x {{ pacote.altura }}</td>
-                  <td>{{ pacote.peso }}</td>
-                  <td>{{ pacote.quantidade }}</td>
+                <tr *ngFor="let pacote of pedido?.pacotes; trackBy: trackByPacote">
+                  <td>{{ pacote?.nome }}</td>
+
                   <td>
-                    <span class="fragil" [ngClass]="{ 'fragil-true': pacote.fragil, 'fragil-false': !pacote.fragil }">
-                      {{ pacote.fragil ? 'Frágil' : 'Não Frágil' }}
-                    </span>
+                    {{ pacote?.comprimento }} ×
+                    {{ pacote?.largura }} ×
+                    {{ pacote?.altura }}
+                  </td>
+
+                  <td>{{ pacote?.peso }}</td>
+
+                  <td>{{ pacote?.quantidade }}</td>
+
+                  <td [class.fragil]="pacote?.fragil">
+                    {{ pacote?.fragil ? 'Frágil' : '—' }}
                   </td>
                 </tr>
               </tbody>
             </table>
+
+            <!-- Versão Mobile -->
+            <div class="pacote-lista">
+              <div class="pacote-item"
+                   *ngFor="let pacote of pedido?.pacotes; trackBy: trackByPacote">
+
+                <p><strong>{{ pacote?.nome }}</strong></p>
+
+                <p>
+                  Dimensões:
+                  {{ pacote?.comprimento }}m ×
+                  {{ pacote?.largura }}m ×
+                  {{ pacote?.altura }}m
+                </p>
+
+                <p>
+                  Peso: {{ pacote?.peso }} kg •
+                  Qtd: {{ pacote?.quantidade }}
+                </p>
+
+                <p class="fragil"
+                   [class.fragil-true]="pacote?.fragil">
+                  Frágil: {{ pacote?.fragil ? 'Sim' : 'Não' }}
+                </p>
+              </div>
+            </div>
+
           </div>
         </div>
+
       </div>
     </div>
+
+    <!-- Paginação -->
+    <div class="paginacao"
+         *ngIf="!loading && carregamentos?.length">
+
+      <button type="button"
+              (click)="paginaAnterior()"
+              [disabled]="paginaAtual === 1">
+        ◀ Anterior
+      </button>
+
+      <ng-container *ngFor="let _ of [].constructor(totalPaginas); let i = index">
+        <button type="button"
+                [class.ativa]="(i + 1) === paginaAtual"
+                (click)="irParaPagina(i + 1)">
+          {{ i + 1 }}
+        </button>
+      </ng-container>
+
+      <button type="button"
+              (click)="proximaPagina()"
+              [disabled]="paginaAtual === totalPaginas">
+        Próxima ▶
+      </button>
+
+    </div>
+
+    <div class="muted"
+         *ngIf="!loading && !carregamentos?.length">
+      Nenhum carregamento encontrado.
+    </div>
+
   </div>
 </div>
 

@@ -1,125 +1,135 @@
 <app-navbar></app-navbar>
 
-<div class="page-container">
+<div class="page-container" style="display: flex; flex-direction: column; overflow-y: auto;">
+  <section class="acoes-topo" style="margin-bottom: 16px; display: flex; gap: 12px; align-items: center; justify-content: space-between;">
+    <div>
+      <button class="btn btn-sec " (click)="voltar()" title="Voltar">
+        <i class="pi pi-arrow-left"></i> Voltar
+      </button>
+    </div>
+  </section>
+
   <div class="container">
     <h1>Otimização do Carregamento</h1>
 
-    <!-- Etapa 1: Caminhões -->
-    <div *ngIf="etapaAtual === 'caminhao'">
-      <section class="card selecao-card">
-        <h3><i class="pi pi-truck"></i> Escolha um Caminhão</h3>
+<!-- Etapa 1: Caminhões -->
+<div *ngIf="etapaAtual === 'caminhao'">
+  <h3><i class="pi pi-truck"></i> Escolha um Caminhão</h3>
 
-        <div class="filtro-container" style="display: flex; gap: 10px; align-items: center;">
-          <input
-            type="text"
-            [(ngModel)]="filtroCaminhao"
-            placeholder="Filtrar caminhões por nome, peso ou dimensões..."
-            class="filtro-input"
-          />
-          <button type="button" class="btn-secundario" (click)="filtroCaminhao = ''">
-            Limpar
-          </button>
-        </div>
+  <!-- 🔎 Filtro -->
+  <div class="filtro-bar">
+    <input
+      type="text"
+      [(ngModel)]="filtroCaminhao"
+      placeholder="Filtrar caminhões por nome, peso ou dimensões..."
+      class="input-filtro"
+    />
+    <button type="button" class="btn-secundario" (click)="filtroCaminhao = ''">
+      Limpar
+    </button>
+  </div>
+
+  <!-- ✅ Listagem em Cards -->
+  <div class="card-grid">
+    <div
+      class="card"
+      *ngFor="let caminhao of caminhoesFiltrados"
+      [class.ativo]="caminhaoSelecionado?.id === caminhao.id"
+      (click)="selecionarCaminhao(caminhao)"
+      style="cursor: pointer;"
+    >
+      <h3><i class="pi pi-truck"></i> {{ caminhao.nome }}</h3>
+
+      <ul class="card-info">
+        <li><strong>Dimensões:</strong> {{ caminhao.comprimento }}m × {{ caminhao.largura }}m × {{ caminhao.altura }}m</li>
+        <li><strong>Peso Máximo:</strong> {{ caminhao.pesoLimite / 1000 }}t</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 🔘 Botão de confirmação -->
+  <div class="confirmacao-box" style="margin-top: 20px; text-align: center;">
+    <p *ngIf="!caminhaoSelecionado">Selecione um caminhão para continuar</p>
+    <button
+      class="btn-continuar" *ngIf="caminhaoSelecionado"
+      [disabled]="!caminhaoSelecionado"
+      (click)="continuarParaPacotes()"
+    >
+      Continuar
+    </button>
+  </div>
+</div>
 
 
-        <div class="tabela-container">
-          <table class="custom-table">
-            <thead>
-              <tr>
-                <th>Nome</th>
-                <th>Dimensões (C × L × A)</th>
-                <th>Peso Máximo</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr
-                *ngFor="let caminhao of caminhoesFiltrados"
-                [class.ativo]="caminhaoSelecionado?.id === caminhao.id"
-                (click)="selecionarCaminhao(caminhao)"
-                style="cursor: pointer;"
-              >
-                <td><i class="pi pi-truck"></i> {{ caminhao.nome }}</td>
-                <td>{{ caminhao.comprimento }}m × {{ caminhao.largura }}m × {{ caminhao.altura }}m</td>
-                <td>{{ caminhao.pesoLimite / 1000 }}t</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
 
-        <div class="confirmacao-box" style="margin-top: 20px; text-align: center;">
-          <p *ngIf="!caminhaoSelecionado">Selecione um caminhão para continuar</p>
-          <button class="btn-continuar"
-                  [disabled]="!caminhaoSelecionado"
-                  (click)="continuarParaPacotes()">
-            Continuar
-          </button>
-        </div>
-      </section>
+ <!-- Etapa 2: Pacotes -->
+<div *ngIf="etapaAtual === 'pacotes'">
+  <h3><i class="pi pi-box"></i> Escolha os Pacotes</h3>
+  <p class="contador-produtos">
+    Pacotes selecionados: {{ pacotesSelecionados.length }}
+  </p>
+
+  <!-- Novo Pedido -->
+  <div *ngIf="!pedidoAtual" style="display: flex; gap: 20px;">
+    <button class="btn-sucesso" (click)="fileInput.click()">
+          <i class="pi pi-file-import"></i> Importar CSV
+    </button>
+    <input
+      #fileInput
+      type="file"
+      (change)="importarCSV($event)"
+      accept=".csv"
+      hidden
+    />
+
+    <button (click)="criarNovoPedido()" class="button btn-sucesso">
+      + Novo Pedido
+    </button>
+  </div>
+
+  <!-- Pedido Atual -->
+  <div *ngIf="pedidoAtual">
+    <h4>Pedido: {{ pedidoAtual.nome }}</h4>
+
+    <!-- Filtro -->
+    <div class="filtro-bar">
+      <input
+        type="text"
+        [(ngModel)]="filtroPacote"
+        placeholder="Filtrar pacotes por nome, peso ou dimensões..."
+        class="input-filtro"
+      />
+      <button type="button" class="btn btn-secundario" (click)="filtroPacote = ''">
+        Limpar
+      </button>
     </div>
 
-
-    <!-- Etapa 2: Pacotes -->
-<div *ngIf="etapaAtual === 'pacotes'">
-  <section class="card selecao-card">
-    <h3><i class="pi pi-box"></i> Escolha os Pacotes</h3>
-    <p class="contador-produtos">
-      Pacotes selecionados: {{ pacotesSelecionados.length }}
-    </p>
-
-<div *ngIf="!pedidoAtual">
-  <button (click)="criarNovoPedido()" class="button btn-sucesso">+ Novo Pedido</button>
-</div>
-
-<div *ngIf="pedidoAtual">
-  <h4>Pedido: {{ pedidoAtual.nome }}</h4>
-  <!-- (Aqui entra a tabela de pacotes filtrados como já temos, adaptada abaixo) -->
-
-
-<div class="tabela-container">
-      <!-- Campo de filtro -->
-<div class="filtro-container" style="display: flex; gap: 10px; justify-content: center;">
-  <input
-    type="text"
-    [(ngModel)]="filtroPacote"
-    placeholder="Filtrar pacotes por nome, peso ou dimensões..."
-    class="filtro-input"
-  />
-  <button type="button" class="btn-secundario" (click)="filtroPacote = ''">
-    Limpar
-  </button>
-</div>
-
-  <table class="custom-table">
-    <thead>
-      <tr>
-        <th>Nome</th>
-        <th>Dimensões (C × L × A)</th>
-        <th>Peso</th>
-        <th>Rotaciona</th>
-        <th>Quantidade</th>
-        <th>Ações</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr
+    <!-- Cards de Pacotes -->
+    <div class="card-grid">
+      <div
+        class="card"
         *ngFor="let pacote of pacotesFiltrados"
         [class.ativo]="pacotesSelecionados.includes(pacote)"
         (click)="togglePacote(pacote)"
-        style="cursor: pointer;"
       >
-        <td><i class="pi pi-box"></i> {{ pacote.nome }}</td>
-        <td>{{ pacote.comprimento }}m × {{ pacote.largura }}m × {{ pacote.altura }}m</td>
-        <td>{{ pacote.peso }}kg</td>
-        <td>
-  <span 
-    class="rotacao" 
-    [ngClass]="{ 'rotaca-true': pacote.rotacao, 'rotaca-false': !pacote.rotacao }">
-    {{ pacote.rotacao ? 'Sim' : 'Não' }}
-  </span>
-</td>
+        <div class="card-header">
+          <i class="pi pi-box"></i>
+          <span class="card-title">{{ pacote.nome }}</span>
+        </div>
 
-        <!-- Quantidade -->
-        <td *ngIf="pacotesSelecionados.includes(pacote) && pacote.id !== undefined">
+        <div class="card-body">
+          <p><strong>Dimensões:</strong> {{ pacote.comprimento }}m × {{ pacote.largura }}m × {{ pacote.altura }}m</p>
+          <p><strong>Peso:</strong> {{ pacote.peso }}kg</p>
+          <p>
+            <strong>Rotaciona:</strong>
+            <span [ngClass]="{ 'rotacao-true': pacote.rotacao, 'rotacao-false': !pacote.rotacao }">
+              {{ pacote.rotacao ? 'Sim' : 'Não' }}
+            </span>
+          </p>
+        </div>
+
+        <!-- Quantidade + Ações -->
+        <div class="card-actions" *ngIf="pacotesSelecionados.includes(pacote) && pacote.id !== undefined">
           <input
             type="number"
             min="1"
@@ -128,76 +138,67 @@
             (click)="$event.stopPropagation()"
             (keydown)="$event.stopPropagation()"
           />
-        </td>
-        <td *ngIf="!pacotesSelecionados.includes(pacote)">—</td>
 
-        <!-- Ações -->
-        <td *ngIf="pacotesSelecionados.includes(pacote) && pacote.id !== undefined">
           <ng-container *ngIf="!quantidadesConfirmadas[pacote.id!]">
-            <button class="btn-ok"
-                    type="button"
-                    (click)="confirmarQuantidade(pacote); $event.stopPropagation()">
+            <button class="btn-sucesso"
+              type="button"
+              (click)="confirmarQuantidade(pacote); $event.stopPropagation()">
               OK
             </button>
           </ng-container>
 
           <ng-container *ngIf="quantidadesConfirmadas[pacote.id!]">
-            <button class="btn-desfazer"
-                    type="button"
-                    (click)="desfazerConfirmacao(pacote); $event.stopPropagation()">
+            <button class="btn-danger"
+              type="button"
+              (click)="desfazerConfirmacao(pacote); $event.stopPropagation()">
               Desfazer
             </button>
           </ng-container>
 
-          <button class="btn-cancelar"
-                  type="button"
-                  (click)="cancelarSelecao(pacote); $event.stopPropagation()">
+          <button class="btn-secundario"
+            type="button"
+            (click)="cancelarSelecao(pacote); $event.stopPropagation()">
             Cancelar
           </button>
-        </td>
-        <td *ngIf="!pacotesSelecionados.includes(pacote)">—</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-
-<div class="confirmacao-box" style="margin-top: 20px; text-align: center;">
-  <p *ngIf="pacotesSelecionados.length === 0">Selecione ao menos um pacote para este pedido</p>
-  <button class="btn-continuar"
-          [disabled]="pacotesSelecionados.length === 0 || !todosPacotesConfirmados()"
-          (click)="confirmarPedido()">
-    Confirmar Pedido
-  </button>
-</div>
-</div>
-
-<div *ngIf="pedidos.length > 0" class="lista-pedidos-container">
-  <h4>📦 Pedidos adicionados ao caminhão:</h4>
-  <ul class="lista-pedidos">
-    <li *ngFor="let pedido of pedidos" class="pedido-item">
-      <div class="pedido-info">
-        <span class="pedido-nome">{{ pedido.nome }}</span>
-        <span class="pedido-detalhes">{{ pedido.pacotes.length }} tipo de pacote(s)</span>
+        </div>
       </div>
-    </li>
-  </ul>
-</div>
+    </div>
 
-
-
+    <!-- Confirmação -->
     <div class="confirmacao-box" style="margin-top: 20px; text-align: center;">
-      <p *ngIf="pacotesSelecionados.length === 0">Selecione pelo menos um pacote</p>
-      <button class="btn-continuar"
+      <p *ngIf="pacotesSelecionados.length === 0">Selecione ao menos um pacote para este pedido</p>
+      <button class="btn-primario" *ngIf="pacotesSelecionados.length > 0 && todosPacotesConfirmados()"
               [disabled]="pacotesSelecionados.length === 0 || !todosPacotesConfirmados()"
-              (click)="confirmarOtimizacao()">
-        Confirmar Otimização
+              (click)="confirmarPedido()">
+        Confirmar Pedido
       </button>
     </div>
-  </section>
+  </div>
+
+  <!-- Lista de Pedidos -->
+  <div *ngIf="pedidos.length > 0" class="lista-pedidos-container">
+    <h4>📦 Pedidos adicionados ao caminhão:</h4>
+    <ul class="lista-pedidos">
+      <li *ngFor="let pedido of pedidos" class="pedido-item">
+        <div class="pedido-info">
+          <span class="pedido-nome">{{ pedido.nome }}</span>
+          <span class="pedido-detalhes">{{ pedido.pacotes.length }} tipo(s) de pacote</span>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Confirmação Final -->
+  <div class="confirmacao-box" style="margin-top: 20px; text-align: center;">
+    <p *ngIf="pedidos.length === 0">Registre pelo menos um pedido</p>
+    <button class="btn-sucesso" *ngIf="pedidos.length > 0"
+            [disabled]="pacotesSelecionados.length === 0 || !todosPacotesConfirmados()"
+            (click)="confirmarOtimizacao()">
+      Confirmar Otimização
+    </button>
+  </div>
 </div>
 
-
-  </div>
 </div>
 
 <app-screen-background></app-screen-background>

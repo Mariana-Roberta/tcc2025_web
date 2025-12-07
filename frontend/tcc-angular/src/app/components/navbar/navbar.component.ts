@@ -1,21 +1,43 @@
 import {Component, OnInit} from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import {NgIf} from '@angular/common';
+import {NgClass, NgIf} from '@angular/common';
 
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
   imports: [
-    NgIf
+    NgIf,
+    NgClass
   ],
   styleUrls: ['./navbar.component.css']
 })
 export class NavbarComponent implements OnInit {
+  temaAtual: 'light' | 'dark' = 'light';
+
   mostrarMenu = false;
   nomeUsuario: string = '';
 
-  constructor(private router: Router, private authService: AuthService) {}
+  constructor(private router: Router, private authService: AuthService) {
+    // Pega tema salvo no localStorage, se existir
+    const salvo = localStorage.getItem('tema');
+    if (salvo === 'dark') {
+      this.temaAtual = 'dark';
+      document.documentElement.classList.add('theme-dark');
+    }
+  }
+
+  alternarTema() {
+    if (this.temaAtual === 'light') {
+      this.temaAtual = 'dark';
+      document.documentElement.classList.add('theme-dark');
+      localStorage.setItem('tema', 'dark');
+    } else {
+      this.temaAtual = 'light';
+      document.documentElement.classList.remove('theme-dark');
+      localStorage.setItem('tema', 'light');
+    }
+  }
 
   ngOnInit(): void {
     const usuario = this.authService.getUsuario();
@@ -31,6 +53,13 @@ export class NavbarComponent implements OnInit {
   toggleMenu() {
     this.mostrarMenu = !this.mostrarMenu;
   }
+
+  mobileMenuOpen = false;
+
+  toggleMobileMenu() {
+    this.mobileMenuOpen = !this.mobileMenuOpen;
+  }
+
 
   irParaPerfil() {
     this.router.navigate(['/perfil']);

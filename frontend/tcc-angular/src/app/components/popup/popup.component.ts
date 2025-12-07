@@ -11,7 +11,7 @@ import { PopupService } from '../../services/popup.service';
 export class PopupComponent implements OnInit {
   visivel = false;
   mensagem: string = '';
-  tipo: 'sucesso' | 'erro' = 'sucesso';
+  tipo: 'sucesso' | 'erro' | 'alerta' = 'sucesso';
   progresso = 100;
 
   private timeoutId: any = null;

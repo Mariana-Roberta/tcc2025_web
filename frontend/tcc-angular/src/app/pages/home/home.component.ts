@@ -15,7 +15,10 @@ import { PopupComponent } from '../../components/popup/popup.component';
 export class HomeComponent implements OnInit {
   nomeUsuario: string = '';
 
-  constructor(private _router: Router, private authService: AuthService, private popupService: PopupService) {}
+  constructor(private readonly _router: Router, 
+    private readonly authService: AuthService, 
+    private readonly popupService: PopupService
+  ) {}
 
   ngOnInit(): void {
     this.popupService.limpar();
@@ -31,6 +34,10 @@ export class HomeComponent implements OnInit {
 
   gerenciarPacotes() {
     this._router.navigate(['/gerenciar-pacotes']);
+  }
+
+  gerenciarCarregamentos() {
+    this._router.navigate(['/gerenciar-carregamentos']);
   }
 
   otimizar() {

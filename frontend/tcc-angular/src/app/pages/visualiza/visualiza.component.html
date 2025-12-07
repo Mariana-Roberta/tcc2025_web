@@ -1,8 +1,24 @@
 <app-navbar></app-navbar>
 
+<div class="page-container" style="padding: 20px; display: flex; flex-direction: column; overflow-y: auto;">
+<section class="acoes-topo" style="display: flex; gap: 12px; justify-content: flex-start;">
+  <div>
+    <button class="btn btn-sec " (click)="voltar()" title="Voltar">
+      <i class="pi pi-arrow-left"></i> Voltar
+    </button>
+  </div>
+  <div class="salvar-carregamento" *ngIf="!isVisualiza" style="margin-bottom: 24px; display: flex; justify-content: center;">
+    <button class="btn-gradient"  (click)="salvarCarregamento()">Salvar carregamento</button>
+  </div>
+</section>
 <div class="layout-container">
-  <!-- Card de informações do caminhão -->
-  <aside class="card info-card">
+
+  <!-- Card de informações do caminhão 
+  <aside class="section info-section">
+    <section class="salvar-carregamento" *ngIf="!isVisualiza" style="margin-bottom: 24px; display: flex; justify-content: center;">
+      <button class="btn-gradient"  (click)="salvarCarregamento()">Salvar carregamento</button>
+    </section>
+
     <section class="truck-card" *ngIf="caminhao">
       <header class="truck-header">
         <i class="pi pi-truck truck-icon"></i>
@@ -24,9 +40,8 @@
       </div>
     </section>
 
-    <!-- Card dos pacotes agrupados por pedido -->
+    
     <section class="pacotes-section" *ngIf="pedidos.length > 0">
-      <h4>Pacotes por Pedido</h4>
       <div *ngFor="let pedido of pedidos" class="pedido-bloco">
         <h5 class="pedido-titulo">
           <i class="pi pi-inbox"></i>
@@ -46,61 +61,94 @@
         </ul>
       </div>
     </section>
-  </aside>
+  </aside>-->
 
   <!-- Canvas do Three.js -->
   <main class="canvas-container">
     <app-three-d-view
+      *ngIf="!loading 
+            && caminhao 
+            && ehNumero(caminhao?.comprimento) 
+            && ehNumero(caminhao?.largura) 
+            && ehNumero(caminhao?.altura) 
+            && pacotesParaMostrar?.length"
       [pacotesOtimizados]="pacotesParaMostrar"
       [caminhao]="caminhao"
       (coresGeradasChange)="receberCoresGeradas($event)"
     ></app-three-d-view>
   </main>
 
+
   <!-- Card de Passo a Passo -->
-  <aside class="card passo-card">
-    <h3><i class="pi pi-list"></i> Instruções de Posicionamento</h3>
-
-    <div class="passo-dinamico">
-      <p class="passo-indicador">
-        Pedido {{ pedidoIds.indexOf(pedidoAtualId) + 1 }} de {{ pedidoIds.length }}
-      </p>
-      <div class="passo-texto" *ngIf="pedidoAtual">
-        <strong>{{ pedidoAtual.descricao || pedidoAtual.nome || ('Pedido #' + pedidoAtual.id) }}</strong><br/>
-
-        <div style="margin-top: 10px;">
-          <p>Pacotes do pedido:</p>
-
-          <ul class="lista-pacotes">
-            <li *ngFor="let p of resumoPacotesDoPedidoAtual">
-              <span class="cor-pacote" [style.backgroundColor]="coresPacotes.get(pedidoAtualId + '|' + p.id)"></span>
-              <span class="texto-pacote">
-                {{ p.nome }} — {{ p.quantidade }} unidade{{ p.quantidade > 1 ? 's' : '' }}
-              </span>
-            </li>
-          </ul>
+  <aside class="section">
+    <section class="truck-card" *ngIf="caminhao">
+      <header class="truck-header">
+        <i class="pi pi-truck truck-icon"></i>
+        <h3>Caminhão Selecionado</h3>
+      </header>
+      <div class="truck-info">
+        <div class="info-line">
+          <span class="label">Modelo:</span>
+          <span class="value">{{ caminhao.nome }}</span>
+        </div>
+        <div class="info-line">
+          <span class="label">Dimensões:</span>
+          <span class="value">{{ caminhao.comprimento }}m × {{ caminhao.largura }}m × {{ caminhao.altura }}m</span>
+        </div>
+        <div class="info-line">
+          <span class="label">Peso Limite:</span>
+          <span class="value">{{ caminhao.pesoLimite }} kg</span>
         </div>
       </div>
-    </div>
+    </section>
 
-    <div class="passo-botoes">
-      <button
-        class="passo-btn"
-        (click)="voltarPasso()"
-        [disabled]="pacotesIdsDoPedidoAtual.indexOf(pacoteAtualId) === 0"
-      >
-        Anterior
-      </button>
-      <button
-        class="passo-btn"
-        (click)="avancarPasso()"
-        [disabled]="pacotesIdsDoPedidoAtual.indexOf(pacoteAtualId) === pacotesIdsDoPedidoAtual.length - 1"
-      >
-        Próximo
-      </button>
-    </div>
+    <section class="passo-section">
+      <h3><i class="pi pi-list"></i> Instruções de Posicionamento</h3>
+
+      <div class="passo-dinamico">
+        <p class="passo-indicador">
+          Pedido {{ pedidoIds.indexOf(pedidoAtualId) + 1 }} de {{ pedidoIds.length }}
+        </p>
+        <div class="passo-texto" *ngIf="pedidoAtual">
+          <strong>{{ pedidoAtual.descricao || pedidoAtual.nome || ('Pedido #' + pedidoAtual.id) }}</strong><br/>
+
+          <div style="margin-top: 10px;">
+            <p>Oriente-se pelas cores de cada pacote do pedido, e posicione-os:</p>
+
+            <ul class="lista-pacotes">
+              <li *ngFor="let p of resumoPacotesDoPedidoAtual">
+                <span class="cor-pacote" [style.backgroundColor]="coresPacotes.get(pedidoAtualId + '|' + p.id)"></span>
+                <span class="texto-pacote">
+                  {{ p.nome }} — {{ p.quantidade }} unidade{{ p.quantidade > 1 ? 's' : '' }}
+                </span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- ... -->
+      <div class="passo-botoes">
+        <button
+          class="passo-btn"
+          (click)="voltarPasso()"
+          [disabled]="isPrimeiroPedido"
+        >
+          Anterior
+        </button>
+
+        <button
+          class="passo-btn"
+          (click)="avancarPasso()"
+          [disabled]="isUltimoPedido"
+        >
+          Próximo
+        </button>
+      </div>
+    </section>
 
   </aside>
 </div>
-
+</div>
+<app-screen-background></app-screen-background>
 <app-popup></app-popup>

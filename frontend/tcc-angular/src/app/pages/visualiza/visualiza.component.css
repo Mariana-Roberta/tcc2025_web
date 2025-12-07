@@ -1,28 +1,22 @@
 .layout-container {
   display: flex;
-  min-height: 85%;
-  gap: 20px;
-  padding: 24px;
-  background-color: var(--light-color);
-
-}
-
-section {
   height: auto;
+  gap: 20px;
+  padding: 20px;
+  background-color: var(--background-color);
+  border-radius: 12px;
 }
 
 /* Cards padrão */
-.card {
-  background-color: var(--background-color);
-  border-radius: 12px;
-  padding: 24px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+.section {
   display: flex;
   flex-direction: column;
+  gap: 20px;
+  width: 20%;
 }
 
 /* Coluna esquerda */
-.info-card {
+.info-section {
   width: 18%;
   min-width: 230px;
 }
@@ -40,10 +34,9 @@ section {
 }
 
 .truck-card {
-  background-color: var(--background-color);
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+  background-color: var(--light-color);
+  padding: 20px 10px;
+  border-radius: 8px;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -83,12 +76,6 @@ section {
   color: var(--gray-color);
 }
 
-.pacotes-section h4 {
-  margin-top: 20px;
-  font-size: 1rem;
-  color: var(--text-color);
-}
-
 .pacotes-section {
   list-style: none;
   padding: 0;
@@ -106,13 +93,13 @@ section {
 }
 
 .pacotes-section::-webkit-scrollbar-thumb {
-  background-color: #ccc;
+  background-color: var(--gray-color);
   border-radius: 4px;
 }
 
 .pedido-bloco {
-  background-color: var(--background-color);
-  padding: 16px;
+  background-color: var(--blue-color-3);
+  padding: 20px 10px;
   border-radius: 12px;
   margin-bottom: 16px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
@@ -121,10 +108,10 @@ section {
 .pedido-titulo {
   font-size: 1rem;
   font-weight: 600;
-  margin-bottom: 12px;
   color: var(--text-color);
   display: flex;
   align-items: center;
+  margin: 0 0 10px;
 }
 
 .pacotes-lista {
@@ -133,11 +120,12 @@ section {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  margin: 0;
 }
 
 .pacote-card {
-  background-color: #f9fafc;
-  border: 1px solid #e0e6ed;
+  background-color: var(--light-color);
+  border: 1px solid var(--blue-color-2);
   border-radius: 10px;
   padding: 12px 16px;
   display: flex;
@@ -165,16 +153,17 @@ section {
 }
 
 .pacote-badges .badge {
-  background-color: #e3ebf6;
-  color: #30475e;
+  background-color: color-mix(in srgb, var(--blue-color-3) 20%, var(--background-color));
+  color: var(--text-color);
   font-size: 0.75rem;
   padding: 4px 8px;
   border-radius: 6px;
   font-weight: 500;
 }
+
 .pacote-badges .badge.qtd {
-  background-color: var(--blue-color-1); /* cor principal da paleta */
-  color: white;
+  background-color: var(--blue-color-1);
+  color: #fff;
   font-weight: 700;
   font-size: 0.75rem;
   padding: 6px 10px;
@@ -182,19 +171,17 @@ section {
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
-
 /* Coluna central */
 .canvas-container {
   flex: 1;
   height: auto;
   min-height: 600px;
-  background-color: #f5f5f5;
+  background-color: var(--light-color);
   border-radius: 12px;
   position: relative;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
   display: flex;
 }
-
 app-three-d-view {
   width: 100%;
   height: 100%;
@@ -202,13 +189,20 @@ app-three-d-view {
 }
 
 /* Coluna direita */
-.passo-card {
-  width: 16%;
+.passo-section {
+  width: auto;
   min-width: 230px;
+  height: auto;
+  min-height: 480px;
+  display: flex;
+  flex-direction: column;
   justify-content: space-between;
   gap: 16px;
+  background-color: var(--light-color);
+  padding: 20px 10px;
+  border-radius: 8px;
 }
-
+h3 {margin: 0;}
 .passo-dinamico {
   flex: 1;
   margin-bottom: 16px;
@@ -253,7 +247,7 @@ app-three-d-view {
 }
 
 .passo-btn:disabled {
-  background-color: #ccc;
+  background-color: var(--gray-color);
   cursor: not-allowed;
 }
 
@@ -286,13 +280,13 @@ ul {
 }
 
 li {
-  background-color: #f3f7fc;
-  border: 1px solid #d2e3f3;
+  background-color: var(--light-color);
+  border: 1px solid var(--gray-color);
   border-radius: 8px;
   padding: 8px 12px;
   margin-bottom: 6px;
   font-size: 14px;
-  color: #333;
+  color: var(--text-color);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -300,7 +294,7 @@ li {
 }
 
 li:hover {
-  background-color: #e6f0fa;
+  background-color: color-mix(in srgb, var(--blue-color-3) 15%, var(--background-color));
   cursor: default;
 }
 
@@ -320,9 +314,9 @@ li:hover {
 .cor-pacote {
   width: 16px;
   height: 16px;
-  border-radius: 4px; /* use 50% para deixar redondo */
+  border-radius: 4px;
   margin-right: 10px;
-  border: 1px solid #aaa;
+  border: 1px solid var(--gray-color);
   flex-shrink: 0;
 }
 
@@ -341,8 +335,143 @@ li:hover {
     height: 400px;
   }
 
-  .info-card,
-  .passo-card {
+  .info-section,
+  .passo-section {
     width: 100%;
+  }
+}
+
+/* ================================
+   Responsividade Mobile & Tablet
+   ================================ */
+@media (max-width: 992px) {
+  .layout-container {
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px;
+    height: auto;
+  }
+
+  .info-section,
+  .passo-section,
+  .section {
+    width: 100%;
+    min-width: auto;
+  }
+
+  .canvas-container {
+    width: 100%;
+    min-height: 300px;
+    height: auto;
+  }
+
+  .truck-card,
+  .pedido-bloco,
+  .pacote-card,
+  li {
+    padding: 12px;
+  }
+
+  .truck-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .info-line {
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .pacotes-section {
+    max-height: 300px;
+  }
+
+  .pacote-badges {
+    justify-content: flex-start;
+  }
+
+  .passo-botoes {
+    gap: 8px;
+  }
+
+  .passo-btn,
+  .confirmar-button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .layout-container {
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .truck-card,
+  .pedido-bloco,
+  .pacote-card {
+    padding: 10px;
+  }
+
+  .canvas-container {
+    min-height: 250px;
+  }
+
+  .info-line {
+    font-size: 13px;
+  }
+
+  .passo-texto {
+    font-size: 15px;
+  }
+
+  li {
+    font-size: 13px;
+    padding: 6px 10px;
+  }
+
+  .pacote-badges .badge {
+    font-size: 0.65rem;
+    padding: 3px 6px;
+  }
+
+  .pacote-badges .badge.qtd {
+    font-size: 0.7rem;
+    padding: 5px 8px;
+  }
+}
+
+@media (max-width: 576px) {
+  
+
+  .layout-container {
+    padding: 8px;
+    gap: 8px;
+  }
+
+  .canvas-container, canvas {
+    min-height: 200px;
+    height: 500px;
+  }
+
+  h3, .pedido-titulo {
+    font-size: 0.95rem;
+  }
+
+  .passo-texto {
+    font-size: 14px;
+  }
+
+  .truck-header {
+    gap: 4px;
+  }
+
+  li {
+    font-size: 12px;
+    padding: 5px 8px;
+  }
+
+  .pacote-badges {
+    gap: 4px;
   }
 }

@@ -1,4 +1,5 @@
 <div class="top-bar">
+  
   <div class="logo-area">
     <div class="logo-clickable" (click)="home()">
       <div class="logo-box">
@@ -8,10 +9,29 @@
     </div>
   </div>
 
+  <!-- Botão do menu mobile -->
+  <div class="mobile-menu-btn" (click)="toggleMobileMenu()">
+    <i class="pi pi-bars"></i>
+  </div>
 
   <div class="user-section">
     <button *ngIf="isLoggedIn()" class="btn-gradient" (click)="otimizar()">Otimizar</button>
     <button *ngIf="isLoggedIn()" class="btn-danger" (click)="logout()">Sair</button>
+    <button class="btn" (click)="alternarTema()">
+      <i class="pi" [ngClass]="temaAtual === 'dark' ? 'pi-sun' : 'pi-moon'"></i>
+    </button>
+    <div class="username-wrapper">
+      <span class="username">{{ nomeUsuario }}</span>
+    </div>
+  </div>
+
+  <!-- Menu colapsável para mobile -->
+  <div class="mobile-menu" [class.show]="mobileMenuOpen">
+    <button *ngIf="isLoggedIn()" class="btn-gradient" (click)="otimizar()">Otimizar</button>
+    <button *ngIf="isLoggedIn()" class="btn-danger" (click)="logout()">Sair</button>
+    <button class="btn" (click)="alternarTema()">
+      <i class="pi" [ngClass]="temaAtual === 'dark' ? 'pi-sun' : 'pi-moon'"></i>
+    </button>
     <div class="username-wrapper">
       <span class="username">{{ nomeUsuario }}</span>
     </div>

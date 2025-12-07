@@ -1,26 +1,34 @@
 <app-navbar></app-navbar>
-<div class="page-container">
+
+<div class="page-container" style="height: auto; min-height: 100vh;">
   <div class="home-container">
     <div class="welcome">
       <h1>Olá, {{ nomeUsuario }}!</h1>
       <p>Bem-vindo de volta ao GerencieX</p>
-      <button class="btn-gradient" (click)="otimizar()">Otimizar agora</button>
+      <button type="button" class="btn-gradient" (click)="otimizar()">Otimizar agora</button>
     </div>
 
     <div class="card-container">
-      <div class="card" (click)="gerenciarCaminhoes()">
-        <i class="pi pi-truck icon"></i>
-        <h2>Gerenciar Caminhão</h2>
+      <div class="card" role="button" tabindex="0" (click)="gerenciarCaminhoes()">
+        <i class="pi pi-truck icon" aria-hidden="true"></i>
+        <h2>Gerenciar Caminhões</h2>
         <p>Gerencie seus caminhões</p>
       </div>
 
-      <div class="card" (click)="gerenciarPacotes()">
-        <i class="pi pi-box icon"></i>
+      <div class="card" role="button" tabindex="0" (click)="gerenciarPacotes()">
+        <i class="pi pi-box icon" aria-hidden="true"></i>
         <h2>Gerenciar Pacotes</h2>
         <p>Cadastre todos os tipos de pacotes</p>
+      </div>
+
+      <div class="card" role="button" tabindex="0" (click)="gerenciarCarregamentos()">
+        <i class="pi pi-database icon" aria-hidden="true"></i>
+        <h2>Gerenciar Carregamentos</h2>
+        <p>Gerencie seus carregamentos anteriores</p>
       </div>
     </div>
   </div>
 </div>
+
 <app-screen-background></app-screen-background>
 <app-popup></app-popup>
